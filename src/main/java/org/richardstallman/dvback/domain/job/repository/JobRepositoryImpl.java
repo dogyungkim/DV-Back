@@ -1,6 +1,8 @@
 package org.richardstallman.dvback.domain.job.repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.job.converter.JobConverter;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
@@ -22,5 +24,12 @@ public class JobRepositoryImpl implements JobRepository {
   public Optional<JobDomain> findById(Long jobId) {
 
     return jobJpaRepository.findById(jobId).map(jobConverter::toDomain);
+  }
+
+  @Override
+  public List<JobDomain> findAll() {
+    return jobJpaRepository.findAll().stream()
+        .map(jobConverter::toDomain)
+        .collect(Collectors.toList());
   }
 }
