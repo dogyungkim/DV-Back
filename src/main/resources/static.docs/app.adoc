@@ -1,0 +1,19 @@
+:toc: left
+:source-highlighter: highlightjs
+
+= API 문서
+
+== 면접 Interview
+
+=== 면접 정보 입력 - 면접 저장
+
+==== 요청
+
+include::{snippets}/면접 정보 입력 - 면접 저장/http-request.adoc[]
+include::{snippets}/면접 정보 입력 - 면접 저장/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/면접 정보 입력 - 면접 저장/http-response.adoc[]
+include::{snippets}/면접 정보 입력 - 면접 저장/response-fields.adoc[]
+

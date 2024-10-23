@@ -6,6 +6,7 @@ import static org.richardstallman.dvback.common.constant.CommonConstants.JobName
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -14,6 +15,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMetho
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
+import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
@@ -27,12 +29,14 @@ public class InterviewServiceTest {
   @Mock private JobService jobService;
 
   @InjectMocks private InterviewServiceImpl interviewServiceImpl;
+  @InjectMocks private InterviewConverter interviewConverter;
 
   @BeforeEach
   void init() {
     MockitoAnnotations.openMocks(this);
     FakeInterviewRepository fakeInterviewRepository = new FakeInterviewRepository();
-    this.interviewServiceImpl = new InterviewServiceImpl(fakeInterviewRepository, jobService);
+    this.interviewServiceImpl =
+        new InterviewServiceImpl(fakeInterviewRepository, jobService, interviewConverter);
 
     InterviewType interviewType = InterviewType.PERSONAL;
     InterviewMethod interviewMethod = InterviewMethod.CHAT;
@@ -52,6 +56,7 @@ public class InterviewServiceTest {
   }
 
   @Test
+  @DisplayName("면접 정보 입력 - 면접 저장 테스트")
   void create_interview_by_save_interview_info() {
     // given
     InterviewType interviewType = InterviewType.TECHNICAL;
@@ -59,22 +64,17 @@ public class InterviewServiceTest {
     InterviewMode interviewMode = InterviewMode.REAL;
 
     InterviewCreateRequestDto interviewCreateRequestDto =
-        InterviewCreateRequestDto.builder()
-            .interviewType(interviewType)
-            .interviewMethod(interviewMethod)
-            .interviewMode(interviewMode)
-            .jobId(2L)
-            .build();
+        new InterviewCreateRequestDto(interviewType, interviewMethod, interviewMode, 2L);
 
     // when
     InterviewCreateResponseDto interviewCreateResponseDto =
         interviewServiceImpl.createInterview(interviewCreateRequestDto);
 
     // then
-    assertThat(interviewCreateResponseDto.getInterviewId()).isEqualTo(2);
-    assertThat(interviewCreateResponseDto.getInterviewStatus()).isEqualTo(InterviewStatus.INITIAL);
-    assertThat(interviewCreateResponseDto.getInterviewType()).isEqualTo(interviewType);
-    assertThat(interviewCreateResponseDto.getInterviewMethod()).isEqualTo(interviewMethod);
-    assertThat(interviewCreateResponseDto.getInterviewMode()).isEqualTo(interviewMode);
+    assertThat(interviewCreateResponseDto.interviewId()).isEqualTo(2);
+    assertThat(interviewCreateResponseDto.interviewStatus()).isEqualTo(InterviewStatus.INITIAL);
+    assertThat(interviewCreateResponseDto.interviewType()).isEqualTo(interviewType);
+    assertThat(interviewCreateResponseDto.interviewMethod()).isEqualTo(interviewMethod);
+    assertThat(interviewCreateResponseDto.interviewMode()).isEqualTo(interviewMode);
   }
 }
