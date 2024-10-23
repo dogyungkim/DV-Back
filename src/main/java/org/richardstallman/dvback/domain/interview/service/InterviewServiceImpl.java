@@ -1,7 +1,8 @@
 package org.richardstallman.dvback.domain.interview.service;
 
-import lombok.Builder;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
@@ -11,26 +12,22 @@ import org.richardstallman.dvback.domain.job.service.JobService;
 import org.springframework.stereotype.Service;
 
 @Service
-@Builder
 @RequiredArgsConstructor
 public class InterviewServiceImpl implements InterviewService {
 
   private final InterviewRepository interviewRepository;
   private final JobService jobService;
+  private final InterviewConverter interviewConverter;
 
+  @Transactional
   public InterviewCreateResponseDto createInterview(
       InterviewCreateRequestDto interviewCreateRequestDto) {
 
-    JobDomain jobDomain = jobService.findJobById(interviewCreateRequestDto.getJobId());
+    JobDomain jobDomain = jobService.findJobById(interviewCreateRequestDto.jobId());
 
-    InterviewDomain interviewDomain = InterviewDomain.create(interviewCreateRequestDto, jobDomain);
+    InterviewDomain interviewDomain =
+        interviewConverter.fromDtoToDomainWithStatusInitial(interviewCreateRequestDto, jobDomain);
     InterviewDomain createdInterviewDomain = interviewRepository.save(interviewDomain);
-    return InterviewCreateResponseDto.builder()
-        .interviewId(createdInterviewDomain.getInterviewId())
-        .interviewStatus(createdInterviewDomain.getInterviewStatus())
-        .interviewType(createdInterviewDomain.getInterviewType())
-        .interviewMethod(createdInterviewDomain.getInterviewMethod())
-        .interviewMode(createdInterviewDomain.getInterviewMode())
-        .build();
+    return interviewConverter.fromDomainToDto(createdInterviewDomain);
   }
 }
