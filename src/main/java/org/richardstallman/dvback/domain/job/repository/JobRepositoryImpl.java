@@ -22,7 +22,6 @@ public class JobRepositoryImpl implements JobRepository {
 
   @Override
   public Optional<JobDomain> findById(Long jobId) {
-
     return jobJpaRepository.findById(jobId).map(jobConverter::toDomain);
   }
 

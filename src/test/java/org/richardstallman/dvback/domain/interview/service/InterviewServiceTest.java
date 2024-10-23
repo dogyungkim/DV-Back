@@ -24,11 +24,9 @@ import org.richardstallman.dvback.mock.interview.FakeInterviewRepository;
 @Slf4j
 public class InterviewServiceTest {
 
-  @Mock
-  private JobService jobService;
+  @Mock private JobService jobService;
 
-  @InjectMocks
-  private InterviewServiceImpl interviewServiceImpl;
+  @InjectMocks private InterviewServiceImpl interviewServiceImpl;
 
   @BeforeEach
   void init() {

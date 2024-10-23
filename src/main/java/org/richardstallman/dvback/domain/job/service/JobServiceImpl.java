@@ -1,7 +1,6 @@
 package org.richardstallman.dvback.domain.job.service;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
@@ -22,9 +21,9 @@ public class JobServiceImpl implements JobService {
 
   @Override
   public JobDomain findJobById(Long jobId) {
-    Optional<JobDomain> optionalJobDomain = jobRepository.findById(jobId);
-    return optionalJobDomain.orElseThrow(
-        () -> new IllegalArgumentException("job id에 해당하는 직무가 없습니다."));
+    return jobRepository
+        .findById(jobId)
+        .orElseThrow(() -> new IllegalArgumentException("job id에 해당하는 직무가 없습니다."));
   }
 
   @Override

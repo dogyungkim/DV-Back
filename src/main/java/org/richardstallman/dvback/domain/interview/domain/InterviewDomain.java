@@ -13,7 +13,7 @@ import org.richardstallman.dvback.domain.job.domain.JobDomain;
 @Getter
 public class InterviewDomain {
 
-  private Long interviewId;
+  private final Long interviewId;
   private InterviewStatus interviewStatus;
   private InterviewType interviewType;
   private InterviewMethod interviewMethod;

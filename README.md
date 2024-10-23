@@ -1,3 +1,3 @@
 # DV-Back
 
-interviewEntity king dev kim backend repository
+interview king dev kim backend repository
