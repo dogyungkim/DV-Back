@@ -15,6 +15,7 @@ public class InterviewRepositoryImpl implements InterviewRepository {
   @Override
   public InterviewDomain save(InterviewDomain interviewDomain) {
     return interviewConverter.fromEntityToDomain(
-        interviewJpaRepository.save(interviewConverter.fromDomainToEntity(interviewDomain)));
+        interviewJpaRepository.save(
+            interviewConverter.fromDomainToEntityWhenCreate(interviewDomain)));
   }
 }
