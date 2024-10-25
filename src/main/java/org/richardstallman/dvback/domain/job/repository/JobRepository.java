@@ -11,4 +11,6 @@ public interface JobRepository {
   Optional<JobDomain> findById(Long jobId);
 
   List<JobDomain> findAll();
+
+  long count();
 }

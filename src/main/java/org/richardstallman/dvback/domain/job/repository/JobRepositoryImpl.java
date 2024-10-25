@@ -31,4 +31,9 @@ public class JobRepositoryImpl implements JobRepository {
         .map(jobConverter::toDomain)
         .collect(Collectors.toList());
   }
+
+  @Override
+  public long count() {
+    return jobJpaRepository.count();
+  }
 }

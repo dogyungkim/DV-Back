@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
-import org.richardstallman.dvback.common.constant.CommonConstants.JobName;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.mock.job.FakeJobRepository;
 
@@ -23,18 +22,12 @@ public class JobServiceTest {
     MockitoAnnotations.openMocks(this);
     this.fakeJobRepository = new FakeJobRepository();
     this.jobServiceImpl = new JobServiceImpl(fakeJobRepository);
-
-    JobName jobName = JobName.BACK_END;
-    String jobDescription = "백엔드 직무입니다.";
-
-    fakeJobRepository.save(
-        JobDomain.builder().jobName(jobName).jobDescription(jobDescription).build());
   }
 
   @Test
   void create_job_by_save_job_info() {
     // given
-    JobName jobName = JobName.FRONT_END;
+    String jobName = "FRONT_END";
     String jobDescription = "프론트엔드 직무입니다.";
 
     JobDomain givenJobDomain =
@@ -44,7 +37,7 @@ public class JobServiceTest {
     JobDomain createdJobDomain = jobServiceImpl.createJob(givenJobDomain);
 
     // then
-    assertThat(createdJobDomain.getJobId()).isEqualTo(2);
+    assertThat(createdJobDomain.getJobId()).isEqualTo(1);
     assertThat(createdJobDomain.getJobName()).isEqualTo(jobName);
     assertThat(createdJobDomain.getJobDescription()).isEqualTo(jobDescription);
   }
@@ -64,18 +57,12 @@ public class JobServiceTest {
   @Test
   void get_all_jobs() {
     // given
-    JobDomain job1 =
-        JobDomain.builder().jobName(JobName.BACK_END).jobDescription("백엔드 입니다.").build();
-    JobDomain job2 =
-        JobDomain.builder().jobName(JobName.FRONT_END).jobDescription("프론트엔드 입니다.").build();
-    fakeJobRepository.save(job1);
-    fakeJobRepository.save(job2);
 
     // when
     List<JobDomain> result = jobServiceImpl.findAllJobs();
 
     // then
     assertThat(result).isNotNull();
-    assertThat(result.size()).isEqualTo(3);
+    assertThat(result.size()).isEqualTo(4);
   }
 }

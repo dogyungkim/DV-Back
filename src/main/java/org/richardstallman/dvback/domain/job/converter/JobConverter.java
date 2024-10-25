@@ -10,11 +10,8 @@ import org.springframework.stereotype.Component;
 public class JobConverter {
 
   public JobEntity toEntity(JobDomain jobDomain) {
-    return JobEntity.builder()
-        .jobId(jobDomain.getJobId())
-        .jobName(jobDomain.getJobName())
-        .jobDescription(jobDomain.getJobDescription())
-        .build();
+    return new JobEntity(
+        jobDomain.getJobId(), jobDomain.getJobName(), jobDomain.getJobDescription());
   }
 
   public JobDomain toDomain(JobEntity jobEntity) {
