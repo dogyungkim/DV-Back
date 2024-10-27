@@ -8,6 +8,7 @@ import org.richardstallman.dvback.domain.interview.domain.response.InterviewCrea
 import org.richardstallman.dvback.domain.interview.entity.InterviewEntity;
 import org.richardstallman.dvback.domain.job.converter.JobConverter;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
+import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -62,5 +63,17 @@ public class InterviewConverter {
         interviewDomain.getInterviewId(), interviewDomain.getInterviewStatus(),
         interviewDomain.getInterviewType(), interviewDomain.getInterviewMethod(),
         interviewDomain.getInterviewMode(), interviewDomain.getJob());
+  }
+
+  public InterviewDomain fromInterviewInitialQuestionRequestDtoToDomain(
+      QuestionInitialRequestDto questionInitialRequestDto, JobDomain jobDomain) {
+    return InterviewDomain.builder()
+        .interviewId(questionInitialRequestDto.interviewId())
+        .interviewStatus(InterviewStatus.IN_PROGRESS)
+        .interviewType(questionInitialRequestDto.interviewType())
+        .interviewMethod(questionInitialRequestDto.interviewMethod())
+        .interviewMode(questionInitialRequestDto.interviewMode())
+        .job(jobDomain)
+        .build();
   }
 }

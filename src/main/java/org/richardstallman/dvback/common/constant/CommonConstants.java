@@ -22,7 +22,7 @@ public class CommonConstants {
 
   public enum InterviewMode {
     REAL, // 실전 면접 모드
-    PRACTICE // 일반/모의 면접 모드
+    GENERAL // 일반/모의 면접 모드
   }
 
   public enum InterviewMethod {

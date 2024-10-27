@@ -1,4 +1,4 @@
-package org.richardstallman.dvback.domain.interview.entity;
+package org.richardstallman.dvback.domain.question.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,18 +8,25 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.richardstallman.dvback.domain.interview.entity.InterviewEntity;
 import org.richardstallman.dvback.global.entity.BaseEntity;
 
 @Entity
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "questions")
 public class QuestionEntity extends BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "question_seq")
+  @SequenceGenerator(name = "question_seq", sequenceName = "question_id_seq", allocationSize = 1)
   private Long questionId;
 
   @ManyToOne(fetch = FetchType.LAZY)
