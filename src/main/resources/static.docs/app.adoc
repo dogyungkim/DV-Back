@@ -5,7 +5,7 @@
 
 == 면접 Interview
 
-=== 면접 정보 입력 - 면접 저장
+=== 면접 정보 입력 - 면접 저장 성공
 
 ==== 요청
 
@@ -17,3 +17,46 @@ include::{snippets}/면접 정보 입력 - 면접 저장/request-fields.adoc[]
 include::{snippets}/면접 정보 입력 - 면접 저장/http-response.adoc[]
 include::{snippets}/면접 정보 입력 - 면접 저장/response-fields.adoc[]
 
+=== 면접 정보 입력 - 서버 내부 오류(500 Internal Server Error)
+
+==== 요청
+
+include::{snippets}/면접 정보 입력 - 서버 내부 오류(500 Internal Server Error)/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/면접 정보 입력 - 서버 내부 오류(500 Internal Server Error)/http-response.adoc[]
+include::{snippets}/면접 정보 입력 - 서버 내부 오류(500 Internal Server Error)/response-fields.adoc[]
+
+=== 면접 정보 입력 - 잘못된 데이터 형식(400 Bad Request)
+
+==== 요청
+
+include::{snippets}/면접 정보 입력 - 잘못된 데이터 형식(400 Bad Request)/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/면접 정보 입력 - 잘못된 데이터 형식(400 Bad Request)/http-response.adoc[]
+include::{snippets}/면접 정보 입력 - 잘못된 데이터 형식(400 Bad Request)/response-fields.adoc[]
+
+=== 면접 정보 입력 - 존재하지 않는 직무 ID(500 Internal Server Error)
+
+==== 요청
+
+include::{snippets}/면접 정보 입력 - 존재하지 않는 직무 ID(500 Internal Server Error)/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/면접 정보 입력 - 존재하지 않는 직무 ID(500 Internal Server Error)/http-response.adoc[]
+include::{snippets}/면접 정보 입력 - 존재하지 않는 직무 ID(500 Internal Server Error)/response-fields.adoc[]
+
+=== 면접 정보 입력 - 필수 필드 누락(400 Bad Request)
+
+==== 요청
+
+include::{snippets}/면접 정보 입력 - 필수 필드 누락(400 Bad Request)/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/면접 정보 입력 - 필수 필드 누락(400 Bad Request)/http-response.adoc[]
+include::{snippets}/면접 정보 입력 - 필수 필드 누락(400 Bad Request)/response-fields.adoc[]

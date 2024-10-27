@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.job.repository.JobRepository;
+import org.richardstallman.dvback.global.advice.exceptions.ApiException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +25,8 @@ public class JobServiceImpl implements JobService {
   public JobDomain findJobById(Long jobId) {
     return jobRepository
         .findById(jobId)
-        .orElseThrow(() -> new IllegalArgumentException("job id에 해당하는 직무가 없습니다."));
+        .orElseThrow(
+            () -> new ApiException(HttpStatus.NOT_FOUND, "job id " + jobId + "에 해당하는 직무가 없습니다."));
   }
 
   @Override

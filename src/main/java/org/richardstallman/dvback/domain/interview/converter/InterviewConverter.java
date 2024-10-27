@@ -26,6 +26,15 @@ public class InterviewConverter {
         jobConverter.toEntity(interviewDomain.getJob()));
   }
 
+  public InterviewEntity fromDomainToEntityWhenCreate(InterviewDomain interviewDomain) {
+    return new InterviewEntity(
+        interviewDomain.getInterviewStatus(),
+        interviewDomain.getInterviewType(),
+        interviewDomain.getInterviewMethod(),
+        interviewDomain.getInterviewMode(),
+        jobConverter.toEntity(interviewDomain.getJob()));
+  }
+
   public InterviewDomain fromEntityToDomain(InterviewEntity interviewEntity) {
     return InterviewDomain.builder()
         .interviewId(interviewEntity.getInterviewId())
@@ -33,6 +42,7 @@ public class InterviewConverter {
         .interviewType(interviewEntity.getInterviewType())
         .interviewMethod(interviewEntity.getInterviewMethod())
         .interviewMode(interviewEntity.getInterviewMode())
+        .job(jobConverter.toDomain(interviewEntity.getJob()))
         .build();
   }
 

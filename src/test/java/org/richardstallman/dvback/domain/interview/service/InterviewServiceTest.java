@@ -2,7 +2,6 @@ package org.richardstallman.dvback.domain.interview.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static org.richardstallman.dvback.common.constant.CommonConstants.JobName.BACK_END;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +41,7 @@ public class InterviewServiceTest {
     InterviewMethod interviewMethod = InterviewMethod.CHAT;
     InterviewMode interviewMode = InterviewMode.PRACTICE;
     JobDomain jobDomain =
-        JobDomain.builder().jobId(1L).jobName(BACK_END).jobDescription("직무 설명").build();
+        JobDomain.builder().jobId(1L).jobName("BACK_END").jobDescription("백엔드 직무입니다.").build();
 
     when(jobService.findJobById(1L)).thenReturn(jobDomain);
 

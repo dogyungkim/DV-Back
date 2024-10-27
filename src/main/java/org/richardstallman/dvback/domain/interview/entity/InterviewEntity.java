@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,8 @@ import org.richardstallman.dvback.global.entity.BaseEntity;
 public class InterviewEntity extends BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "interview_seq")
+  @SequenceGenerator(name = "interview_seq", sequenceName = "interview_id_seq", allocationSize = 1)
   private Long interviewId;
 
   @NotNull(message = "Interview Status is required") @Enumerated(EnumType.STRING)
@@ -47,9 +49,23 @@ public class InterviewEntity extends BaseEntity {
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "job_id", nullable = false)
   private JobEntity job;
+
+  public InterviewEntity(
+      InterviewStatus interviewStatus,
+      InterviewType interviewType,
+      InterviewMethod interviewMethod,
+      InterviewMode interviewMode,
+      JobEntity job) {
+    super();
+    this.interviewStatus = interviewStatus;
+    this.interviewType = interviewType;
+    this.interviewMethod = interviewMethod;
+    this.interviewMode = interviewMode;
+    this.job = job;
+  }
+
   //  private Long resumeId;
   //  private Long coverLetterId;
   //  private Long portfolioId;
   //  private Long userId;
-
 }

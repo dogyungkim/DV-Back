@@ -1,5 +1,8 @@
 package org.richardstallman.dvback.common.constant;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 public class CommonConstants {
 
   public enum InterviewStatus {
@@ -28,10 +31,16 @@ public class CommonConstants {
     VIDEO // 영상 면접
   }
 
-  public enum JobName {
-    BACK_END, // 백엔드
-    FRONT_END, // 프론트엔드
-    INFRA, // 인프라
-    AI // 인공지능
+  @AllArgsConstructor
+  @Getter
+  public enum ResponseCode {
+    SUCCESS(200, "SUCCESS"),
+    FAIL(400, "FAILED"),
+    UNAUTHORIZED(401, "UNAUTHORIZED"),
+    NOT_FOUND(404, "NOT FOUND"),
+    INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR");
+
+    private final int code;
+    private final String message;
   }
 }

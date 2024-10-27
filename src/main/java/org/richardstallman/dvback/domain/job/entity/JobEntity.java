@@ -5,28 +5,28 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.richardstallman.dvback.common.constant.CommonConstants.JobName;
+import lombok.NoArgsConstructor;
 import org.richardstallman.dvback.global.entity.BaseEntity;
 
 @Entity
-@Builder
 @Getter
-@RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "jobs")
 public class JobEntity extends BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "job_seq")
+  @SequenceGenerator(name = "job_seq", sequenceName = "job_id_seq", allocationSize = 1)
   private Long jobId;
 
-  private JobName jobName;
+  @NotNull(message = "Job Name is required") private String jobName;
 
   @Column(columnDefinition = "TEXT")
-  private String jobDescription;
+  @NotNull(message = "Job Description is required") private String jobDescription;
 }
