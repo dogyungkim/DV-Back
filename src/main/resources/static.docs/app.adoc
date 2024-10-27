@@ -60,3 +60,17 @@ include::{snippets}/면접 정보 입력 - 필수 필드 누락(400 Bad Request)
 
 include::{snippets}/면접 정보 입력 - 필수 필드 누락(400 Bad Request)/http-response.adoc[]
 include::{snippets}/면접 정보 입력 - 필수 필드 누락(400 Bad Request)/response-fields.adoc[]
+
+== 질문 Question
+
+=== 질문 생성 - 최초 요청(모의 면접 성공)
+
+==== 요청
+
+include::{snippets}/질문 생성 - 최초 요청(모의 면접 성공)/http-request.adoc[]
+include::{snippets}/질문 생성 - 최초 요청(모의 면접 성공)/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/질문 생성 - 최초 요청(모의 면접 성공)/http-response.adoc[]
+include::{snippets}/질문 생성 - 최초 요청(모의 면접 성공)/response-fields.adoc[]
