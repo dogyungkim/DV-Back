@@ -66,7 +66,7 @@ public class QuestionServiceImpl implements QuestionService {
             interviewConverter.fromInterviewInitialQuestionRequestDtoToDomain(
                 questionInitialRequestDto, jobDomain));
 
-    return questionConverter.fromInterviewQuestionDomainToInterviewInitialQuestionResponseDto(
+    return questionConverter.fromQuestionExternalDomainToQuestionInitialResponseDto(
         createdQuestions.get(0), interviewCreateResponseDto, nextQuestion, hasNext);
   }
 
@@ -75,7 +75,7 @@ public class QuestionServiceImpl implements QuestionService {
       QuestionExternalDomain questionExternalDomain,
       JobDomain jobDomain) {
     return questionRepository.save(
-        questionConverter.fromInterviewQuestionDomainToDomain(
+        questionConverter.fromQuestionExternalDomainToDomain(
             questionExternalDomain,
             interviewConverter.fromInterviewInitialQuestionRequestDtoToDomain(
                 questionInitialRequestDto, jobDomain)));

@@ -24,6 +24,9 @@ public class QuestionConverter {
         questionDomain.getQuestionId(),
         interviewConverter.fromDomainToEntity(questionDomain.getInterviewDomain()),
         questionDomain.getQuestionText(),
+        questionDomain.getKeyTerms(),
+        questionDomain.getModelAnswer(),
+        questionDomain.getQuestionIntent(),
         questionDomain.getS3AudioUrl(),
         questionDomain.getS3VideoUrl(),
         questionDomain.getQuestionType());
@@ -34,13 +37,16 @@ public class QuestionConverter {
         .questionId(questionEntity.getQuestionId())
         .interviewDomain(interviewConverter.fromEntityToDomain(questionEntity.getInterview()))
         .questionText(questionEntity.getQuestionText())
+        .keyTerms(questionEntity.getKeyTerms())
+        .modelAnswer(questionEntity.getModelAnswer())
+        .questionIntent(questionEntity.getQuestionIntent())
         .s3AudioUrl(questionEntity.getS3AudioUrl())
         .s3VideoUrl(questionEntity.getS3VideoUrl())
         .questionType(questionEntity.getQuestionType())
         .build();
   }
 
-  public QuestionDomain fromInterviewQuestionDomainToDomain(
+  public QuestionDomain fromQuestionExternalDomainToDomain(
       QuestionExternalDomain questionExternalDomain, InterviewDomain interviewDomain) {
     return QuestionDomain.builder()
         .interviewDomain(interviewDomain)
@@ -60,12 +66,11 @@ public class QuestionConverter {
         jobName);
   }
 
-  public QuestionInitialResponseDto
-      fromInterviewQuestionDomainToInterviewInitialQuestionResponseDto(
-          QuestionExternalDomain questionExternalDomain,
-          InterviewCreateResponseDto interviewCreateResponseDto,
-          QuestionDomain questionDomain,
-          Boolean hasNext) {
+  public QuestionInitialResponseDto fromQuestionExternalDomainToQuestionInitialResponseDto(
+      QuestionExternalDomain questionExternalDomain,
+      InterviewCreateResponseDto interviewCreateResponseDto,
+      QuestionDomain questionDomain,
+      Boolean hasNext) {
     return new QuestionInitialResponseDto(
         interviewCreateResponseDto,
         questionExternalDomain.getQuestionText(),

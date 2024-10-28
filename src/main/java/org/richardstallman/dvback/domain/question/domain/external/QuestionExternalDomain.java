@@ -10,8 +10,8 @@ import lombok.Getter;
 @Getter
 public class QuestionExternalDomain {
 
-  @NotNull @JsonProperty("core_competency")
-  List<String> coreCompetency;
+  @NotNull @JsonProperty("key_terms")
+  List<String> keyTerms;
 
   @NotNull @JsonProperty("model_answer")
   String modelAnswer;

@@ -11,9 +11,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.richardstallman.dvback.domain.interview.entity.InterviewEntity;
 import org.richardstallman.dvback.global.entity.BaseEntity;
 
@@ -35,6 +38,16 @@ public class QuestionEntity extends BaseEntity {
 
   @NotNull(message = "Question Text is required") @Column(columnDefinition = "TEXT")
   private String questionText;
+
+  @NotNull(message = "keyTerms are required") @Column(columnDefinition = "jsonb")
+  @JdbcTypeCode(SqlTypes.JSON)
+  private List<String> keyTerms;
+
+  @NotNull(message = "Model Answer is required") @Column(columnDefinition = "TEXT")
+  private String modelAnswer;
+
+  @NotNull(message = "Question Intent is required") @Column(columnDefinition = "TEXT")
+  private String questionIntent;
 
   private String s3AudioUrl;
   private String s3VideoUrl;
