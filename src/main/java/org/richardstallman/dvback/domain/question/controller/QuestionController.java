@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.domain.question.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.common.DvApiResponse;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
 import org.richardstallman.dvback.domain.question.domain.response.QuestionInitialResponseDto;
 import org.richardstallman.dvback.domain.question.service.QuestionService;
@@ -20,10 +21,10 @@ public class QuestionController {
   private final QuestionService questionService;
 
   @PostMapping("/initial-question")
-  public ResponseEntity<QuestionInitialResponseDto> getInitialQuestion(
+  public ResponseEntity<DvApiResponse<QuestionInitialResponseDto>> getInitialQuestion(
       @Validated @RequestBody final QuestionInitialRequestDto questionInitialRequestDto) {
     final QuestionInitialResponseDto questionInitialResponseDto =
         questionService.getInitialQuestion(questionInitialRequestDto);
-    return ResponseEntity.status(HttpStatus.OK).body(questionInitialResponseDto);
+    return ResponseEntity.status(HttpStatus.OK).body(DvApiResponse.of(questionInitialResponseDto));
   }
 }
