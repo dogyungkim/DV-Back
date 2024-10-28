@@ -15,20 +15,41 @@ public class CommonConstants {
     COMPLETED // 피드백 완료 상태
   }
 
+  @Getter
   public enum InterviewType {
-    TECHNICAL, // 기술 면접
-    PERSONAL // 인성 면접
+    TECHNICAL("technical"), // 기술 면접
+    PERSONAL("personal"); // 인성 면접
+
+    private final String pythonFormat;
+
+    InterviewType(String pythonFormat) {
+      this.pythonFormat = pythonFormat;
+    }
   }
 
+  @Getter
   public enum InterviewMode {
-    REAL, // 실전 면접 모드
-    PRACTICE // 일반/모의 면접 모드
+    REAL("real"), // 실전 면접 모드
+    GENERAL("general"); // 일반/모의 면접 모드
+
+    private final String pythonFormat;
+
+    InterviewMode(String pythonFormat) {
+      this.pythonFormat = pythonFormat;
+    }
   }
 
+  @Getter
   public enum InterviewMethod {
-    CHAT, // 채팅 면접
-    VOICE, // 음성 면접
-    VIDEO // 영상 면접
+    CHAT("chat"), // 채팅 면접
+    VOICE("voice"), // 음성 면접
+    VIDEO("video"); // 영상 면접
+
+    private final String pythonFormat;
+
+    InterviewMethod(String pythonFormat) {
+      this.pythonFormat = pythonFormat;
+    }
   }
 
   @AllArgsConstructor

@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import org.richardstallman.dvback.domain.question.entity.QuestionEntity;
 import org.richardstallman.dvback.global.entity.BaseEntity;
 
 @Entity

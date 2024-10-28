@@ -102,7 +102,7 @@ public class InterviewControllerTest {
                     .description("면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"),
                 fieldWithPath("interviewMode")
                     .type(JsonFieldType.STRING)
-                    .description("면접 모드: REAL(실전 면접 모드), PRACTICE(일반/모의 면접 모드)"),
+                    .description("면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"),
                 fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자")),
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
@@ -120,7 +120,7 @@ public class InterviewControllerTest {
                     .description("면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"),
                 fieldWithPath("data.interviewMode")
                     .type(JsonFieldType.STRING)
-                    .description("면접 모드: REAL(실전 면접 모드), PRACTICE(일반/모의 면접 모드)"),
+                    .description("면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"),
                 fieldWithPath("data.job.jobId").type(JsonFieldType.NUMBER).description("직무 식별자"),
                 fieldWithPath("data.job.jobName")
                     .type(JsonFieldType.STRING)

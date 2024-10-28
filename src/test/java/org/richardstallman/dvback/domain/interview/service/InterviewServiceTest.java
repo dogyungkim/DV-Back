@@ -39,7 +39,7 @@ public class InterviewServiceTest {
 
     InterviewType interviewType = InterviewType.PERSONAL;
     InterviewMethod interviewMethod = InterviewMethod.CHAT;
-    InterviewMode interviewMode = InterviewMode.PRACTICE;
+    InterviewMode interviewMode = InterviewMode.GENERAL;
     JobDomain jobDomain =
         JobDomain.builder().jobId(1L).jobName("BACK_END").jobDescription("백엔드 직무입니다.").build();
 
