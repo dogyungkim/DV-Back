@@ -6,5 +6,5 @@ import org.richardstallman.dvback.domain.interview.domain.response.InterviewCrea
 public record QuestionInitialResponseDto(
     @NotNull InterviewCreateResponseDto interview,
     @NotNull String questionText,
-    @NotNull Long nextQuestionId,
+    Long nextQuestionId,
     @NotNull Boolean hasNext) {}

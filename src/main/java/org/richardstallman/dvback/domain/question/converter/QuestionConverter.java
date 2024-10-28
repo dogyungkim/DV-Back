@@ -67,14 +67,14 @@ public class QuestionConverter {
   }
 
   public QuestionInitialResponseDto fromQuestionExternalDomainToQuestionInitialResponseDto(
-      QuestionExternalDomain questionExternalDomain,
+      QuestionDomain firstQuestionDomain,
       InterviewCreateResponseDto interviewCreateResponseDto,
-      QuestionDomain questionDomain,
+      QuestionDomain secondQuestionDomain,
       Boolean hasNext) {
     return new QuestionInitialResponseDto(
         interviewCreateResponseDto,
-        questionExternalDomain.getQuestionText(),
-        questionDomain.getQuestionId(),
+        firstQuestionDomain.getQuestionText(),
+        secondQuestionDomain.getQuestionId(),
         hasNext);
   }
 }

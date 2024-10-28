@@ -53,13 +53,17 @@ public class QuestionServiceImpl implements QuestionService {
     List<QuestionExternalDomain> createdQuestions = questionResponse.questions();
     boolean hasNext = createdQuestions.size() > 1;
 
-    getCreatedQuestionDomain(questionInitialRequestDto, createdQuestions.get(0), jobDomain);
-
+    QuestionDomain firstQuestion =
+        getCreatedQuestionDomain(questionInitialRequestDto, createdQuestions.get(0), jobDomain);
     QuestionDomain nextQuestion =
-        (createdQuestions.size() == 2)
+        createdQuestions.size() > 1
             ? getCreatedQuestionDomain(
                 questionInitialRequestDto, createdQuestions.get(1), jobDomain)
             : null;
+
+    for (int i = 2; i < createdQuestions.size(); i++) {
+      getCreatedQuestionDomain(questionInitialRequestDto, createdQuestions.get(i), jobDomain);
+    }
 
     InterviewCreateResponseDto interviewCreateResponseDto =
         interviewConverter.fromDomainToDto(
@@ -67,7 +71,7 @@ public class QuestionServiceImpl implements QuestionService {
                 questionInitialRequestDto, jobDomain));
 
     return questionConverter.fromQuestionExternalDomainToQuestionInitialResponseDto(
-        createdQuestions.get(0), interviewCreateResponseDto, nextQuestion, hasNext);
+        firstQuestion, interviewCreateResponseDto, nextQuestion, hasNext);
   }
 
   private QuestionDomain getCreatedQuestionDomain(
