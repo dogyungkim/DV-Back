@@ -14,3 +14,7 @@ spring:
     static-path-pattern: /static/**
   config:
     import: classpath:/properties/prod/initial_data.yml, optional:file:.env[.properties]
+
+python:
+  server:
+    url: ${PYTHON_SERVER_URL}

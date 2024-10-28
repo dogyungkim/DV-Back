@@ -51,6 +51,9 @@ public class QuestionConverter {
     return QuestionDomain.builder()
         .interviewDomain(interviewDomain)
         .questionText(questionExternalDomain.getQuestionText())
+        .keyTerms(questionExternalDomain.getKeyTerms())
+        .questionIntent(questionExternalDomain.getQuestionIntent())
+        .modelAnswer(questionExternalDomain.getModelAnswer())
         .build();
   }
 
@@ -74,7 +77,7 @@ public class QuestionConverter {
     return new QuestionInitialResponseDto(
         interviewCreateResponseDto,
         firstQuestionDomain.getQuestionText(),
-        secondQuestionDomain.getQuestionId(),
+        secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionId(),
         hasNext);
   }
 }

@@ -9,13 +9,13 @@
 
 ==== 요청
 
-include::{snippets}/면접 정보 입력 - 면접 저장/http-request.adoc[]
-include::{snippets}/면접 정보 입력 - 면접 저장/request-fields.adoc[]
+include::{snippets}/면접 정보 입력 - 면접 저장 성공/http-request.adoc[]
+include::{snippets}/면접 정보 입력 - 면접 저장 성공/request-fields.adoc[]
 
 ==== 응답
 
-include::{snippets}/면접 정보 입력 - 면접 저장/http-response.adoc[]
-include::{snippets}/면접 정보 입력 - 면접 저장/response-fields.adoc[]
+include::{snippets}/면접 정보 입력 - 면접 저장 성공/http-response.adoc[]
+include::{snippets}/면접 정보 입력 - 면접 저장 성공/response-fields.adoc[]
 
 === 면접 정보 입력 - 서버 내부 오류(500 Internal Server Error)
 
