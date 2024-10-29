@@ -1,5 +1,6 @@
-package org.richardstallman.dvback.domain.s3.service;
+package org.richardstallman.dvback.client.s3.service;
 
+import jakarta.annotation.Nullable;
 import java.time.Duration;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +23,16 @@ public class S3ServiceImpl implements S3Service {
   @Value("${cloud.aws.s3.bucket}")
   private String bucketName;
 
+  private final String baseFilePath = "files/";
   private final Duration urlDuration = Duration.ofMinutes(10);
 
   @Override
-  public String createPreSignedURL(String fileName, Map<String, String> metadata) {
+  public String createPreSignedURL(
+      String fileName, Long interviewId, @Nullable Map<String, String> metadata) {
+    String filePathKey = makeS3FilePath(fileName, interviewId);
+
     PutObjectRequest putObjectRequest =
-        PutObjectRequest.builder().bucket(bucketName).key(fileName).build();
+        PutObjectRequest.builder().bucket(bucketName).key(filePathKey).build();
 
     PresignedPutObjectRequest presignedPutObjectRequest =
         s3Presigner.presignPutObject(
@@ -37,14 +42,21 @@ public class S3ServiceImpl implements S3Service {
   }
 
   @Override
-  public String getDownloadURL(String fileName) {
+  public String getDownloadURL(String fileName, Long interviewId) {
+    String filePathKey = makeS3FilePath(fileName, interviewId);
+
     GetObjectRequest getObjectRequest =
-        GetObjectRequest.builder().bucket(bucketName).key(fileName).build();
+        GetObjectRequest.builder().bucket(bucketName).key(filePathKey).build();
 
     PresignedGetObjectRequest presignedGetObjectRequest =
         s3Presigner.presignGetObject(
             builder -> builder.signatureDuration(urlDuration).getObjectRequest(getObjectRequest));
 
     return presignedGetObjectRequest.url().toString();
+  }
+
+  private String makeS3FilePath(String fileName, Long interviewId) {
+    // files/interview번호/파일이름
+    return baseFilePath + interviewId.toString() + fileName;
   }
 }

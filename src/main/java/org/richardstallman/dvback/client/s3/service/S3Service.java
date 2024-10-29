@@ -1,10 +1,12 @@
-package org.richardstallman.dvback.domain.s3.service;
+package org.richardstallman.dvback.client.s3.service;
 
+import jakarta.annotation.Nullable;
 import java.util.Map;
 
 public interface S3Service {
 
-  String createPreSignedURL(String fileName, Map<String, String> metadata);
+  String createPreSignedURL(
+      String fileName, Long interviewId, @Nullable Map<String, String> metadata);
 
-  String getDownloadURL(String fileName);
+  String getDownloadURL(String fileName, Long interviewId);
 }

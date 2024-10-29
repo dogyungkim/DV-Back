@@ -1,4 +1,4 @@
-package org.richardstallman.dvback.domain.s3.config;
+package org.richardstallman.dvback.client.s3.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
