@@ -20,10 +20,12 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMetho
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
+import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
-import org.richardstallman.dvback.domain.question.domain.response.QuestionInitialResponseDto;
+import org.richardstallman.dvback.domain.question.domain.request.QuestionNextRequestDto;
+import org.richardstallman.dvback.domain.question.domain.response.QuestionResponseDto;
 import org.richardstallman.dvback.domain.question.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -63,7 +65,7 @@ public class QuestionControllerTest {
 
     when(questionService.getInitialQuestion(any()))
         .thenReturn(
-            new QuestionInitialResponseDto(
+            new QuestionResponseDto(
                 new InterviewCreateResponseDto(
                     1L,
                     InterviewStatus.FILE_UPLOADED,
@@ -87,18 +89,21 @@ public class QuestionControllerTest {
     // then
     resultActions
         .andExpect(status().isOk())
-        .andExpect(jsonPath("interview.interviewId").value(1))
-        .andExpect(jsonPath("interview.interviewStatus").value("FILE_UPLOADED"))
-        .andExpect(jsonPath("interview.interviewType").value("TECHNICAL"))
-        .andExpect(jsonPath("interview.interviewMethod").value("VIDEO"))
-        .andExpect(jsonPath("interview.interviewMode").value("GENERAL"))
-        .andExpect(jsonPath("interview.job.jobId").value(1L))
-        .andExpect(jsonPath("interview.job.jobName").value("BACK_END"))
-        .andExpect(jsonPath("interview.job.jobDescription").value("백엔드 직무입니다."))
+        .andExpect(jsonPath("code").value(200))
+        .andExpect(jsonPath("message").value("SUCCESS"))
+        .andExpect(jsonPath("data.interview.interviewId").value(1))
+        .andExpect(jsonPath("data.interview.interviewStatus").value("FILE_UPLOADED"))
+        .andExpect(jsonPath("data.interview.interviewType").value("TECHNICAL"))
+        .andExpect(jsonPath("data.interview.interviewMethod").value("VIDEO"))
+        .andExpect(jsonPath("data.interview.interviewMode").value("GENERAL"))
+        .andExpect(jsonPath("data.interview.job.jobId").value(1L))
+        .andExpect(jsonPath("data.interview.job.jobName").value("BACK_END"))
+        .andExpect(jsonPath("data.interview.job.jobDescription").value("백엔드 직무입니다."))
         .andExpect(
-            jsonPath("questionText").value("스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요."))
-        .andExpect(jsonPath("nextQuestionId").value(2L))
-        .andExpect(jsonPath("hasNext").value(true));
+            jsonPath("data.questionText")
+                .value("스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요."))
+        .andExpect(jsonPath("data.nextQuestionId").value(2L))
+        .andExpect(jsonPath("data.hasNext").value(true));
 
     // restdocs
     resultActions.andDo(
@@ -117,32 +122,145 @@ public class QuestionControllerTest {
                     .description("자소서 s3 url"),
                 fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자")),
             responseFields(
-                fieldWithPath("interview.interviewId")
+                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                fieldWithPath("data.interview.interviewId")
                     .type(JsonFieldType.NUMBER)
                     .description("면접 식별자"),
-                fieldWithPath("interview.interviewStatus")
+                fieldWithPath("data.interview.interviewStatus")
                     .type(JsonFieldType.STRING)
                     .description("면접 상태"),
-                fieldWithPath("interview.interviewType")
+                fieldWithPath("data.interview.interviewType")
                     .type(JsonFieldType.STRING)
                     .description("면접 유형"),
-                fieldWithPath("interview.interviewMethod")
+                fieldWithPath("data.interview.interviewMethod")
                     .type(JsonFieldType.STRING)
                     .description("면접 방식"),
-                fieldWithPath("interview.interviewMode")
+                fieldWithPath("data.interview.interviewMode")
                     .type(JsonFieldType.STRING)
                     .description("면접 모드"),
-                fieldWithPath("interview.job.jobId")
+                fieldWithPath("data.interview.job.jobId")
                     .type(JsonFieldType.NUMBER)
                     .description("직무 식별자"),
-                fieldWithPath("interview.job.jobName")
+                fieldWithPath("data.interview.job.jobName")
                     .type(JsonFieldType.STRING)
                     .description("직무 이름"),
-                fieldWithPath("interview.job.jobDescription")
+                fieldWithPath("data.interview.job.jobDescription")
                     .type(JsonFieldType.STRING)
                     .description("직무 설명"),
-                fieldWithPath("questionText").type(JsonFieldType.STRING).description("질문 내용"),
-                fieldWithPath("nextQuestionId").type(JsonFieldType.NUMBER).description("다음 질문 식별자"),
-                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 질문 존재 여부"))));
+                fieldWithPath("data.questionText").type(JsonFieldType.STRING).description("질문 내용"),
+                fieldWithPath("data.nextQuestionId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("다음 질문 식별자"),
+                fieldWithPath("data.hasNext")
+                    .type(JsonFieldType.BOOLEAN)
+                    .description("다음 질문 존재 여부"))));
+  }
+
+  @Test
+  @DisplayName("다음 질문 요청(텍스트 성공) 테스트")
+  void get_next_question_test() throws Exception {
+    // given
+    AnswerPreviousRequestDto answerPreviousRequestDto =
+        new AnswerPreviousRequestDto("답변입니다.", "", "");
+    QuestionNextRequestDto questionNextRequestDto =
+        new QuestionNextRequestDto(1L, 2L, answerPreviousRequestDto);
+    String content = objectMapper.writeValueAsString(questionNextRequestDto);
+
+    when(questionService.getNextQuestion(any()))
+        .thenReturn(
+            new QuestionResponseDto(
+                new InterviewCreateResponseDto(
+                    1L,
+                    InterviewStatus.FILE_UPLOADED,
+                    InterviewType.TECHNICAL,
+                    InterviewMethod.CHAT,
+                    InterviewMode.GENERAL,
+                    JobDomain.builder()
+                        .jobId(1L)
+                        .jobName("BACK_END")
+                        .jobDescription("백엔드 직무입니다.")
+                        .build()),
+                "리액트와 스프링 간의 연동 경험을 설명해 주세요.",
+                3L,
+                true));
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            post("/question/next-question")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("code").value(200))
+        .andExpect(jsonPath("message").value("SUCCESS"))
+        .andExpect(jsonPath("data.interview.interviewId").value(1))
+        .andExpect(jsonPath("data.interview.interviewStatus").value("FILE_UPLOADED"))
+        .andExpect(jsonPath("data.interview.interviewType").value("TECHNICAL"))
+        .andExpect(jsonPath("data.interview.interviewMethod").value("CHAT"))
+        .andExpect(jsonPath("data.interview.interviewMode").value("GENERAL"))
+        .andExpect(jsonPath("data.interview.job.jobId").value(1L))
+        .andExpect(jsonPath("data.interview.job.jobName").value("BACK_END"))
+        .andExpect(jsonPath("data.interview.job.jobDescription").value("백엔드 직무입니다."))
+        .andExpect(jsonPath("data.questionText").value("리액트와 스프링 간의 연동 경험을 설명해 주세요."))
+        .andExpect(jsonPath("data.nextQuestionId").value(3L))
+        .andExpect(jsonPath("data.hasNext").value(true));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "다음 질문 요청(텍스트 성공)",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            requestFields(
+                fieldWithPath("interviewId").type(JsonFieldType.NUMBER).description("면접 식별자"),
+                fieldWithPath("questionId").type(JsonFieldType.NUMBER).description("요청 질문 식별자"),
+                fieldWithPath("answer.s3AudioUrl")
+                    .type(JsonFieldType.STRING)
+                    .description("답변 오디오 s3 저장 url"),
+                fieldWithPath("answer.s3VideoUrl")
+                    .type(JsonFieldType.STRING)
+                    .description("답변 비디오 s3 저장 url"),
+                fieldWithPath("answer.").type(JsonFieldType.STRING).description("답변 유형"),
+                fieldWithPath("answer.answerText")
+                    .type(JsonFieldType.STRING)
+                    .description("이전 질문에 대한 답변")),
+            responseFields(
+                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                fieldWithPath("data.interview.interviewId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("면접 식별자"),
+                fieldWithPath("data.interview.interviewStatus")
+                    .type(JsonFieldType.STRING)
+                    .description("면접 상태"),
+                fieldWithPath("data.interview.interviewType")
+                    .type(JsonFieldType.STRING)
+                    .description("면접 유형"),
+                fieldWithPath("data.interview.interviewMethod")
+                    .type(JsonFieldType.STRING)
+                    .description("면접 방식"),
+                fieldWithPath("data.interview.interviewMode")
+                    .type(JsonFieldType.STRING)
+                    .description("면접 모드"),
+                fieldWithPath("data.interview.job.jobId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("직무 식별자"),
+                fieldWithPath("data.interview.job.jobName")
+                    .type(JsonFieldType.STRING)
+                    .description("직무 이름"),
+                fieldWithPath("data.interview.job.jobDescription")
+                    .type(JsonFieldType.STRING)
+                    .description("직무 설명"),
+                fieldWithPath("data.questionText").type(JsonFieldType.STRING).description("질문 내용"),
+                fieldWithPath("data.nextQuestionId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("다음 질문 식별자"),
+                fieldWithPath("data.hasNext")
+                    .type(JsonFieldType.BOOLEAN)
+                    .description("다음 질문 존재 여부"))));
   }
 }

@@ -74,3 +74,15 @@ include::{snippets}/질문 생성 - 최초 요청(모의 면접 성공)/request-
 
 include::{snippets}/질문 생성 - 최초 요청(모의 면접 성공)/http-response.adoc[]
 include::{snippets}/질문 생성 - 최초 요청(모의 면접 성공)/response-fields.adoc[]
+
+=== 다음 질문 요청(텍스트 성공)
+
+==== 요청
+
+include::{snippets}/다음 질문 요청(텍스트 성공)/http-request.adoc[]
+include::{snippets}/다음 질문 요청(텍스트 성공)/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/다음 질문 요청(텍스트 성공)/http-response.adoc[]
+include::{snippets}/다음 질문 요청(텍스트 성공)/response-fields.adoc[]

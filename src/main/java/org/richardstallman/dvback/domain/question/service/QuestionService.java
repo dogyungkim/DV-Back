@@ -1,10 +1,12 @@
 package org.richardstallman.dvback.domain.question.service;
 
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
-import org.richardstallman.dvback.domain.question.domain.response.QuestionInitialResponseDto;
+import org.richardstallman.dvback.domain.question.domain.request.QuestionNextRequestDto;
+import org.richardstallman.dvback.domain.question.domain.response.QuestionResponseDto;
 
 public interface QuestionService {
 
-  QuestionInitialResponseDto getInitialQuestion(
-      QuestionInitialRequestDto questionInitialRequestDto);
+  QuestionResponseDto getInitialQuestion(QuestionInitialRequestDto questionInitialRequestDto);
+
+  QuestionResponseDto getNextQuestion(QuestionNextRequestDto questionNextRequestDto);
 }
