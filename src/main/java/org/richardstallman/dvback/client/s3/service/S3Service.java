@@ -1,4 +1,4 @@
-package org.richardstallman.dvback.domain.s3;
+package org.richardstallman.dvback.domain.s3.service;
 
 import java.util.Map;
 
