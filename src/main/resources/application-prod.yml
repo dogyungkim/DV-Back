@@ -23,6 +23,8 @@ cloud:
   aws:
     s3:
       bucket: ktb-8-dev-bucket
+      urlDurationMinutes: 10
+      baseFilePath: files/
     credentials:
       access-key: ${ACCESS_KEY}
       secret-key: ${SECRET_KEY}

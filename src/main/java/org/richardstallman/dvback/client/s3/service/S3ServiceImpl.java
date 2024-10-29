@@ -23,8 +23,11 @@ public class S3ServiceImpl implements S3Service {
   @Value("${cloud.aws.s3.bucket}")
   private String bucketName;
 
-  private final String baseFilePath = "files/";
-  private final Duration urlDuration = Duration.ofMinutes(10);
+  @Value("${cloud.aws.s3.baseFilePath}")
+  private String baseFilePath;
+
+  @Value("${cloud.aws.s3.urlDurationMinutes}")
+  private long urlDurationMinutes;
 
   @Override
   public String createPreSignedURL(
@@ -36,7 +39,10 @@ public class S3ServiceImpl implements S3Service {
 
     PresignedPutObjectRequest presignedPutObjectRequest =
         s3Presigner.presignPutObject(
-            builder -> builder.signatureDuration(urlDuration).putObjectRequest(putObjectRequest));
+            builder ->
+                builder
+                    .signatureDuration(Duration.ofMinutes(urlDurationMinutes))
+                    .putObjectRequest(putObjectRequest));
 
     return presignedPutObjectRequest.url().toString();
   }
@@ -50,13 +56,16 @@ public class S3ServiceImpl implements S3Service {
 
     PresignedGetObjectRequest presignedGetObjectRequest =
         s3Presigner.presignGetObject(
-            builder -> builder.signatureDuration(urlDuration).getObjectRequest(getObjectRequest));
+            builder ->
+                builder
+                    .signatureDuration(Duration.ofMinutes(urlDurationMinutes))
+                    .getObjectRequest(getObjectRequest));
 
     return presignedGetObjectRequest.url().toString();
   }
 
   private String makeS3FilePath(String fileName, Long interviewId) {
     // files/interview번호/파일이름
-    return baseFilePath + interviewId.toString() + fileName;
+    return String.format("%s/%s/%s", baseFilePath, interviewId, fileName);
   }
 }
