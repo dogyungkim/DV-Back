@@ -224,7 +224,6 @@ public class QuestionControllerTest {
                 fieldWithPath("answer.s3VideoUrl")
                     .type(JsonFieldType.STRING)
                     .description("답변 비디오 s3 저장 url"),
-                fieldWithPath("answer.").type(JsonFieldType.STRING).description("답변 유형"),
                 fieldWithPath("answer.answerText")
                     .type(JsonFieldType.STRING)
                     .description("이전 질문에 대한 답변")),
