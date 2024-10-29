@@ -18,3 +18,11 @@ spring:
 python:
   server:
     url: ${PYTHON_SERVER_URL}
+
+cloud:
+  aws:
+    s3:
+      bucket: ktb-8-dev-bucket
+    credentials:
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_KEY}
