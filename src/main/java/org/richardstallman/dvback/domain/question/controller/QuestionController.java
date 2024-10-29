@@ -3,9 +3,9 @@ package org.richardstallman.dvback.domain.question.controller;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.DvApiResponse;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
-import org.richardstallman.dvback.domain.question.domain.response.QuestionInitialResponseDto;
+import org.richardstallman.dvback.domain.question.domain.request.QuestionNextRequestDto;
+import org.richardstallman.dvback.domain.question.domain.response.QuestionResponseDto;
 import org.richardstallman.dvback.domain.question.service.QuestionService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,10 +21,18 @@ public class QuestionController {
   private final QuestionService questionService;
 
   @PostMapping("/initial-question")
-  public ResponseEntity<DvApiResponse<QuestionInitialResponseDto>> getInitialQuestion(
+  public ResponseEntity<DvApiResponse<QuestionResponseDto>> getInitialQuestion(
       @Validated @RequestBody final QuestionInitialRequestDto questionInitialRequestDto) {
-    final QuestionInitialResponseDto questionInitialResponseDto =
+    final QuestionResponseDto questionResponseDto =
         questionService.getInitialQuestion(questionInitialRequestDto);
-    return ResponseEntity.status(HttpStatus.OK).body(DvApiResponse.of(questionInitialResponseDto));
+    return ResponseEntity.ok(DvApiResponse.of(questionResponseDto));
+  }
+
+  @PostMapping("/next-question")
+  public ResponseEntity<DvApiResponse<QuestionResponseDto>> getNextQuestion(
+      @Validated @RequestBody final QuestionNextRequestDto questionNextRequestDto) {
+    final QuestionResponseDto questionResponseDto =
+        questionService.getNextQuestion(questionNextRequestDto);
+    return ResponseEntity.ok(DvApiResponse.of(questionResponseDto));
   }
 }

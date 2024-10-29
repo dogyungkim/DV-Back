@@ -21,7 +21,9 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
   @Override
   public List<QuestionDomain> findQuestionsByInterviewId(Long interviewId) {
-    return questionJpaRepository.findByInterviewInterviewId(interviewId).stream()
+    return questionJpaRepository
+        .findByInterviewInterviewIdOrderByQuestionIdAsc(interviewId)
+        .stream()
         .map(questionConverter::fromEntityToDomain)
         .toList();
   }

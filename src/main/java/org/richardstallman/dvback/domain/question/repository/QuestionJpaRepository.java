@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface QuestionJpaRepository extends JpaRepository<QuestionEntity, Long> {
 
-  List<QuestionEntity> findByInterviewInterviewId(Long interviewId);
+  List<QuestionEntity> findByInterviewInterviewIdOrderByQuestionIdAsc(Long interviewId);
 }
