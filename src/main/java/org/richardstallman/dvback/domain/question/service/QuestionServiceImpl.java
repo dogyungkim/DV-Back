@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.client.python.PythonService;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
@@ -19,17 +20,21 @@ import org.richardstallman.dvback.domain.question.domain.request.QuestionInitial
 import org.richardstallman.dvback.domain.question.domain.response.QuestionInitialResponseDto;
 import org.richardstallman.dvback.domain.question.repository.QuestionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
   private final JobService jobService;
+  private final PythonService pythonService;
   private final InterviewConverter interviewConverter;
   private final QuestionConverter questionConverter;
   private final QuestionRepository questionRepository;
 
   @Override
+  @Transactional(propagation = Propagation.REQUIRED)
   public QuestionInitialResponseDto getInitialQuestion(
       QuestionInitialRequestDto questionInitialRequestDto) {
 
@@ -44,19 +49,20 @@ public class QuestionServiceImpl implements QuestionService {
             questionInitialRequestDto, jobDomain.getJobName());
 
     QuestionExternalResponseDto questionResponse =
-        requestInitialQuestionFromPythonServer(questionExternalRequestDto);
-    if (questionResponse == null || questionResponse.questions().isEmpty()) {
+        pythonService.getInterviewQuestions(questionExternalRequestDto);
+
+    if (questionResponse == null || questionResponse.getQuestions().isEmpty()) {
       throw new IllegalStateException(
           "Python server returned an empty question list for job: " + jobDomain.getJobName());
     }
 
-    List<QuestionExternalDomain> createdQuestions = questionResponse.questions();
+    List<QuestionExternalDomain> createdQuestions = questionResponse.getQuestions();
     boolean hasNext = createdQuestions.size() > 1;
 
     QuestionDomain firstQuestion =
         getCreatedQuestionDomain(questionInitialRequestDto, createdQuestions.get(0), jobDomain);
     QuestionDomain nextQuestion =
-        createdQuestions.size() > 1
+        hasNext
             ? getCreatedQuestionDomain(
                 questionInitialRequestDto, createdQuestions.get(1), jobDomain)
             : null;
@@ -83,12 +89,6 @@ public class QuestionServiceImpl implements QuestionService {
             questionExternalDomain,
             interviewConverter.fromInterviewInitialQuestionRequestDtoToDomain(
                 questionInitialRequestDto, jobDomain)));
-  }
-
-  private QuestionExternalResponseDto requestInitialQuestionFromPythonServer(
-      QuestionExternalRequestDto questionExternalRequestDto) {
-    // 파이썬 면접 질문 목록 요청 로직 - 질문 생성 task 시 작성 예정
-    return null;
   }
 
   private Optional<QuestionDomain> getNextQuestion(Long interviewId, Long currentQuestionId) {
