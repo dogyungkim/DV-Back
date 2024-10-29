@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.client.python.PythonService;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
@@ -18,30 +19,19 @@ import org.richardstallman.dvback.domain.question.domain.external.response.Quest
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
 import org.richardstallman.dvback.domain.question.domain.response.QuestionInitialResponseDto;
 import org.richardstallman.dvback.domain.question.repository.QuestionRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
   private final JobService jobService;
+  private final PythonService pythonService;
   private final InterviewConverter interviewConverter;
   private final QuestionConverter questionConverter;
   private final QuestionRepository questionRepository;
-
-  private final RestTemplate restTemplate = new RestTemplate();
-
-  @Value("${python.server.url}")
-  private String pythonServerUrl;
 
   @Override
   @Transactional(propagation = Propagation.REQUIRED)
@@ -59,7 +49,8 @@ public class QuestionServiceImpl implements QuestionService {
             questionInitialRequestDto, jobDomain.getJobName());
 
     QuestionExternalResponseDto questionResponse =
-        requestInitialQuestionFromPythonServer(questionExternalRequestDto);
+        pythonService.getInterviewQuestions(questionExternalRequestDto);
+
     if (questionResponse == null || questionResponse.getQuestions().isEmpty()) {
       throw new IllegalStateException(
           "Python server returned an empty question list for job: " + jobDomain.getJobName());
@@ -98,28 +89,6 @@ public class QuestionServiceImpl implements QuestionService {
             questionExternalDomain,
             interviewConverter.fromInterviewInitialQuestionRequestDtoToDomain(
                 questionInitialRequestDto, jobDomain)));
-  }
-
-  public QuestionExternalResponseDto requestInitialQuestionFromPythonServer(
-      QuestionExternalRequestDto questionExternalRequestDto) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-
-    HttpEntity<QuestionExternalRequestDto> requestEntity =
-        new HttpEntity<>(questionExternalRequestDto, headers);
-
-    ResponseEntity<QuestionExternalResponseDto> response =
-        restTemplate.exchange(
-            pythonServerUrl + "/interview/questions",
-            HttpMethod.POST,
-            requestEntity,
-            QuestionExternalResponseDto.class);
-
-    if (response.getStatusCode().is2xxSuccessful()) {
-      return response.getBody();
-    } else {
-      throw new IllegalStateException("Failed to fetch questions from Python server");
-    }
   }
 
   private Optional<QuestionDomain> getNextQuestion(Long interviewId, Long currentQuestionId) {
