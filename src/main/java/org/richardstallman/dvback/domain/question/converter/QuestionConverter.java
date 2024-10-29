@@ -9,7 +9,7 @@ import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
 import org.richardstallman.dvback.domain.question.domain.external.QuestionExternalDomain;
 import org.richardstallman.dvback.domain.question.domain.external.request.QuestionExternalRequestDto;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
-import org.richardstallman.dvback.domain.question.domain.response.QuestionInitialResponseDto;
+import org.richardstallman.dvback.domain.question.domain.response.QuestionResponseDto;
 import org.richardstallman.dvback.domain.question.entity.QuestionEntity;
 import org.springframework.stereotype.Component;
 
@@ -69,12 +69,12 @@ public class QuestionConverter {
         jobName);
   }
 
-  public QuestionInitialResponseDto fromQuestionExternalDomainToQuestionInitialResponseDto(
+  public QuestionResponseDto fromQuestionExternalDomainToQuestionResponseDto(
       QuestionDomain firstQuestionDomain,
       InterviewCreateResponseDto interviewCreateResponseDto,
       QuestionDomain secondQuestionDomain,
       Boolean hasNext) {
-    return new QuestionInitialResponseDto(
+    return new QuestionResponseDto(
         interviewCreateResponseDto,
         firstQuestionDomain.getQuestionText(),
         secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionId(),

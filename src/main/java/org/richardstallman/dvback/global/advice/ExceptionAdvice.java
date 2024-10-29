@@ -3,6 +3,7 @@ package org.richardstallman.dvback.global.advice;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
 import org.richardstallman.dvback.common.constant.CommonConstants;
@@ -41,13 +42,12 @@ public class ExceptionAdvice {
   @ExceptionHandler(Exception.class)
   @ResponseStatus(INTERNAL_SERVER_ERROR)
   public ResponseEntity<?> handleException(Exception ex) {
-    log.error("An exception has occurred : ({})", ex.getMessage());
+    String stackTrace = Arrays.toString(ex.getStackTrace());
+    log.error("An exception has occurred : ({})", ex.getMessage() + "\n" + stackTrace);
     return ResponseEntity.status(INTERNAL_SERVER_ERROR)
         .body(
             DvApiResponse.of(
-                CommonConstants.ResponseCode.INTERNAL_SERVER_ERROR,
-                INTERNAL_SERVER_ERROR.toString(),
-                ex.getMessage()));
+                ResponseCode.INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR.name(), ex.getMessage()));
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
