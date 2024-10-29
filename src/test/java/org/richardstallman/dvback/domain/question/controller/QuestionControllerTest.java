@@ -162,7 +162,7 @@ public class QuestionControllerTest {
   void get_next_question_test() throws Exception {
     // given
     AnswerPreviousRequestDto answerPreviousRequestDto =
-        new AnswerPreviousRequestDto("답변입니다.", "", "", "");
+        new AnswerPreviousRequestDto("답변입니다.", "", "");
     QuestionNextRequestDto questionNextRequestDto =
         new QuestionNextRequestDto(1L, 2L, answerPreviousRequestDto);
     String content = objectMapper.writeValueAsString(questionNextRequestDto);
@@ -224,7 +224,7 @@ public class QuestionControllerTest {
                 fieldWithPath("answer.s3VideoUrl")
                     .type(JsonFieldType.STRING)
                     .description("답변 비디오 s3 저장 url"),
-                fieldWithPath("answer.answerType").type(JsonFieldType.STRING).description("답변 유형"),
+                fieldWithPath("answer.").type(JsonFieldType.STRING).description("답변 유형"),
                 fieldWithPath("answer.answerText")
                     .type(JsonFieldType.STRING)
                     .description("이전 질문에 대한 답변")),

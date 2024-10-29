@@ -70,7 +70,7 @@ public class QuestionServiceImpl implements QuestionService {
     QuestionDomain nextQuestion =
         hasNext
             ? getCreatedQuestionDomain(
-            questionInitialRequestDto, createdQuestions.get(1), jobDomain)
+                questionInitialRequestDto, createdQuestions.get(1), jobDomain)
             : null;
 
     createdQuestions.stream()

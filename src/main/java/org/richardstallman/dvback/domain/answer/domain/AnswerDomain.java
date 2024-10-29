@@ -13,5 +13,4 @@ public class AnswerDomain {
   private String answerText;
   private String s3AudioUrl;
   private String s3VideoUrl;
-  private String answerType;
 }

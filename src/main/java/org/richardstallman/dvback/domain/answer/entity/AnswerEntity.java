@@ -38,5 +38,4 @@ public class AnswerEntity extends BaseEntity {
 
   private String s3AudioUrl;
   private String s3VideoUrl;
-  private String answerType;
 }

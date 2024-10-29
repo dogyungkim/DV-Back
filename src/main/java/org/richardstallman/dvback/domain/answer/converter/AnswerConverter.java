@@ -20,8 +20,7 @@ public class AnswerConverter {
         questionConverter.fromDomainToEntity(answerDomain.getQuestionDomain()),
         answerDomain.getAnswerText(),
         answerDomain.getS3AudioUrl(),
-        answerDomain.getS3VideoUrl(),
-        answerDomain.getAnswerType());
+        answerDomain.getS3VideoUrl());
   }
 
   public AnswerDomain fromEntityToDomain(AnswerEntity answerEntity) {
@@ -31,7 +30,6 @@ public class AnswerConverter {
         .answerText(answerEntity.getAnswerText())
         .s3AudioUrl(answerEntity.getS3AudioUrl())
         .s3VideoUrl(answerEntity.getS3VideoUrl())
-        .answerType(answerEntity.getAnswerType())
         .build();
   }
 
@@ -42,7 +40,6 @@ public class AnswerConverter {
         .answerText(answerPreviousRequestDto.answerText())
         .s3AudioUrl(answerPreviousRequestDto.s3AudioUrl())
         .s3VideoUrl(questionDomain.getS3VideoUrl())
-        .answerType(answerPreviousRequestDto.answerType())
         .build();
   }
 }
