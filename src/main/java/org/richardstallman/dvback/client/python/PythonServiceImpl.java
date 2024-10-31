@@ -25,6 +25,12 @@ public class PythonServiceImpl implements PythonService {
   @Value("${python.server.url}")
   private String pythonServerUrl;
 
+  @Value("${python.server.question-path}")
+  private String pythonServerQuestionPath;
+
+  @Value("${python.server.evaluation-path}")
+  private String pythonServerEvaluationPath;
+
   @Override
   public QuestionExternalResponseDto getInterviewQuestions(QuestionExternalRequestDto requestDto) {
     HttpHeaders headers = new HttpHeaders();
@@ -34,7 +40,7 @@ public class PythonServiceImpl implements PythonService {
 
     URI uri =
         UriComponentsBuilder.fromUriString(pythonServerUrl)
-            .path("/interview/questions")
+            .path(pythonServerQuestionPath)
             .build()
             .toUri();
 
@@ -59,7 +65,7 @@ public class PythonServiceImpl implements PythonService {
 
     URI uri =
         UriComponentsBuilder.fromUriString(pythonServerUrl)
-            .path("/interview/evaluation")
+            .path(pythonServerEvaluationPath)
             .build()
             .toUri();
 

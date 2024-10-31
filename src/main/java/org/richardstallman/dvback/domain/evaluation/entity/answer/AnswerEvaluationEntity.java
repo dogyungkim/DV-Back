@@ -21,7 +21,7 @@ import org.richardstallman.dvback.global.entity.BaseEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ansewr_evaluations")
+@Table(name = "answer_evaluations")
 public class AnswerEvaluationEntity extends BaseEntity {
 
   @Id
@@ -37,10 +37,10 @@ public class AnswerEvaluationEntity extends BaseEntity {
   @JoinColumn(name = "question_id", nullable = false)
   private QuestionEntity question;
 
-  @JoinColumn(name = "answer_feedback_text", nullable = false)
+  @Column(name = "answer_feedback_text", nullable = false)
   private String answerFeedbackText;
 
-  @JoinColumn(name = "score", nullable = false)
+  @Column(name = "score", nullable = false)
   private int score;
 
   @ManyToOne(fetch = FetchType.EAGER)
