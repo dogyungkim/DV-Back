@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.client.s3.service;
 
 import jakarta.annotation.Nullable;
+import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequ
 @RequiredArgsConstructor
 public class S3ServiceImpl implements S3Service {
 
-  @Autowired
-  private final S3Presigner s3Presigner;
+  @Autowired private final S3Presigner s3Presigner;
 
   @Value("${cloud.aws.s3.bucket}")
   private String bucketName;
@@ -28,6 +28,13 @@ public class S3ServiceImpl implements S3Service {
 
   @Value("${cloud.aws.s3.urlDurationMinutes}")
   private long urlDurationMinutes;
+
+  private Duration urlDuration;
+
+  @PostConstruct
+  private void init() {
+    this.urlDuration = Duration.ofMinutes(urlDurationMinutes);
+  }
 
   @Override
   public String createPreSignedURL(
@@ -39,10 +46,7 @@ public class S3ServiceImpl implements S3Service {
 
     PresignedPutObjectRequest presignedPutObjectRequest =
         s3Presigner.presignPutObject(
-            builder ->
-                builder
-                    .signatureDuration(Duration.ofMinutes(urlDurationMinutes))
-                    .putObjectRequest(putObjectRequest));
+            builder -> builder.signatureDuration(urlDuration).putObjectRequest(putObjectRequest));
 
     return presignedPutObjectRequest.url().toString();
   }
@@ -56,10 +60,7 @@ public class S3ServiceImpl implements S3Service {
 
     PresignedGetObjectRequest presignedGetObjectRequest =
         s3Presigner.presignGetObject(
-            builder ->
-                builder
-                    .signatureDuration(Duration.ofMinutes(urlDurationMinutes))
-                    .getObjectRequest(getObjectRequest));
+            builder -> builder.signatureDuration(urlDuration).getObjectRequest(getObjectRequest));
 
     return presignedGetObjectRequest.url().toString();
   }

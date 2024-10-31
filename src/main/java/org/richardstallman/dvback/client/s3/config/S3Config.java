@@ -14,21 +14,21 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 public class S3Config {
   @Value("${cloud.aws.credentials.access-key}")
   private String accessKey;
+
   @Value("${cloud.aws.credentials.secret-key}")
   private String secretKey;
 
   @Bean
   public AwsCredentialsProvider awsCredentialsProvider() {
-    AwsCredentials awsCredentials = AwsBasicCredentials.create(accessKey,secretKey);
+    AwsCredentials awsCredentials = AwsBasicCredentials.create(accessKey, secretKey);
     return StaticCredentialsProvider.create(awsCredentials);
   }
 
   @Bean
   public S3Presigner s3Presigner() {
     return S3Presigner.builder()
-            .region(Region.AP_NORTHEAST_2)
-            .credentialsProvider(awsCredentialsProvider())
-            .build();
-
+        .region(Region.AP_NORTHEAST_2)
+        .credentialsProvider(awsCredentialsProvider())
+        .build();
   }
 }
