@@ -1,5 +1,6 @@
 package org.richardstallman.dvback.common.constant;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,40 +17,31 @@ public class CommonConstants {
   }
 
   @Getter
+  @AllArgsConstructor
   public enum InterviewType {
     TECHNICAL("technical"), // 기술 면접
     PERSONAL("personal"); // 인성 면접
 
     private final String pythonFormat;
-
-    InterviewType(String pythonFormat) {
-      this.pythonFormat = pythonFormat;
-    }
   }
 
   @Getter
+  @AllArgsConstructor
   public enum InterviewMode {
     REAL("real"), // 실전 면접 모드
     GENERAL("general"); // 일반/모의 면접 모드
 
     private final String pythonFormat;
-
-    InterviewMode(String pythonFormat) {
-      this.pythonFormat = pythonFormat;
-    }
   }
 
   @Getter
+  @AllArgsConstructor
   public enum InterviewMethod {
     CHAT("chat"), // 채팅 면접
     VOICE("voice"), // 음성 면접
     VIDEO("video"); // 영상 면접
 
     private final String pythonFormat;
-
-    InterviewMethod(String pythonFormat) {
-      this.pythonFormat = pythonFormat;
-    }
   }
 
   @AllArgsConstructor
@@ -63,5 +55,18 @@ public class CommonConstants {
 
     private final int code;
     private final String message;
+  }
+
+  @Getter
+  @AllArgsConstructor
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  public enum EvaluationCriteria {
+    ANSWER("answer"),
+    DEVELOPMENT_SKILL("development_skill"),
+    GROWTH_POTENTIAL("growth_potential"),
+    TECHNICAL_DEPTH("technical_depth"),
+    WORK_ATTITUDE("work_attitude");
+
+    private final String pythonFormat;
   }
 }

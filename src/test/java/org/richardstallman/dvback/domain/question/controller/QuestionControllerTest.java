@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.richardstallman.dvback.DvBackApplication;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
@@ -34,12 +35,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 @SpringBootTest
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
+@ContextConfiguration(classes = {DvBackApplication.class})
 public class QuestionControllerTest {
 
   @Autowired MockMvc mockMvc;

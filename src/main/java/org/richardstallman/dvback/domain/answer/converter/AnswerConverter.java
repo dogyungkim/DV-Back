@@ -23,6 +23,14 @@ public class AnswerConverter {
         answerDomain.getS3VideoUrl());
   }
 
+  public AnswerEntity fromDomainToEntityWhenCreate(AnswerDomain answerDomain) {
+    return new AnswerEntity(
+        questionConverter.fromDomainToEntity(answerDomain.getQuestionDomain()),
+        answerDomain.getAnswerText(),
+        answerDomain.getS3AudioUrl(),
+        answerDomain.getS3VideoUrl());
+  }
+
   public AnswerDomain fromEntityToDomain(AnswerEntity answerEntity) {
     return AnswerDomain.builder()
         .answerId(answerEntity.getAnswerId())
@@ -39,7 +47,7 @@ public class AnswerConverter {
         .questionDomain(questionDomain)
         .answerText(answerPreviousRequestDto.answerText())
         .s3AudioUrl(answerPreviousRequestDto.s3AudioUrl())
-        .s3VideoUrl(questionDomain.getS3VideoUrl())
+        .s3VideoUrl(answerPreviousRequestDto.s3VideoUrl())
         .build();
   }
 }
