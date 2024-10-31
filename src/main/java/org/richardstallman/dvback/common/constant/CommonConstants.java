@@ -69,4 +69,9 @@ public class CommonConstants {
 
     private final String pythonFormat;
   }
+
+  public enum PointTransactionType {
+    DEPOSIT, // 적립
+    WITHDRAWAL // 사용
+  }
 }
