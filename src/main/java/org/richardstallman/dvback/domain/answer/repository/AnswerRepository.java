@@ -5,4 +5,6 @@ import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
 public interface AnswerRepository {
 
   AnswerDomain save(AnswerDomain answerDomain);
+
+  AnswerDomain findByQuestionId(Long questionId);
 }

@@ -38,4 +38,13 @@ public class AnswerEntity extends BaseEntity {
 
   private String s3AudioUrl;
   private String s3VideoUrl;
+
+  public AnswerEntity(
+      QuestionEntity question, String answerText, String s3AudioUrl, String s3VideoUrl) {
+    super();
+    this.question = question;
+    this.answerText = answerText;
+    this.s3AudioUrl = s3AudioUrl;
+    this.s3VideoUrl = s3VideoUrl;
+  }
 }
