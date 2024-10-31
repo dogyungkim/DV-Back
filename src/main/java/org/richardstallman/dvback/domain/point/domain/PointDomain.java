@@ -8,6 +8,6 @@ import lombok.Getter;
 public class PointDomain {
 
   private final Long pointId;
-  private Long userId;
+  private final Long userId;
   private int balance;
 }

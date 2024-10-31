@@ -43,11 +43,8 @@ public class PointServiceImpl implements PointService {
   public PointTransactionResponseDto depositPoint(
       PointTransactionRequestDto pointTransactionRequestDto) {
     if (pointTransactionRequestDto.pointTransactionType() != PointTransactionType.DEPOSIT) {
-      throw new ApiException(
-          HttpStatus.BAD_REQUEST,
-          "Point Transaction Type should be DEPOSIT but : ("
-              + pointTransactionRequestDto.pointTransactionType()
-              + ")");
+      validateTransactionType(
+          pointTransactionRequestDto.pointTransactionType(), PointTransactionType.DEPOSIT);
     }
 
     PointTransactionDomain pointTransactionDomain =
@@ -68,14 +65,11 @@ public class PointServiceImpl implements PointService {
   public PointTransactionResponseDto withdrawPoint(
       PointTransactionRequestDto pointTransactionRequestDto) {
     if (pointTransactionRequestDto.pointTransactionType() != PointTransactionType.WITHDRAWAL) {
-      throw new ApiException(
-          HttpStatus.BAD_REQUEST,
-          "Point Transaction Type should be WITHDRAWAL but : ("
-              + pointTransactionRequestDto.pointTransactionType()
-              + ")");
+      validateTransactionType(
+          pointTransactionRequestDto.pointTransactionType(), PointTransactionType.WITHDRAWAL);
     }
     PointDomain pointDomain = getUserPoint(pointTransactionRequestDto.userId());
-    if (pointTransactionRequestDto.amount() < pointDomain.getBalance()) {
+    if (pointTransactionRequestDto.amount() > pointDomain.getBalance()) {
       throw new IllegalArgumentException(
           "Amount less than balance. user id : ("
               + pointTransactionRequestDto.userId()
@@ -95,5 +89,13 @@ public class PointServiceImpl implements PointService {
                 pointTransactionRequestDto.amount() * -1));
 
     return pointTransactionConverter.fromDomainToResponseDto(pointTransactionDomain, pointDomain);
+  }
+
+  private void validateTransactionType(PointTransactionType actual, PointTransactionType expected) {
+    if (actual != expected) {
+      throw new ApiException(
+          HttpStatus.BAD_REQUEST,
+          "Invalid transaction type: expected (" + expected + ") but got (" + actual + ")");
+    }
   }
 }

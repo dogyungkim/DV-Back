@@ -32,11 +32,9 @@ import org.springframework.test.web.servlet.ResultActions;
 @AutoConfigureMockMvc
 public class PointControllerTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @MockBean
-  private PointService pointService;
+  @MockBean private PointService pointService;
 
   @Test
   @DisplayName("포인트 조회 테스트")
