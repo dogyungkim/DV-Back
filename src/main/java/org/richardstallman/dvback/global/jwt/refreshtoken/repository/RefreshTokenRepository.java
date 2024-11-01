@@ -1,7 +1,7 @@
 package org.richardstallman.dvback.global.jwt.refreshtoken.repository;
 
 import java.util.Optional;
-import org.richardstallman.dvback.global.security.jwt.domain.RefreshTokenDomain;
+import org.richardstallman.dvback.global.jwt.refreshtoken.domain.RefreshTokenDomain;
 
 public interface RefreshTokenRepository {
 

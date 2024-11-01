@@ -2,9 +2,9 @@ package org.richardstallman.dvback.global.jwt.refreshtoken.repository;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.richardstallman.dvback.global.security.jwt.converter.RefreshTokenConverter;
-import org.richardstallman.dvback.global.security.jwt.domain.RefreshTokenDomain;
-import org.richardstallman.dvback.global.security.jwt.entity.RefreshTokenEntity;
+import org.richardstallman.dvback.global.jwt.refreshtoken.converter.RefreshTokenConverter;
+import org.richardstallman.dvback.global.jwt.refreshtoken.domain.RefreshTokenDomain;
+import org.richardstallman.dvback.global.jwt.refreshtoken.entity.RefreshTokenEntity;
 import org.springframework.stereotype.Repository;
 
 @Repository

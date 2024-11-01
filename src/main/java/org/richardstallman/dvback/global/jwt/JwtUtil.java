@@ -14,7 +14,7 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.richardstallman.dvback.global.security.oauth.domain.response.JwtClaimResponseDto;
+import org.richardstallman.dvback.global.jwt.domain.response.JwtClaimResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
