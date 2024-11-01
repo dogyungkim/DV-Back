@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
 import org.richardstallman.dvback.global.oauth.OAuth2CustomUser;
+import org.richardstallman.dvback.global.oauth.service.CookieService;
+import org.richardstallman.dvback.global.oauth.service.TokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;

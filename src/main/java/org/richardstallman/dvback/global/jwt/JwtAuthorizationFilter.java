@@ -11,6 +11,7 @@ import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.global.jwt.domain.response.JwtClaimResponseDto;
+import org.richardstallman.dvback.global.oauth.service.TokenService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
   private final JwtUtil jwtUtil;
-  private final ObjectMapper objectMapper;
   private final TokenService tokenService;
 
   @Override
