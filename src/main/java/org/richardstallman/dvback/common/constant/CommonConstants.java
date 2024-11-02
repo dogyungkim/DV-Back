@@ -74,4 +74,17 @@ public class CommonConstants {
     DEPOSIT, // 적립
     WITHDRAWAL // 사용
   }
+
+  @Getter
+  @AllArgsConstructor
+  public enum FileType {
+    COVER_LETTER("cover-letter"),
+    RESUME("resume"),
+    AUDIO_ANSWER("audio-answer"),
+    AUDIO_QUESTION("audio-question"),
+    VIDEO_ANSWER("video-answer"),
+    VIDEO_QUESTION("video-question");
+
+    private final String folderName;
+  }
 }

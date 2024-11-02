@@ -5,6 +5,7 @@ import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,8 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequ
 @RequiredArgsConstructor
 public class S3ServiceImpl implements S3Service {
 
-  @Autowired private final S3Presigner s3Presigner;
+  @Autowired
+  private final S3Presigner s3Presigner;
 
   @Value("${cloud.aws.s3.bucket}")
   private String bucketName;
@@ -38,8 +40,12 @@ public class S3ServiceImpl implements S3Service {
 
   @Override
   public String createPreSignedURL(
-      String fileName, Long interviewId, @Nullable Map<String, String> metadata) {
-    String filePathKey = makeS3FilePath(fileName, interviewId);
+      FileType fileType,
+      String fileName,
+      Long userId,
+      @Nullable Long interviewId,
+      @Nullable Map<String, String> metadata) {
+    String filePathKey = makeS3FilePath(fileType, fileName, userId, interviewId);
 
     PutObjectRequest putObjectRequest =
         PutObjectRequest.builder().bucket(bucketName).key(filePathKey).build();
@@ -52,8 +58,9 @@ public class S3ServiceImpl implements S3Service {
   }
 
   @Override
-  public String getDownloadURL(String fileName, Long interviewId) {
-    String filePathKey = makeS3FilePath(fileName, interviewId);
+  public String getDownloadURL(
+      FileType fileType, String fileName, Long userId, @Nullable Long interviewId) {
+    String filePathKey = makeS3FilePath(fileType, fileName, userId, interviewId);
 
     GetObjectRequest getObjectRequest =
         GetObjectRequest.builder().bucket(bucketName).key(filePathKey).build();
@@ -65,8 +72,17 @@ public class S3ServiceImpl implements S3Service {
     return presignedGetObjectRequest.url().toString();
   }
 
-  private String makeS3FilePath(String fileName, Long interviewId) {
-    // files/interview번호/파일이름
-    return String.format("%s/%s/%s", baseFilePath, interviewId, fileName);
+  private String makeS3FilePath(
+      FileType fileType, String fileName, Long userId, @Nullable Long interviewId) {
+    String timestamp = String.valueOf(System.currentTimeMillis());
+
+    if (interviewId != null) {
+      // 면접 정보 입력 시 업로드 경로
+      return String.format(
+          "%s/%d/%d/%s/%s", fileType.getFolderName(), userId, interviewId, timestamp, fileName);
+    } else {
+      // 미리 업로드 경로
+      return String.format("%s/%d/%s/%s", fileType.getFolderName(), userId, timestamp, fileName);
+    }
   }
 }

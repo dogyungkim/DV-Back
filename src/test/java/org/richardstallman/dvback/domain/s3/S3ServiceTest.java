@@ -1,10 +1,11 @@
 package org.richardstallman.dvback.domain.s3;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.richardstallman.dvback.client.s3.service.S3Service;
+import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -15,24 +16,28 @@ public class S3ServiceTest {
 
   @Test
   void getUploadUrl() {
+    FileType fileType = FileType.COVER_LETTER;
     String fileName = "test";
     Map<String, String> metadata = Map.of("Content-type", "text/plain");
-    Long interviewId = 0L;
+    Long interviewId = 1L;
+    Long userId = 1L;
 
-    String url = s3Service.createPreSignedURL(fileName, interviewId, null);
+    String url = s3Service.createPreSignedURL(fileType, fileName, userId, interviewId, null);
 
     assertThat(url).isNotNull();
-    assertThat(url).contains("files/");
+    assertThat(url).contains("cover-letter/");
   }
 
   @Test
   void getDownloadURL() {
+    FileType fileType = FileType.COVER_LETTER;
     String fileName = "test";
+    Long userId = 1L;
     Long interviewId = 0L;
 
-    String url = s3Service.getDownloadURL(fileName, interviewId);
+    String url = s3Service.getDownloadURL(fileType, fileName, userId, interviewId);
 
     assertThat(url).isNotNull();
-    assertThat(url).contains("files/");
+    assertThat(url).contains("cover-letter/");
   }
 }
