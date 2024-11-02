@@ -11,7 +11,8 @@ public class AnswerEvaluationDomain {
 
   private final Long answerEvaluationId;
   private final QuestionDomain questionDomain;
-  private final String answerFeedbackText;
-  private final int score;
+  private final String answerFeedbackStrength;
+  private final String answerFeedbackImprovement;
+  private final String answerFeedbackSuggestion;
   private final OverallEvaluationDomain overallEvaluationDomain;
 }
