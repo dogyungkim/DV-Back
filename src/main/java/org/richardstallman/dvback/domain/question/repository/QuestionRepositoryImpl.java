@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.domain.question.repository;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.question.converter.QuestionConverter;
 import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
@@ -17,6 +18,11 @@ public class QuestionRepositoryImpl implements QuestionRepository {
   public QuestionDomain save(QuestionDomain questionDomain) {
     return questionConverter.fromEntityToDomain(
         questionJpaRepository.save(questionConverter.fromDomainToEntity(questionDomain)));
+  }
+
+  @Override
+  public Optional<QuestionDomain> findById(Long questionId) {
+    return questionJpaRepository.findById(questionId).map(questionConverter::fromEntityToDomain);
   }
 
   @Override

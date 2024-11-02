@@ -2,6 +2,8 @@ package org.richardstallman.dvback.client.python;
 
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.response.EvaluationExternalResponseDto;
 import org.richardstallman.dvback.domain.question.domain.external.request.QuestionExternalRequestDto;
 import org.richardstallman.dvback.domain.question.domain.external.response.QuestionExternalResponseDto;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +25,12 @@ public class PythonServiceImpl implements PythonService {
   @Value("${python.server.url}")
   private String pythonServerUrl;
 
+  @Value("${python.server.question-path}")
+  private String pythonServerQuestionPath;
+
+  @Value("${python.server.evaluation-path}")
+  private String pythonServerEvaluationPath;
+
   @Override
   public QuestionExternalResponseDto getInterviewQuestions(QuestionExternalRequestDto requestDto) {
     HttpHeaders headers = new HttpHeaders();
@@ -32,13 +40,38 @@ public class PythonServiceImpl implements PythonService {
 
     URI uri =
         UriComponentsBuilder.fromUriString(pythonServerUrl)
-            .path("/interview/questions")
+            .path(pythonServerQuestionPath)
             .build()
             .toUri();
 
     ResponseEntity<QuestionExternalResponseDto> response =
         restTemplate.exchange(
             uri, HttpMethod.POST, requestEntity, QuestionExternalResponseDto.class);
+
+    if (response.getStatusCode().is2xxSuccessful()) {
+      return response.getBody();
+    } else {
+      throw new RuntimeException("Failed to connect to Python server");
+    }
+  }
+
+  @Override
+  public EvaluationExternalResponseDto getOverallEvaluations(
+      EvaluationExternalRequestDto requestDto) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+
+    HttpEntity<EvaluationExternalRequestDto> requestEntity = new HttpEntity<>(requestDto, headers);
+
+    URI uri =
+        UriComponentsBuilder.fromUriString(pythonServerUrl)
+            .path(pythonServerEvaluationPath)
+            .build()
+            .toUri();
+
+    ResponseEntity<EvaluationExternalResponseDto> response =
+        restTemplate.exchange(
+            uri, HttpMethod.POST, requestEntity, EvaluationExternalResponseDto.class);
 
     if (response.getStatusCode().is2xxSuccessful()) {
       return response.getBody();

@@ -3,6 +3,7 @@ package org.richardstallman.dvback.mock.question;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
@@ -32,6 +33,11 @@ public class FakeQuestionRepository implements QuestionRepository {
     data.removeIf(item -> Objects.equals(item.getQuestionId(), questionDomain.getQuestionId()));
     data.add(questionDomain);
     return questionDomain;
+  }
+
+  @Override
+  public Optional<QuestionDomain> findById(Long questionId) {
+    return data.stream().filter(item -> item.getQuestionId().equals(questionId)).findAny();
   }
 
   @Override
