@@ -37,11 +37,14 @@ public class AnswerEvaluationEntity extends BaseEntity {
   @JoinColumn(name = "question_id", nullable = false)
   private QuestionEntity question;
 
-  @Column(name = "answer_feedback_text", nullable = false)
-  private String answerFeedbackText;
+  @Column(name = "answer_feedback_strength", nullable = false)
+  private String answerFeedbackStrength;
 
-  @Column(name = "score", nullable = false)
-  private int score;
+  @Column(name = "answer_feedback_improvement", nullable = false)
+  private String answerFeedbackImprovement;
+
+  @Column(name = "answer_feedback_suggestion", nullable = false)
+  private String answerFeedbackSuggestion;
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "overall_evaluation_id")

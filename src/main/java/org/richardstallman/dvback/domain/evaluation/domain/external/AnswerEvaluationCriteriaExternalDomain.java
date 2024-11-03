@@ -8,11 +8,11 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class EvaluationCriteriaExternalDomain {
+public class AnswerEvaluationCriteriaExternalDomain {
 
   @JsonProperty("score")
   private int score;
 
-  @JsonProperty("feedback")
-  private String feedbackText;
+  @JsonProperty("rationale")
+  private String rationale;
 }
