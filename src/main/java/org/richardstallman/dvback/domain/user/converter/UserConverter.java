@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 public class UserConverter {
 
   public UserEntity toEntity(UserDomain userDomain) {
-    return UserEntity.of(
+    return new UserEntity(
+        userDomain.getId(),
         userDomain.getSocialId(),
-        userDomain.getEmail(),
         userDomain.getName(),
         userDomain.getNickname(),
         userDomain.getProfileImage()
@@ -23,7 +23,6 @@ public class UserConverter {
     return UserDomain.builder()
         .id(userEntity.getId())
         .socialId(userEntity.getSocialId())
-        .email(userEntity.getEmail())
         .name(userEntity.getName())
         .nickname(userEntity.getNickname())
         .profileImage(userEntity.getProfileImage())

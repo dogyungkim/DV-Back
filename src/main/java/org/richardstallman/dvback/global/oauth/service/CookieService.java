@@ -2,6 +2,7 @@ package org.richardstallman.dvback.global.oauth.service;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CookieService {
 
-  @Value("$app.properties.mainDomain")
+  @Value("${app.properties.mainDomain}")
   private String mainDomain;
 
   @Value("${app.properties.cookie.sameSite}")
@@ -28,6 +29,14 @@ public class CookieService {
         .httpOnly(true)
         .sameSite(sameSite)
         .build();
+  }
+
+  public void createExpiredCookie(HttpServletResponse response, String cookieName) {
+    Cookie cookie = new Cookie(cookieName, null);
+    cookie.setPath("/");
+    cookie.setHttpOnly(true);
+    cookie.setMaxAge(0); // 즉시 만료
+    response.addCookie(cookie);
   }
 
   public void deleteCookie(HttpServletResponse httpServletResponse, String cookieName) {

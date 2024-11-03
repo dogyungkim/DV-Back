@@ -4,20 +4,21 @@ import static org.richardstallman.dvback.global.jwt.JwtUtil.ACCESS_TOKEN;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.richardstallman.dvback.domain.user.domain.UserDomain;
 import org.richardstallman.dvback.domain.user.entity.UserEntity;
 import org.richardstallman.dvback.domain.user.repository.UserRepository;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
-import org.richardstallman.dvback.global.jwt.refreshtoken.converter.RefreshTokenConverter;
-import org.richardstallman.dvback.global.jwt.refreshtoken.domain.RefreshTokenDomain;
 import org.richardstallman.dvback.global.jwt.refreshtoken.entity.RefreshTokenEntity;
 import org.richardstallman.dvback.global.jwt.refreshtoken.repository.RefreshTokenRepository;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenService {
@@ -27,7 +28,6 @@ public class TokenService {
   private final JwtUtil jwtUtil;
   private final CookieService cookieService;
   private final UserConverter userConverter;
-  private final RefreshTokenConverter refreshTokenConverter;
 
   public String renewToken(HttpServletResponse httpServletResponse, String refreshToken) {
     String newAccessToken = createAccessToken(refreshToken);
@@ -37,7 +37,7 @@ public class TokenService {
   }
 
   public String createAccessToken(String refreshToken) {
-    RefreshTokenDomain storedRefreshToken = refreshTokenRepository.findByToken(refreshToken)
+    RefreshTokenEntity storedRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken)
         .orElseThrow(() -> new EntityNotFoundException("Refresh Token not found."));
     UserDomain userDomain = userRepository.findById(storedRefreshToken.getUserId())
         .orElseThrow(() -> new EntityNotFoundException("User not found."));
@@ -47,12 +47,28 @@ public class TokenService {
   }
 
   public void saveRefreshToken(String refreshToken, Long userId) {
-    RefreshTokenDomain refreshTokenDomain = refreshTokenConverter.toDomain(
-        new RefreshTokenEntity(refreshToken, userId));
-    refreshTokenRepository.save(refreshTokenDomain);
+    log.info("saveRefreshToken - refreshToken : {}", refreshToken);
+    log.info("saveRefreshToken - userId : {}", userId);
+    deleteRefreshTokenByRefreshToken(refreshToken);
+    refreshTokenRepository.save(new RefreshTokenEntity(refreshToken, userId));
   }
 
-  public void deleteRefreshToken(String refreshToken) {
-    refreshTokenRepository.deleteByToken(refreshToken);
+  public void deleteRefreshTokenByUserId(Long userId) {
+    refreshTokenRepository.deleteByUserId(userId);
+  }
+
+  public void deleteRefreshTokenByRefreshToken(String refreshToken) {
+    log.info("deleteRefreshTokenByRefreshToken - refreshToken : {}", refreshToken);
+    refreshTokenRepository.deleteById(refreshToken);
+  }
+
+  public String getTokenFromCookies(Cookie[] cookies, String tokenName) {
+    if (cookies == null) return null;
+    for (Cookie cookie : cookies) {
+      if (tokenName.equals(cookie.getName())) {
+        return cookie.getValue();
+      }
+    }
+    return null;
   }
 }

@@ -28,7 +28,6 @@ public class OAuthAttributes {
   public UserEntity toEntity() {
     return UserEntity.of(
         kakaoUserInfo.getId(),
-        kakaoUserInfo.getEmail(),
         kakaoUserInfo.getNickname(),
         kakaoUserInfo.getNickname(),
         kakaoUserInfo.getProfileImage()

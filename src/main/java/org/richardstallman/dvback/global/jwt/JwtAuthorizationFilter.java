@@ -34,17 +34,24 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
       return;
     }
 
-    String accessToken = extractCookie(cookies, "AccessToken");
-    String refreshToken = extractCookie(cookies, "RefreshToken");
+    String accessToken = extractCookie(cookies, JwtUtil.ACCESS_TOKEN);
+    log.info("doFilterInternal - accessToken : {}", accessToken);
+    String refreshToken = extractCookie(cookies, JwtUtil.REFRESH_TOKEN);
+    log.info("doFilterInternal - refreshToken : {}", refreshToken);
 
     if (accessToken == null || jwtUtil.validateToken(accessToken)) {
-      if (refreshToken != null || jwtUtil.validateToken(refreshToken)) {
+      log.info("Access token is missing or invalid, attempting to renew with refresh token.");
+      if (refreshToken != null && jwtUtil.validateToken(refreshToken)) {
         accessToken = tokenService.renewToken(response, refreshToken);
+        log.info("Access token renewed successfully.");
       } else {
+        log.warn("Refresh token is missing or invalid.");
         writeErrorResponse(response);
         return;
       }
     }
+
+    log.info("Setting authentication in security context.");
 
     setAuthInSecurityContext(accessToken);
     filterChain.doFilter(request, response);

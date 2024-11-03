@@ -5,26 +5,27 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Table(name = "users")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @SequenceGenerator(name = "user_seq", sequenceName = "user_id_seq", allocationSize = 1)
   private Long id;
 
   @Column(nullable = false, unique = true)
   private String socialId;
-
-  @Column(nullable = false, unique = true)
-  private String email;
 
   @Column(nullable = false)
   private String name;
@@ -35,19 +36,18 @@ public class UserEntity {
   @Column(name = "profile_image")
   private String profileImage;
 
-
-  private UserEntity(final String socialId, final String email, final String name,
-      final String nickname,
-      final String profileImage) {
+  public  UserEntity(String socialId, String name,
+      String nickname,
+      String profileImage) {
+    super();
     this.socialId = socialId;
-    this.email = email;
     this.name = name;
     this.nickname = nickname;
     this.profileImage = profileImage;
   }
 
-  public static UserEntity of(String socialId, String email, String name, String nickname,
+  public static UserEntity of(String socialId, String name, String nickname,
       String profileImage) {
-    return new UserEntity(socialId, email, name, nickname, profileImage);
+    return new UserEntity(socialId, name, nickname, profileImage);
   }
 }

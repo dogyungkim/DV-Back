@@ -13,7 +13,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableRedisRepositories
+@EnableRedisRepositories(basePackages = "org.richardstallman.dvback.global.jwt.refreshtoken.repository")
 @RequiredArgsConstructor
 public class RedisConfig {
 

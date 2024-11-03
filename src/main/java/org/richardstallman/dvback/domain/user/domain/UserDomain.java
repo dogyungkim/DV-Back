@@ -9,7 +9,6 @@ public class UserDomain {
 
   private Long id;
   private String socialId;
-  private String email;
   private String name;
   private String nickname;
   private String profileImage;

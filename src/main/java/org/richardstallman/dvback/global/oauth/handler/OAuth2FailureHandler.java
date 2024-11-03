@@ -12,12 +12,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class OAuth2FailureHandler implements AuthenticationFailureHandler {
 
-
   @Override
   public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
       AuthenticationException exception) throws IOException {
+    log.info("request: {}", request);
+    log.info("response: {}", response);
     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     response.getWriter().write("Kakao login failed! Please check the server logs");
-    log.error("Kakao login failed. Error message: {}", exception.getMessage());
+
+    // 에러 메시지와 스택 트레이스 로그 기록
+    log.error("Kakao login failed. Error message: {}", exception.getMessage(), exception);
   }
 }
