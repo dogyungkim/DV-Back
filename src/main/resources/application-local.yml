@@ -10,8 +10,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  mvc:
-    static-path-pattern: /static/**
   config:
     import: classpath:/properties/local/initial_data.yml, optional:file:.env[.properties]
   data:
