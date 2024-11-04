@@ -29,7 +29,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     Cookie[] cookies = request.getCookies();
-    if (cookies == null) {
+    if (cookies == null || !existAccessToken(cookies)) {
       filterChain.doFilter(request, response);
       return;
     }
@@ -80,5 +80,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         .findFirst()
         .map(Cookie::getValue)
         .orElse(null);
+  }
+
+  private boolean existAccessToken(Cookie[] authCookies) {
+    return Arrays.stream(authCookies).anyMatch(name -> name.getName().equals("AccessToken"));
   }
 }
