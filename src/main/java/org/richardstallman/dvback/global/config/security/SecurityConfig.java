@@ -59,11 +59,7 @@ public class SecurityConfig {
         .httpBasic(AbstractHttpConfigurer::disable)
         .formLogin(AbstractHttpConfigurer::disable)
         .logout(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(
-            auth ->
-                auth
-                    .anyRequest()
-                    .permitAll())
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         .exceptionHandling(ex -> ex.authenticationEntryPoint(new Http403ForbiddenEntryPoint()))
         .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
         .oauth2Login(
