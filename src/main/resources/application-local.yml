@@ -65,3 +65,7 @@ app:
     frontendDomain: http://localhost:3000
     cookie:
       sameSite: "None"
+cors:
+  allowed-origins:
+    list:
+      ${ALLOWED_ORIGINS}

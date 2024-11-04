@@ -6,6 +6,7 @@ import org.richardstallman.dvback.global.jwt.JwtAuthorizationFilter;
 import org.richardstallman.dvback.global.oauth.handler.OAuth2FailureHandler;
 import org.richardstallman.dvback.global.oauth.handler.OAuth2SuccessHandler;
 import org.richardstallman.dvback.global.oauth.service.CustomOAuth2UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -25,6 +26,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
+
+  @Value("${cors.allowed-origins.list}")
+  private List<String> allowedOrigins;
+
   private final JwtAuthorizationFilter jwtAuthorizationFilter;
   private final CustomOAuth2UserService principalOauth2UserService;
   private final OAuth2SuccessHandler oAuth2SuccessHandler;
@@ -34,8 +39,7 @@ public class SecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowCredentials(true);
-    configuration.setAllowedOrigins(
-        List.of("http://localhost:3000", "http://localhost:8080")); // 허용할 도메인 지정
+    configuration.setAllowedOrigins(allowedOrigins);
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
     configuration.setAllowedHeaders(
         List.of("Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"));
@@ -50,12 +54,6 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(AbstractHttpConfigurer::disable)
-        //                .headers(headers -> headers // TO DO - H2 대신 RDS 연동하면 제거
-        //                        .frameOptions(frameOptionsConfig ->
-        //                                frameOptionsConfig.sameOrigin()
-        //                        )
-        //                )
-        //                .headers(headers -> headers.frameOptions().disable())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .httpBasic(AbstractHttpConfigurer::disable)
@@ -64,8 +62,6 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             auth ->
                 auth
-                    //                        .requestMatchers("/api/paper/*/likes").authenticated()
-                    // // TO DO - 인증이 필요한 api endpoint 추가
                     .anyRequest()
                     .permitAll())
         .exceptionHandling(ex -> ex.authenticationEntryPoint(new Http403ForbiddenEntryPoint()))

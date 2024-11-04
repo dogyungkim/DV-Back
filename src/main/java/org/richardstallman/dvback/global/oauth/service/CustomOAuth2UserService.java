@@ -66,9 +66,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
   private UserDomain saveUser(OAuthAttributes attributes) {
     UserEntity createdUser = attributes.toEntity();
-    log.info("UserEntity 저장 완료 - userId: " + createdUser.getId());
-    UserDomain createdUserDomain = userRepository.save(userConverter.toDomain(createdUser));
-    log.info("UserDomain 저장 완료 - userId: " + createdUserDomain.getId()); // ID 확인
-    return createdUserDomain;
+    return userRepository.save(userConverter.toDomain(createdUser));
   }
 }

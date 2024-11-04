@@ -3,6 +3,7 @@ package org.richardstallman.dvback.domain.user.converter;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.user.domain.UserDomain;
 import org.richardstallman.dvback.domain.user.entity.UserEntity;
+import org.richardstallman.dvback.global.oauth.KakaoUserInfo;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,5 +27,13 @@ public class UserConverter {
         .nickname(userEntity.getNickname())
         .s3ProfileImageUrl(userEntity.getS3ProfileImageUrl())
         .build();
+  }
+
+  public UserEntity kakaoInfoToUserEntity(KakaoUserInfo kakaoUserInfo) {
+    return new UserEntity(
+        kakaoUserInfo.getId(),
+        kakaoUserInfo.getNickname(),
+        kakaoUserInfo.getNickname(),
+        kakaoUserInfo.getProfileImage());
   }
 }

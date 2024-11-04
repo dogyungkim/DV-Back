@@ -2,6 +2,7 @@ package org.richardstallman.dvback.global.oauth;
 
 import java.util.Map;
 import lombok.Getter;
+import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.richardstallman.dvback.domain.user.entity.UserEntity;
 
 @Getter
@@ -9,6 +10,7 @@ public class OAuthAttributes {
 
   private final String nameAttributeKey;
   private final KakaoUserInfo kakaoUserInfo;
+  UserConverter userConverter;
 
   private OAuthAttributes(String nameAttributeKey, KakaoUserInfo kakaoUserInfo) {
     this.nameAttributeKey = nameAttributeKey;
@@ -25,10 +27,6 @@ public class OAuthAttributes {
   }
 
   public UserEntity toEntity() {
-    return UserEntity.of(
-        kakaoUserInfo.getId(),
-        kakaoUserInfo.getNickname(),
-        kakaoUserInfo.getNickname(),
-        kakaoUserInfo.getProfileImage());
+    return userConverter.kakaoInfoToUserEntity(kakaoUserInfo);
   }
 }
