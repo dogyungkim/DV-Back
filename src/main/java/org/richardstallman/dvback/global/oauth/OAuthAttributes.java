@@ -12,14 +12,15 @@ public class OAuthAttributes {
   private final KakaoUserInfo kakaoUserInfo;
   private final UserConverter userConverter;
 
-  private OAuthAttributes(String nameAttributeKey, KakaoUserInfo kakaoUserInfo,
-      UserConverter userConverter) {
+  private OAuthAttributes(
+      String nameAttributeKey, KakaoUserInfo kakaoUserInfo, UserConverter userConverter) {
     this.nameAttributeKey = nameAttributeKey;
     this.kakaoUserInfo = kakaoUserInfo;
     this.userConverter = userConverter;
   }
 
-  public static OAuthAttributes of(String userNameAttributeName, Map<String, Object> attributes, UserConverter userConverter) {
+  public static OAuthAttributes of(
+      String userNameAttributeName, Map<String, Object> attributes, UserConverter userConverter) {
     return ofKakao(userNameAttributeName, attributes, userConverter);
   }
 

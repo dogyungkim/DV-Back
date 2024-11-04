@@ -43,7 +43,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             .getProviderDetails()
             .getUserInfoEndpoint()
             .getUserNameAttributeName();
-    OAuthAttributes extractAttributes = OAuthAttributes.of(userNameAttributeName, attributes, userConverter);
+    OAuthAttributes extractAttributes =
+        OAuthAttributes.of(userNameAttributeName, attributes, userConverter);
 
     UserEntity userEntity =
         userConverter.toEntity(
