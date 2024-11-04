@@ -7,7 +7,5 @@ public interface EvaluationCriteriaRepository {
 
   EvaluationCriteriaDomain save(EvaluationCriteriaDomain evaluationCriteriaDomain);
 
-  List<EvaluationCriteriaDomain> saveAll(List<EvaluationCriteriaDomain> evaluationCriteriaDomains);
-
   List<EvaluationCriteriaDomain> findByOverallEvaluationId(Long overallEvaluationId);
 }

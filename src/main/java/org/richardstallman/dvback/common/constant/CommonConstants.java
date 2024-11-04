@@ -62,20 +62,12 @@ public class CommonConstants {
   @JsonFormat(shape = JsonFormat.Shape.STRING)
   public enum EvaluationCriteria {
     ANSWER("answer"),
-    JOB_FIT("jobFit"),
+    DEVELOPMENT_SKILL("development_skill"),
     GROWTH_POTENTIAL("growth_potential"),
     TECHNICAL_DEPTH("technical_depth"),
     WORK_ATTITUDE("work_attitude");
 
     private final String pythonFormat;
-  }
-
-  public enum AnswerEvaluationScore {
-    APPROPRIATE_RESPONSE,
-    LOGICAL_FLOW,
-    KEY_TERMS,
-    CONSISTENCY,
-    GRAMMATICAL_ERRORS
   }
 
   public enum PointTransactionType {

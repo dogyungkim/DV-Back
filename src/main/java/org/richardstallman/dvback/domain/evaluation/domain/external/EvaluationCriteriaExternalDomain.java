@@ -13,6 +13,6 @@ public class EvaluationCriteriaExternalDomain {
   @JsonProperty("score")
   private int score;
 
-  @JsonProperty("feedback")
+  @JsonProperty("feedback_text")
   private String feedbackText;
 }
