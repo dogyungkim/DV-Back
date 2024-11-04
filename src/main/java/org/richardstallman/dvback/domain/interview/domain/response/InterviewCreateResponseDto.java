@@ -5,6 +5,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMetho
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
+import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 
 public record InterviewCreateResponseDto(
@@ -13,4 +14,5 @@ public record InterviewCreateResponseDto(
     @NotNull InterviewType interviewType,
     @NotNull InterviewMethod interviewMethod,
     @NotNull InterviewMode interviewMode,
-    @NotNull JobDomain job) {}
+    @NotNull JobDomain job,
+    CoverLetterDomain coverLetter) {}

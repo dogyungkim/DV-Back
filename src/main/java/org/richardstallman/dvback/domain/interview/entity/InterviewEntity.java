@@ -19,6 +19,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMetho
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
+import org.richardstallman.dvback.domain.file.entity.CoverLetterEntity;
 import org.richardstallman.dvback.domain.job.entity.JobEntity;
 import org.richardstallman.dvback.global.entity.BaseEntity;
 
@@ -33,6 +34,9 @@ public class InterviewEntity extends BaseEntity {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "interview_seq")
   @SequenceGenerator(name = "interview_seq", sequenceName = "interview_id_seq", allocationSize = 1)
   private Long interviewId;
+
+  //  변경 예정
+  @NotNull(message = "User is required") private Long userId;
 
   @NotNull(message = "Interview Status is required") @Enumerated(EnumType.STRING)
   private InterviewStatus interviewStatus;
@@ -50,22 +54,28 @@ public class InterviewEntity extends BaseEntity {
   @JoinColumn(name = "job_id", nullable = false)
   private JobEntity job;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "cover_letter_id")
+  private CoverLetterEntity coverLetter;
+
   public InterviewEntity(
+      Long userId,
       InterviewStatus interviewStatus,
       InterviewType interviewType,
       InterviewMethod interviewMethod,
       InterviewMode interviewMode,
-      JobEntity job) {
+      JobEntity job,
+      CoverLetterEntity coverLetter) {
     super();
+    this.userId = userId;
     this.interviewStatus = interviewStatus;
     this.interviewType = interviewType;
     this.interviewMethod = interviewMethod;
     this.interviewMode = interviewMode;
     this.job = job;
+    this.coverLetter = coverLetter;
   }
 
   //  private Long resumeId;
-  //  private Long coverLetterId;
   //  private Long portfolioId;
-  //  private Long userId;
 }

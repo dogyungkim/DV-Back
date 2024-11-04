@@ -20,6 +20,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMetho
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
+import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.interview.service.InterviewService;
@@ -53,7 +54,12 @@ public class InterviewControllerTest {
     // given
     InterviewCreateRequestDto interviewCreateRequestDto =
         new InterviewCreateRequestDto(
-            InterviewType.TECHNICAL, InterviewMethod.VIDEO, InterviewMode.REAL, 2L);
+            1L,
+            InterviewType.TECHNICAL,
+            InterviewMethod.VIDEO,
+            InterviewMode.REAL,
+            2L,
+            "cover_letter_url");
     String content = objectMapper.writeValueAsString(interviewCreateRequestDto);
 
     when(interviewService.createInterview(any()))
@@ -68,6 +74,12 @@ public class InterviewControllerTest {
                     .jobId(1L)
                     .jobName("BACK_END")
                     .jobDescription("백엔드 직무입니다.")
+                    .build(),
+                CoverLetterDomain.builder()
+                    .coverLetterId(1L)
+                    .userId(1L)
+                    .fileName("file_name")
+                    .s3FileUrl("url")
                     .build()));
     ResultActions resultActions =
         mockMvc.perform(
@@ -94,6 +106,7 @@ public class InterviewControllerTest {
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
             requestFields(
+                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 식별자"),
                 fieldWithPath("interviewType")
                     .type(JsonFieldType.STRING)
                     .description("면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"),
@@ -103,7 +116,10 @@ public class InterviewControllerTest {
                 fieldWithPath("interviewMode")
                     .type(JsonFieldType.STRING)
                     .description("면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"),
-                fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자")),
+                fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자"),
+                fieldWithPath("coverLetterUrl")
+                    .type(JsonFieldType.STRING)
+                    .description("자소서 업로드 URL")),
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
                 fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
@@ -127,7 +143,19 @@ public class InterviewControllerTest {
                     .description("직무 이름: BACK_END(백엔드), FRONT_END(프론트엔드), INFRA(인프라), AI(인공지능)"),
                 fieldWithPath("data.job.jobDescription")
                     .type(JsonFieldType.STRING)
-                    .description("직무 설명"))));
+                    .description("직무 설명"),
+                fieldWithPath("data.coverLetter.coverLetterId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("자소서 식별자"),
+                fieldWithPath("data.coverLetter.userId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("자소서 유저 식별자"),
+                fieldWithPath("data.coverLetter.fileName")
+                    .type(JsonFieldType.STRING)
+                    .description("자소서 이름"),
+                fieldWithPath("data.coverLetter.s3FileUrl")
+                    .type(JsonFieldType.STRING)
+                    .description("자소서 저장 URL"))));
   }
 
   @Test
@@ -135,7 +163,8 @@ public class InterviewControllerTest {
   void create_interview_missing_required_fields() throws Exception {
     // given: 필수 필드 중 InterviewType 누락
     InterviewCreateRequestDto interviewCreateRequestDto =
-        new InterviewCreateRequestDto(null, InterviewMethod.VIDEO, InterviewMode.REAL, 2L);
+        new InterviewCreateRequestDto(
+            1L, null, InterviewMethod.VIDEO, InterviewMode.REAL, 2L, "cover_letter_url");
     String content = objectMapper.writeValueAsString(interviewCreateRequestDto);
 
     // when
@@ -172,10 +201,12 @@ public class InterviewControllerTest {
     // given
     InterviewCreateRequestDto interviewCreateRequestDto =
         new InterviewCreateRequestDto(
+            1L,
             InterviewType.TECHNICAL,
             InterviewMethod.VIDEO,
             InterviewMode.REAL,
-            999L); // 유효하지 않은 직무 ID
+            999L,
+            "cover_letter_url"); // 유효하지 않은 직무 ID
     String content = objectMapper.writeValueAsString(interviewCreateRequestDto);
 
     when(interviewService.createInterview(any()))
@@ -211,7 +242,12 @@ public class InterviewControllerTest {
     // given
     InterviewCreateRequestDto interviewCreateRequestDto =
         new InterviewCreateRequestDto(
-            InterviewType.TECHNICAL, InterviewMethod.VIDEO, InterviewMode.REAL, 2L);
+            1L,
+            InterviewType.TECHNICAL,
+            InterviewMethod.VIDEO,
+            InterviewMode.REAL,
+            2L,
+            "cover_letter_url");
     String content = objectMapper.writeValueAsString(interviewCreateRequestDto);
 
     when(interviewService.createInterview(any()))

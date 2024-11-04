@@ -17,4 +17,9 @@ public class CoverLetterServiceImpl implements CoverLetterService {
   public CoverLetterDomain createCoverLetter(CoverLetterDomain coverLetterDomain) {
     return coverLetterRepository.save(coverLetterDomain);
   }
+
+  @Override
+  public CoverLetterDomain findCoverLetter(Long coverLetterId) {
+    return coverLetterRepository.findByCoverLetterId(coverLetterId);
+  }
 }

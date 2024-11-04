@@ -22,6 +22,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousRequestDto;
+import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
@@ -53,7 +54,7 @@ public class QuestionControllerTest {
 
   @Test
   @DisplayName("질문 생성 - 최초 요청(모의 면접 성공) 테스트")
-  void get_question_by_request_python_server() throws Exception {
+  void get_question_by_request_python_server_general() throws Exception {
     // given
     QuestionInitialRequestDto questionInitialRequestDto =
         new QuestionInitialRequestDto(
@@ -79,6 +80,12 @@ public class QuestionControllerTest {
                         .jobId(1L)
                         .jobName("BACK_END")
                         .jobDescription("백엔드 직무입니다.")
+                        .build(),
+                    CoverLetterDomain.builder()
+                        .coverLetterId(1L)
+                        .userId(1L)
+                        .fileName("file_name")
+                        .s3FileUrl("url")
                         .build()),
                 "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
                 2L,
@@ -151,6 +158,145 @@ public class QuestionControllerTest {
                 fieldWithPath("data.interview.job.jobDescription")
                     .type(JsonFieldType.STRING)
                     .description("직무 설명"),
+                fieldWithPath("data.interview.coverLetter.coverLetterId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("자소서 식별자"),
+                fieldWithPath("data.interview.coverLetter.userId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("자소서 유저 식별자"),
+                fieldWithPath("data.interview.coverLetter.fileName")
+                    .type(JsonFieldType.STRING)
+                    .description("자소서 이름"),
+                fieldWithPath("data.interview.coverLetter.s3FileUrl")
+                    .type(JsonFieldType.STRING)
+                    .description("자소서 저장 URL"),
+                fieldWithPath("data.questionText").type(JsonFieldType.STRING).description("질문 내용"),
+                fieldWithPath("data.nextQuestionId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("다음 질문 식별자"),
+                fieldWithPath("data.hasNext")
+                    .type(JsonFieldType.BOOLEAN)
+                    .description("다음 질문 존재 여부"))));
+  }
+
+  @Test
+  @DisplayName("질문 생성 - 최초 요청(실전 면접 성공) 테스트")
+  void get_question_by_request_python_server_real() throws Exception {
+    // given
+    QuestionInitialRequestDto questionInitialRequestDto =
+        new QuestionInitialRequestDto(
+            1L,
+            InterviewStatus.FILE_UPLOADED,
+            InterviewType.TECHNICAL,
+            InterviewMethod.CHAT,
+            InterviewMode.REAL,
+            "cover_letter_s3_url/file_name",
+            1L);
+    String content = objectMapper.writeValueAsString(questionInitialRequestDto);
+
+    when(questionService.getInitialQuestion(any()))
+        .thenReturn(
+            new QuestionResponseDto(
+                new InterviewCreateResponseDto(
+                    1L,
+                    InterviewStatus.FILE_UPLOADED,
+                    InterviewType.TECHNICAL,
+                    InterviewMethod.CHAT,
+                    InterviewMode.REAL,
+                    JobDomain.builder()
+                        .jobId(1L)
+                        .jobName("BACK_END")
+                        .jobDescription("백엔드 직무입니다.")
+                        .build(),
+                    CoverLetterDomain.builder()
+                        .coverLetterId(1L)
+                        .userId(1L)
+                        .fileName("file_name")
+                        .s3FileUrl("cover_letter_s3_url/file_name")
+                        .build()),
+                "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
+                2L,
+                true));
+    ResultActions resultActions =
+        mockMvc.perform(
+            post("/question/initial-question")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("code").value(200))
+        .andExpect(jsonPath("message").value("SUCCESS"))
+        .andExpect(jsonPath("data.interview.interviewId").value(1))
+        .andExpect(jsonPath("data.interview.interviewStatus").value("FILE_UPLOADED"))
+        .andExpect(jsonPath("data.interview.interviewType").value("TECHNICAL"))
+        .andExpect(jsonPath("data.interview.interviewMethod").value("CHAT"))
+        .andExpect(jsonPath("data.interview.interviewMode").value("REAL"))
+        .andExpect(jsonPath("data.interview.job.jobId").value(1L))
+        .andExpect(jsonPath("data.interview.job.jobName").value("BACK_END"))
+        .andExpect(jsonPath("data.interview.job.jobDescription").value("백엔드 직무입니다."))
+        .andExpect(
+            jsonPath("data.questionText")
+                .value("스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요."))
+        .andExpect(jsonPath("data.nextQuestionId").value(2L))
+        .andExpect(jsonPath("data.hasNext").value(true));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "질문 생성 - 최초 요청(실전 면접 성공)",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            requestFields(
+                fieldWithPath("interviewId").type(JsonFieldType.NUMBER).description("면접 식별자"),
+                fieldWithPath("interviewStatus").type(JsonFieldType.STRING).description("면접 상태"),
+                fieldWithPath("interviewType").type(JsonFieldType.STRING).description("면접 유형"),
+                fieldWithPath("interviewMethod").type(JsonFieldType.STRING).description("면접 방식"),
+                fieldWithPath("interviewMode").type(JsonFieldType.STRING).description("면접 모드"),
+                fieldWithPath("coverLetterS3Url")
+                    .type(JsonFieldType.STRING)
+                    .description("자소서 s3 url"),
+                fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자")),
+            responseFields(
+                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                fieldWithPath("data.interview.interviewId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("면접 식별자"),
+                fieldWithPath("data.interview.interviewStatus")
+                    .type(JsonFieldType.STRING)
+                    .description("면접 상태"),
+                fieldWithPath("data.interview.interviewType")
+                    .type(JsonFieldType.STRING)
+                    .description("면접 유형"),
+                fieldWithPath("data.interview.interviewMethod")
+                    .type(JsonFieldType.STRING)
+                    .description("면접 방식"),
+                fieldWithPath("data.interview.interviewMode")
+                    .type(JsonFieldType.STRING)
+                    .description("면접 모드"),
+                fieldWithPath("data.interview.job.jobId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("직무 식별자"),
+                fieldWithPath("data.interview.job.jobName")
+                    .type(JsonFieldType.STRING)
+                    .description("직무 이름"),
+                fieldWithPath("data.interview.job.jobDescription")
+                    .type(JsonFieldType.STRING)
+                    .description("직무 설명"),
+                fieldWithPath("data.interview.coverLetter.coverLetterId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("자소서 식별자"),
+                fieldWithPath("data.interview.coverLetter.userId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("자소서 유저 식별자"),
+                fieldWithPath("data.interview.coverLetter.fileName")
+                    .type(JsonFieldType.STRING)
+                    .description("자소서 이름"),
+                fieldWithPath("data.interview.coverLetter.s3FileUrl")
+                    .type(JsonFieldType.STRING)
+                    .description("자소서 저장 URL"),
                 fieldWithPath("data.questionText").type(JsonFieldType.STRING).description("질문 내용"),
                 fieldWithPath("data.nextQuestionId")
                     .type(JsonFieldType.NUMBER)
@@ -183,6 +329,12 @@ public class QuestionControllerTest {
                         .jobId(1L)
                         .jobName("BACK_END")
                         .jobDescription("백엔드 직무입니다.")
+                        .build(),
+                    CoverLetterDomain.builder()
+                        .coverLetterId(1L)
+                        .userId(1L)
+                        .fileName("file_name")
+                        .s3FileUrl("url")
                         .build()),
                 "리액트와 스프링 간의 연동 경험을 설명해 주세요.",
                 3L,
@@ -257,6 +409,18 @@ public class QuestionControllerTest {
                 fieldWithPath("data.interview.job.jobDescription")
                     .type(JsonFieldType.STRING)
                     .description("직무 설명"),
+                fieldWithPath("data.interview.coverLetter.coverLetterId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("자소서 식별자"),
+                fieldWithPath("data.interview.coverLetter.userId")
+                    .type(JsonFieldType.NUMBER)
+                    .description("자소서 유저 식별자"),
+                fieldWithPath("data.interview.coverLetter.fileName")
+                    .type(JsonFieldType.STRING)
+                    .description("자소서 이름"),
+                fieldWithPath("data.interview.coverLetter.s3FileUrl")
+                    .type(JsonFieldType.STRING)
+                    .description("자소서 저장 URL"),
                 fieldWithPath("data.questionText").type(JsonFieldType.STRING).description("질문 내용"),
                 fieldWithPath("data.nextQuestionId")
                     .type(JsonFieldType.NUMBER)

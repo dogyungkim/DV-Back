@@ -25,4 +25,12 @@ public class CoverLetterConverter {
         .s3FileUrl(coverLetterEntity.getS3FileUrl())
         .build();
   }
+
+  public CoverLetterDomain fromUrlToDomain(String coverLetterUrl, Long userId, String fileName) {
+    return CoverLetterDomain.builder()
+        .userId(userId)
+        .fileName(fileName)
+        .s3FileUrl(coverLetterUrl)
+        .build();
+  }
 }

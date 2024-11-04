@@ -34,4 +34,12 @@ public class FakeInterviewRepository implements InterviewRepository {
     data.add(interviewDomain);
     return interviewDomain;
   }
+
+  @Override
+  public InterviewDomain findById(Long interviewId) {
+    return data.stream()
+        .filter(item -> Objects.equals(item.getInterviewId(), interviewId))
+        .findAny()
+        .orElse(null);
+  }
 }

@@ -17,4 +17,10 @@ public class CoverLetterRepositoryImpl implements CoverLetterRepository {
     return coverLetterConverter.fromEntityToDomain(
         coverLetterJpaRepository.save(coverLetterConverter.fromDomainToEntity(coverLetterDomain)));
   }
+
+  @Override
+  public CoverLetterDomain findByCoverLetterId(Long coverLetterId) {
+    return coverLetterConverter.fromEntityToDomain(
+        coverLetterJpaRepository.findById(coverLetterId).orElse(null));
+  }
 }

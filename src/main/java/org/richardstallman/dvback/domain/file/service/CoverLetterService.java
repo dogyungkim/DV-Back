@@ -5,4 +5,6 @@ import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 public interface CoverLetterService {
 
   CoverLetterDomain createCoverLetter(CoverLetterDomain coverLetterDomain);
+
+  CoverLetterDomain findCoverLetter(Long coverLetterId);
 }

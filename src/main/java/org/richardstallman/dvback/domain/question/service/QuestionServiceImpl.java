@@ -4,11 +4,14 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.client.python.PythonService;
-import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.answer.converter.AnswerConverter;
 import org.richardstallman.dvback.domain.answer.repository.AnswerRepository;
+import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
+import org.richardstallman.dvback.domain.file.service.CoverLetterService;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
+import org.richardstallman.dvback.domain.interview.repository.InterviewRepository;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.job.service.JobService;
 import org.richardstallman.dvback.domain.question.converter.QuestionConverter;
@@ -34,10 +37,12 @@ public class QuestionServiceImpl implements QuestionService {
   private final JobService jobService;
   private final PythonService pythonService;
   private final InterviewConverter interviewConverter;
+  private final InterviewRepository interviewRepository;
   private final QuestionConverter questionConverter;
   private final QuestionRepository questionRepository;
   private final AnswerRepository answerRepository;
   private final AnswerConverter answerConverter;
+  private final CoverLetterService coverLetterService;
 
   @Override
   @Transactional(propagation = Propagation.REQUIRED)
@@ -45,10 +50,6 @@ public class QuestionServiceImpl implements QuestionService {
       QuestionInitialRequestDto questionInitialRequestDto) {
 
     JobDomain jobDomain = jobService.findJobById(questionInitialRequestDto.jobId());
-
-    if (questionInitialRequestDto.interviewStatus() != InterviewStatus.FILE_UPLOADED) {
-      throw new IllegalArgumentException("Invalid interview status");
-    }
 
     QuestionExternalRequestDto questionExternalRequestDto =
         questionConverter.reactRequestToPythonRequest(
@@ -62,25 +63,37 @@ public class QuestionServiceImpl implements QuestionService {
           "Python server returned an empty question list for job: " + jobDomain.getJobName());
     }
 
+    CoverLetterDomain coverLetterDomain;
+    if (questionInitialRequestDto.interviewMode() == InterviewMode.REAL) {
+      coverLetterDomain =
+          interviewRepository.findById(questionInitialRequestDto.interviewId()).getCoverLetter();
+    } else {
+      coverLetterDomain = null;
+    }
+
     List<QuestionExternalDomain> createdQuestions = questionResponse.getQuestions();
     boolean hasNext = createdQuestions.size() > 1;
 
     QuestionDomain firstQuestion =
-        getCreatedQuestionDomain(questionInitialRequestDto, createdQuestions.get(0), jobDomain);
+        getCreatedQuestionDomain(
+            questionInitialRequestDto, createdQuestions.get(0), jobDomain, coverLetterDomain);
     QuestionDomain nextQuestion =
         hasNext
             ? getCreatedQuestionDomain(
-                questionInitialRequestDto, createdQuestions.get(1), jobDomain)
+                questionInitialRequestDto, createdQuestions.get(1), jobDomain, coverLetterDomain)
             : null;
 
     createdQuestions.stream()
         .skip(2)
-        .forEach(q -> getCreatedQuestionDomain(questionInitialRequestDto, q, jobDomain));
+        .forEach(
+            q ->
+                getCreatedQuestionDomain(
+                    questionInitialRequestDto, q, jobDomain, coverLetterDomain));
 
     InterviewCreateResponseDto interviewCreateResponseDto =
         interviewConverter.fromDomainToDto(
             interviewConverter.fromInterviewInitialQuestionRequestDtoToDomain(
-                questionInitialRequestDto, jobDomain));
+                questionInitialRequestDto, jobDomain, coverLetterDomain));
 
     return questionConverter.fromQuestionExternalDomainToQuestionResponseDto(
         firstQuestion, interviewCreateResponseDto, nextQuestion, hasNext);
@@ -112,12 +125,13 @@ public class QuestionServiceImpl implements QuestionService {
   private QuestionDomain getCreatedQuestionDomain(
       QuestionInitialRequestDto questionInitialRequestDto,
       QuestionExternalDomain questionExternalDomain,
-      JobDomain jobDomain) {
+      JobDomain jobDomain,
+      CoverLetterDomain coverLetterDomain) {
     return questionRepository.save(
         questionConverter.fromQuestionExternalDomainToDomain(
             questionExternalDomain,
             interviewConverter.fromInterviewInitialQuestionRequestDtoToDomain(
-                questionInitialRequestDto, jobDomain)));
+                questionInitialRequestDto, jobDomain, coverLetterDomain)));
   }
 
   private QuestionDomain findQuestionById(List<QuestionDomain> questions, Long questionId) {

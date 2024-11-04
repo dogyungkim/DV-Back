@@ -18,4 +18,10 @@ public class InterviewRepositoryImpl implements InterviewRepository {
         interviewJpaRepository.save(
             interviewConverter.fromDomainToEntityWhenCreate(interviewDomain)));
   }
+
+  @Override
+  public InterviewDomain findById(Long interviewId) {
+    return interviewConverter.fromEntityToDomain(
+        interviewJpaRepository.findById(interviewId).orElse(null));
+  }
 }

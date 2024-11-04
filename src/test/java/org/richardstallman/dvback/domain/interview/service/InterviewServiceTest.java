@@ -14,6 +14,9 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMetho
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
+import org.richardstallman.dvback.domain.file.converter.CoverLetterConverter;
+import org.richardstallman.dvback.domain.file.service.CoverLetterService;
+import org.richardstallman.dvback.domain.file.service.FileService;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
@@ -26,16 +29,25 @@ import org.richardstallman.dvback.mock.interview.FakeInterviewRepository;
 public class InterviewServiceTest {
 
   @Mock private JobService jobService;
+  @Mock private CoverLetterService coverLetterService;
+  @Mock private FileService fileService;
 
   @InjectMocks private InterviewServiceImpl interviewServiceImpl;
   @InjectMocks private InterviewConverter interviewConverter;
+  @InjectMocks private CoverLetterConverter coverLetterConverter;
 
   @BeforeEach
   void init() {
     MockitoAnnotations.openMocks(this);
     FakeInterviewRepository fakeInterviewRepository = new FakeInterviewRepository();
     this.interviewServiceImpl =
-        new InterviewServiceImpl(fakeInterviewRepository, jobService, interviewConverter);
+        new InterviewServiceImpl(
+            fakeInterviewRepository,
+            jobService,
+            interviewConverter,
+            fileService,
+            coverLetterConverter,
+            coverLetterService);
 
     InterviewType interviewType = InterviewType.PERSONAL;
     InterviewMethod interviewMethod = InterviewMethod.CHAT;
@@ -63,7 +75,8 @@ public class InterviewServiceTest {
     InterviewMode interviewMode = InterviewMode.REAL;
 
     InterviewCreateRequestDto interviewCreateRequestDto =
-        new InterviewCreateRequestDto(interviewType, interviewMethod, interviewMode, 2L);
+        new InterviewCreateRequestDto(
+            1L, interviewType, interviewMethod, interviewMode, 2L, "coverLetterUrl");
 
     // when
     InterviewCreateResponseDto interviewCreateResponseDto =
