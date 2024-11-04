@@ -21,6 +21,19 @@ public class EvaluationCriteriaRepositoryImpl implements EvaluationCriteriaRepos
   }
 
   @Override
+  public List<EvaluationCriteriaDomain> saveAll(
+      List<EvaluationCriteriaDomain> evaluationCriteriaDomains) {
+    return evaluationCriteriaJpaRepository
+        .saveAll(
+            evaluationCriteriaDomains.stream()
+                .map(evaluationCriteriaConverter::fromDomainToEntity)
+                .toList())
+        .stream()
+        .map(evaluationCriteriaConverter::fromEntityToDomain)
+        .toList();
+  }
+
+  @Override
   public List<EvaluationCriteriaDomain> findByOverallEvaluationId(Long overallEvaluationId) {
     return evaluationCriteriaJpaRepository
         .findByOverallEvaluationOverallEvaluationId(overallEvaluationId)

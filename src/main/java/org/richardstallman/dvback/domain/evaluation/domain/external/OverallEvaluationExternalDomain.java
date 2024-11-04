@@ -10,8 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class OverallEvaluationExternalDomain {
 
-  @JsonProperty("development_skill")
-  private EvaluationCriteriaExternalDomain developmentSkill;
+  @JsonProperty("job_fit")
+  private EvaluationCriteriaExternalDomain jobFit;
 
   @JsonProperty("growth_potential")
   private EvaluationCriteriaExternalDomain growthPotential;
