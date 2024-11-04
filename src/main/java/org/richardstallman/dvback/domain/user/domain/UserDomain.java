@@ -11,5 +11,5 @@ public class UserDomain {
   private String socialId;
   private String name;
   private String nickname;
-  private String profileImage;
+  private String s3ProfileImageUrl;
 }

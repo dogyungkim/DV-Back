@@ -32,18 +32,14 @@ public class UserEntity {
   @Column(nullable = false, unique = true)
   private String nickname;
 
-  @Column(name = "profile_image")
-  private String profileImage;
+  @Column(name = "s3_profile_image_url")
+  private String s3ProfileImageUrl;
 
-  public UserEntity(String socialId, String name, String nickname, String profileImage) {
+  public UserEntity(String socialId, String name, String nickname, String s3ProfileImageUrl) {
     super();
     this.socialId = socialId;
     this.name = name;
     this.nickname = nickname;
-    this.profileImage = profileImage;
-  }
-
-  public static UserEntity of(String socialId, String name, String nickname, String profileImage) {
-    return new UserEntity(socialId, name, nickname, profileImage);
+    this.s3ProfileImageUrl = s3ProfileImageUrl;
   }
 }

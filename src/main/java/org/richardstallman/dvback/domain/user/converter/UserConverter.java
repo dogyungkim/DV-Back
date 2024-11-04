@@ -15,7 +15,7 @@ public class UserConverter {
         userDomain.getSocialId(),
         userDomain.getName(),
         userDomain.getNickname(),
-        userDomain.getProfileImage());
+        userDomain.getS3ProfileImageUrl());
   }
 
   public UserDomain toDomain(UserEntity userEntity) {
@@ -24,7 +24,7 @@ public class UserConverter {
         .socialId(userEntity.getSocialId())
         .name(userEntity.getName())
         .nickname(userEntity.getNickname())
-        .profileImage(userEntity.getProfileImage())
+        .s3ProfileImageUrl(userEntity.getS3ProfileImageUrl())
         .build();
   }
 }
