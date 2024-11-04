@@ -37,10 +37,14 @@ public class TokenService {
   }
 
   public String createAccessToken(String refreshToken) {
-    RefreshTokenEntity storedRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken)
-        .orElseThrow(() -> new EntityNotFoundException("Refresh Token not found."));
-    UserDomain userDomain = userRepository.findById(storedRefreshToken.getUserId())
-        .orElseThrow(() -> new EntityNotFoundException("User not found."));
+    RefreshTokenEntity storedRefreshToken =
+        refreshTokenRepository
+            .findByRefreshToken(refreshToken)
+            .orElseThrow(() -> new EntityNotFoundException("Refresh Token not found."));
+    UserDomain userDomain =
+        userRepository
+            .findById(storedRefreshToken.getUserId())
+            .orElseThrow(() -> new EntityNotFoundException("User not found."));
 
     UserEntity userEntity = userConverter.toEntity(userDomain);
     return jwtUtil.generateAccessToken(userEntity.getId());

@@ -13,8 +13,9 @@ import org.springframework.stereotype.Component;
 public class OAuth2FailureHandler implements AuthenticationFailureHandler {
 
   @Override
-  public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-      AuthenticationException exception) throws IOException {
+  public void onAuthenticationFailure(
+      HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
+      throws IOException {
     log.info("request: {}", request);
     log.info("response: {}", response);
     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -1,6 +1,5 @@
 package org.richardstallman.dvback.global.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -26,8 +25,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   private final TokenService tokenService;
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
     Cookie[] cookies = request.getCookies();
     if (cookies == null) {
       filterChain.doFilter(request, response);
@@ -68,8 +68,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   private void setAuthInSecurityContext(String accessToken) {
     JwtClaimResponseDto jwtClaimResponseDto = jwtUtil.extractClaims(accessToken);
 
-    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-        jwtClaimResponseDto.getUserId(), null, null);
+    UsernamePasswordAuthenticationToken authentication =
+        new UsernamePasswordAuthenticationToken(jwtClaimResponseDto.getUserId(), null, null);
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
   }

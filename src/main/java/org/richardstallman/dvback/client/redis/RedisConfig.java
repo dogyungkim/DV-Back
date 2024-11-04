@@ -13,7 +13,8 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableRedisRepositories(basePackages = "org.richardstallman.dvback.global.jwt.refreshtoken.repository")
+@EnableRedisRepositories(
+    basePackages = "org.richardstallman.dvback.global.jwt.refreshtoken.repository")
 @RequiredArgsConstructor
 public class RedisConfig {
 
@@ -21,7 +22,8 @@ public class RedisConfig {
 
   @Bean
   public RedisConnectionFactory redisConnectionFactory() {
-    LettuceConnectionFactory factory = new LettuceConnectionFactory(redisProperties.getHost(), redisProperties.getPort());
+    LettuceConnectionFactory factory =
+        new LettuceConnectionFactory(redisProperties.getHost(), redisProperties.getPort());
     factory.afterPropertiesSet();
     return factory;
   }
@@ -34,7 +36,8 @@ public class RedisConfig {
   }
 
   @Bean
-  public RedisTemplate<String, Long> numericRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+  public RedisTemplate<String, Long> numericRedisTemplate(
+      RedisConnectionFactory redisConnectionFactory) {
     RedisTemplate<String, Long> redisTemplate = new RedisTemplate<>();
     redisTemplate.setConnectionFactory(redisConnectionFactory);
     redisTemplate.setKeySerializer(new StringRedisSerializer());

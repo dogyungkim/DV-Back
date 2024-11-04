@@ -10,7 +10,6 @@ public class OAuthAttributes {
   private final String nameAttributeKey;
   private final KakaoUserInfo kakaoUserInfo;
 
-
   private OAuthAttributes(String nameAttributeKey, KakaoUserInfo kakaoUserInfo) {
     this.nameAttributeKey = nameAttributeKey;
     this.kakaoUserInfo = kakaoUserInfo;
@@ -20,8 +19,8 @@ public class OAuthAttributes {
     return ofKakao(userNameAttributeName, attributes);
   }
 
-  private static OAuthAttributes ofKakao(String userNameAttributeName,
-      Map<String, Object> attributes) {
+  private static OAuthAttributes ofKakao(
+      String userNameAttributeName, Map<String, Object> attributes) {
     return new OAuthAttributes(userNameAttributeName, new KakaoUserInfo(attributes));
   }
 
@@ -30,7 +29,6 @@ public class OAuthAttributes {
         kakaoUserInfo.getId(),
         kakaoUserInfo.getNickname(),
         kakaoUserInfo.getNickname(),
-        kakaoUserInfo.getProfileImage()
-    );
+        kakaoUserInfo.getProfileImage());
   }
 }

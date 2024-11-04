@@ -70,11 +70,7 @@ public class JwtUtil {
 
   public boolean validateToken(String token) {
     try {
-      Jwts.parser()
-          .verifyWith(secretKey)
-          .build()
-          .parseSignedClaims(token)
-          .getPayload();
+      Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
       return false;
     } catch (ExpiredJwtException e) {
       log.error("Expired JWT token.");
@@ -89,11 +85,8 @@ public class JwtUtil {
   }
 
   public JwtClaimResponseDto extractClaims(String token) {
-    Claims payload = Jwts.parser()
-        .verifyWith(secretKey)
-        .build()
-        .parseSignedClaims(token)
-        .getPayload();
+    Claims payload =
+        Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
 
     Long userId = payload.get(USER_ID, Long.class);
 
@@ -102,16 +95,16 @@ public class JwtUtil {
 
   public boolean isExpired(String token) {
     try {
-      Date expiration = Jwts.parser()
-          .verifyWith(secretKey)
-          .build()
-          .parseSignedClaims(token)
-          .getPayload()
-          .getExpiration();
+      Date expiration =
+          Jwts.parser()
+              .verifyWith(secretKey)
+              .build()
+              .parseSignedClaims(token)
+              .getPayload()
+              .getExpiration();
       return expiration.before(new Date());
     } catch (ExpiredJwtException e) {
       return true;
     }
   }
-
 }

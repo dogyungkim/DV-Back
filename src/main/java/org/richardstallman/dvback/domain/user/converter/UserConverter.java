@@ -15,8 +15,7 @@ public class UserConverter {
         userDomain.getSocialId(),
         userDomain.getName(),
         userDomain.getNickname(),
-        userDomain.getProfileImage()
-    );
+        userDomain.getProfileImage());
   }
 
   public UserDomain toDomain(UserEntity userEntity) {

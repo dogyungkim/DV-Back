@@ -14,7 +14,9 @@ public class OAuth2CustomUser extends DefaultOAuth2User {
 
   public OAuth2CustomUser(
       Collection<? extends GrantedAuthority> authorities,
-      Map<String, Object> attributes, String nameAttributeKey, UserEntity userEntity) {
+      Map<String, Object> attributes,
+      String nameAttributeKey,
+      UserEntity userEntity) {
     super(authorities, attributes, nameAttributeKey);
     this.userEntity = userEntity;
   }

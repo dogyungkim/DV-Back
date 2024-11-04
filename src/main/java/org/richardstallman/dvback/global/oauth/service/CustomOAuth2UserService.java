@@ -15,7 +15,6 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -27,23 +26,30 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
   private final UserRepository userRepository;
   private final UserConverter userConverter;
 
-  OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
+  OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService =
+      new DefaultOAuth2UserService();
 
   @Override
-  public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
+  public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest)
+      throws OAuth2AuthenticationException {
     log.info("OAuth2 인증 처리 시작 - 사용자 정보 로드 중 (CustomOAuth2UserService.loadUser())");
 
     OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
     OAuth2User oAuth2User = delegate.loadUser(oAuth2UserRequest);
     Map<String, Object> attributes = oAuth2User.getAttributes();
-    String userNameAttributeName = oAuth2UserRequest.getClientRegistration()
-        .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
+    String userNameAttributeName =
+        oAuth2UserRequest
+            .getClientRegistration()
+            .getProviderDetails()
+            .getUserInfoEndpoint()
+            .getUserNameAttributeName();
     OAuthAttributes extractAttributes = OAuthAttributes.of(userNameAttributeName, attributes);
 
-    UserEntity userEntity = userConverter.toEntity(
-        userRepository.findBySocialId(extractAttributes.getKakaoUserInfo().getId())
-            .orElseGet(() -> saveUser(extractAttributes))
-    );
+    UserEntity userEntity =
+        userConverter.toEntity(
+            userRepository
+                .findBySocialId(extractAttributes.getKakaoUserInfo().getId())
+                .orElseGet(() -> saveUser(extractAttributes)));
 
     if (userEntity == null) {
       log.error("UserEntity가 null입니다. 사용자 정보가 제대로 로드되지 않았습니다.");
@@ -55,8 +61,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
         attributes,
         userNameAttributeName,
-        userEntity
-    );
+        userEntity);
   }
 
   private UserDomain saveUser(OAuthAttributes attributes) {

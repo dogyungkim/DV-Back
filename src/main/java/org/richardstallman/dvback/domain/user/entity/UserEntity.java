@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,9 +35,7 @@ public class UserEntity {
   @Column(name = "profile_image")
   private String profileImage;
 
-  public  UserEntity(String socialId, String name,
-      String nickname,
-      String profileImage) {
+  public UserEntity(String socialId, String name, String nickname, String profileImage) {
     super();
     this.socialId = socialId;
     this.name = name;
@@ -46,8 +43,7 @@ public class UserEntity {
     this.profileImage = profileImage;
   }
 
-  public static UserEntity of(String socialId, String name, String nickname,
-      String profileImage) {
+  public static UserEntity of(String socialId, String name, String nickname, String profileImage) {
     return new UserEntity(socialId, name, nickname, profileImage);
   }
 }

@@ -78,15 +78,15 @@ tasks.named('test') {
     finalizedBy asciidoctor
 }
 
-//tasks.named('asciidoctor') {
-//    dependsOn test
-//    configurations 'asciidoctorExt'
-//    inputs.dir snippetsDir
-//    finalizedBy copyDocument
-//    doFirst {
-//        delete file('src/main/resources/static/docs')
-//    }
-//}
+tasks.named('asciidoctor') {
+    dependsOn test
+    configurations 'asciidoctorExt'
+    inputs.dir snippetsDir
+    finalizedBy copyDocument
+    doFirst {
+        delete file('src/main/resources/static/docs')
+    }
+}
 
 task copyDocument(type: Copy) {
     dependsOn asciidoctor

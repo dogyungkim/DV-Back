@@ -10,8 +10,7 @@ import org.springframework.data.redis.core.RedisHash;
 @RedisHash("refreshToken")
 public class RefreshTokenEntity {
 
-  @Id
-  private String refreshToken;
+  @Id private String refreshToken;
   private Long userId;
 
   public RefreshTokenEntity(String refreshToken, Long userId) {

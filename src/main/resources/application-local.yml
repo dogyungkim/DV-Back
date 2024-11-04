@@ -16,7 +16,7 @@ spring:
     import: classpath:/properties/local/initial_data.yml, optional:file:.env[.properties]
   data:
     redis:
-      host: localhost
+      host: ${REDIS_HOST}
       port: 6379
   security:
     oauth2:

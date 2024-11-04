@@ -26,7 +26,8 @@ public class UserController {
     cookieService.createExpiredCookie(response, JwtUtil.ACCESS_TOKEN);
     cookieService.createExpiredCookie(response, JwtUtil.REFRESH_TOKEN);
 
-    String refreshToken = tokenService.getTokenFromCookies(request.getCookies(), JwtUtil.REFRESH_TOKEN);
+    String refreshToken =
+        tokenService.getTokenFromCookies(request.getCookies(), JwtUtil.REFRESH_TOKEN);
     if (refreshToken != null) {
       refreshTokenRepository.deleteById(refreshToken);
     }
