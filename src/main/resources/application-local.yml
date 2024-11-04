@@ -10,10 +10,32 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  mvc:
-    static-path-pattern: /static/**
   config:
     import: classpath:/properties/local/initial_data.yml, optional:file:.env[.properties]
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: ${KAKAO_REDIRECT_URI}
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            client-name: kakao
+            scope: profile_nickname, profile_image
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+  main:
+    allow-bean-definition-overriding: true
 
 python:
   server:
@@ -30,3 +52,18 @@ cloud:
     credentials:
       access-key: ${ACCESS_KEY}
       secret-key: ${SECRET_KEY}
+
+app:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
+    access-expiration: 3600000
+    refresh-expiration: 604800000
+  properties:
+    mainDomain: localhost
+    frontendDomain: http://localhost:3000
+    cookie:
+      sameSite: "None"
+cors:
+  allowed-origins:
+    list:
+      ${ALLOWED_ORIGINS}
