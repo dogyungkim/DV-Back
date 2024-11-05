@@ -21,8 +21,6 @@ import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.richardstallman.dvback.domain.user.service.UserService;
 import org.richardstallman.dvback.global.jwt.refreshtoken.repository.RefreshTokenRepository;
-import org.richardstallman.dvback.global.oauth.service.CookieService;
-import org.richardstallman.dvback.global.oauth.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -43,8 +41,6 @@ public class UserControllerTest {
   @Autowired private ObjectMapper objectMapper;
 
   @MockBean private UserService userService;
-  @MockBean private TokenService tokenService;
-  @MockBean private CookieService cookieService;
   @MockBean private RefreshTokenRepository refreshTokenRepository;
 
   @Test
