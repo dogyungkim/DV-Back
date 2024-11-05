@@ -48,7 +48,6 @@ public class UserConverter {
         kakaoUserInfo.getNickname(),
         kakaoUserInfo.getProfileImage(),
         null,
-        null
-    );
+        null);
   }
 }

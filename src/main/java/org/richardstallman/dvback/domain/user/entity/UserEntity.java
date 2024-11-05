@@ -42,11 +42,18 @@ public class UserEntity {
 
   @Column private Date birthdate;
 
-//  @OneToOne(fetch = FetchType.EAGER)
-//  @JoinColumn(name = "job_id", nullable = false)
-//  private JobEntity job;
+  //  @OneToOne(fetch = FetchType.EAGER)
+  //  @JoinColumn(name = "job_id", nullable = false)
+  //  private JobEntity job;
 
-  public UserEntity(String socialId, String email, String name, String nickname, String s3ProfileImageUrl, CommonConstants.Gender gender, JobEntity job) {
+  public UserEntity(
+      String socialId,
+      String email,
+      String name,
+      String nickname,
+      String s3ProfileImageUrl,
+      CommonConstants.Gender gender,
+      JobEntity job) {
     this.socialId = socialId;
     this.email = email;
     this.name = name;
@@ -55,22 +62,22 @@ public class UserEntity {
     this.leave = false;
     this.gender = gender;
     this.birthdate = new Date();
-//    this.job = job;
+    //    this.job = job;
   }
 
-  public UserEntity updatedUserEntity(String nickname, Date birthdate, CommonConstants.Gender gender) {
+  public UserEntity updatedUserEntity(
+      String nickname, Date birthdate, CommonConstants.Gender gender) {
     return new UserEntity(
-            this.id,
-            this.socialId,
-            this.email,
-            this.name,
-            nickname,
-            this.s3ProfileImageUrl,
-            this.leave,
-            gender,
-            birthdate
-//            this.job
-    );
+        this.id,
+        this.socialId,
+        this.email,
+        this.name,
+        nickname,
+        this.s3ProfileImageUrl,
+        this.leave,
+        gender,
+        birthdate
+        //            this.job
+        );
   }
-
 }

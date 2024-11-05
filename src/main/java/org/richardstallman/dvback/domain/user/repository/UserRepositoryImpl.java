@@ -25,6 +25,7 @@ public class UserRepositoryImpl implements UserRepository {
 
   @Override
   public UserDomain save(UserDomain userDomain) {
-    return userConverter.fromEntityToDomain(userJpaRepository.save(userConverter.fromDomainToEntity(userDomain)));
+    return userConverter.fromEntityToDomain(
+        userJpaRepository.save(userConverter.fromDomainToEntity(userDomain)));
   }
 }

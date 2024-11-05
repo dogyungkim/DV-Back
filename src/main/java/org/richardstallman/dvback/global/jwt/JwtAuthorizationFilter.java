@@ -71,9 +71,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     UsernamePasswordAuthenticationToken authentication =
-            new UsernamePasswordAuthenticationToken(jwtClaimResponseDto.getUserId(), null, null);
+        new UsernamePasswordAuthenticationToken(jwtClaimResponseDto.getUserId(), null, null);
     SecurityContextHolder.getContext().setAuthentication(authentication);
-
   }
 
   private String extractCookie(Cookie[] cookies, String cookieName) {

@@ -5,5 +5,5 @@ import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 
 public interface UserService {
 
-    UserResponseDto updateUserInfo(Long userId, UserRequestDto userRequestDto);
+  UserResponseDto updateUserInfo(Long userId, UserRequestDto userRequestDto);
 }

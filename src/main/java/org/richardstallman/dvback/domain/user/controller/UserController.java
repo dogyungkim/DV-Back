@@ -6,14 +6,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
-import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationRequestDto;
-import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
-import org.richardstallman.dvback.domain.user.entity.UserEntity;
 import org.richardstallman.dvback.domain.user.service.UserService;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
-import org.richardstallman.dvback.global.jwt.domain.response.JwtClaimResponseDto;
 import org.richardstallman.dvback.global.jwt.refreshtoken.repository.RefreshTokenRepository;
 import org.richardstallman.dvback.global.oauth.service.CookieService;
 import org.richardstallman.dvback.global.oauth.service.TokenService;
@@ -25,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value ="/user", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
   private final TokenService tokenService;
@@ -49,11 +45,9 @@ public class UserController {
 
   @PutMapping("/info")
   public ResponseEntity<DvApiResponse<UserResponseDto>> updateUserInfo(
-          @AuthenticationPrincipal Long userId,
-          @Valid @RequestBody final UserRequestDto userRequestDto) {
-    final UserResponseDto userResponseDto =
-            userService.updateUserInfo(userId, userRequestDto);
+      @AuthenticationPrincipal Long userId,
+      @Valid @RequestBody final UserRequestDto userRequestDto) {
+    final UserResponseDto userResponseDto = userService.updateUserInfo(userId, userRequestDto);
     return ResponseEntity.ok(DvApiResponse.of(userResponseDto));
   }
-
 }
