@@ -85,6 +85,13 @@ public class CommonConstants {
 
   @Getter
   @AllArgsConstructor
+  public enum Gender {
+    WOMAN, // 여성
+    MAN // 남성
+  }
+
+  @Getter
+  @AllArgsConstructor
   public enum FileType {
     COVER_LETTER("cover-letter"),
     RESUME("resume"),
