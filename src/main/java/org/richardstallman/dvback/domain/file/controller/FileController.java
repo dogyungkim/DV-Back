@@ -6,6 +6,7 @@ import org.richardstallman.dvback.client.s3.service.S3Service;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,10 +20,11 @@ public class FileController {
 
   private final S3Service s3Service;
 
-  // path variable의 user id는 user 구현 후 요청 정보로 뽑아낼거라 삭제 예정
   @GetMapping("/cover-letter/{userId}/{interviewId}/{fileName}/upload-url")
   public ResponseEntity<String> getCoverLetterUploadUrlWhenInputInterviewInfo(
-      @PathVariable Long userId, @PathVariable Long interviewId, @PathVariable String fileName) {
+      @AuthenticationPrincipal Long userId,
+      @PathVariable Long interviewId,
+      @PathVariable String fileName) {
     log.info(
         "Generating preSigned URL for file upload: interviewId={}, fileName={}",
         interviewId,
@@ -34,10 +36,9 @@ public class FileController {
     return ResponseEntity.ok(preSignedUrl);
   }
 
-  // path variable의 user id는 user 구현 후 요청 정보로 뽑아낼거라 삭제 예정
   @GetMapping("/cover-letter/{userId}/{fileName}/upload-url")
   public ResponseEntity<String> getCoverLetterUploadUrlOnMyPage(
-      @PathVariable Long userId, @PathVariable String fileName) {
+      @AuthenticationPrincipal Long userId, @PathVariable String fileName) {
     log.info("Generating preSigned URL for file upload: fileName={}", fileName);
 
     String preSignedUrl =
