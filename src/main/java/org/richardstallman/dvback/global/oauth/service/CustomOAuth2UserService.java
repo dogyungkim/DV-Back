@@ -47,7 +47,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuthAttributes.of(userNameAttributeName, attributes, userConverter);
 
     UserEntity userEntity =
-        userConverter.toEntity(
+        userConverter.fromDomainToEntity(
             userRepository
                 .findBySocialId(extractAttributes.getKakaoUserInfo().getId())
                 .orElseGet(() -> saveUser(extractAttributes)));
@@ -67,6 +67,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
   private UserDomain saveUser(OAuthAttributes attributes) {
     UserEntity createdUser = attributes.toEntity();
-    return userRepository.save(userConverter.toDomain(createdUser));
+    return userRepository.save(userConverter.fromEntityToDomain(createdUser));
   }
 }
