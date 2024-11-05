@@ -36,10 +36,11 @@ public class InterviewEntity extends BaseEntity {
   @SequenceGenerator(name = "interview_seq", sequenceName = "interview_id_seq", allocationSize = 1)
   private Long interviewId;
 
-  //  변경 예정
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "id", nullable = false)
   private UserEntity user;
+
+  @NotNull(message = "Interview Title is required") private String interviewTitle;
 
   @NotNull(message = "Interview Status is required") @Enumerated(EnumType.STRING)
   private InterviewStatus interviewStatus;
@@ -63,6 +64,7 @@ public class InterviewEntity extends BaseEntity {
 
   public InterviewEntity(
       UserEntity user,
+      String interviewTitle,
       InterviewStatus interviewStatus,
       InterviewType interviewType,
       InterviewMethod interviewMethod,
@@ -71,6 +73,7 @@ public class InterviewEntity extends BaseEntity {
       CoverLetterEntity coverLetter) {
     super();
     this.user = user;
+    this.interviewTitle = interviewTitle;
     this.interviewStatus = interviewStatus;
     this.interviewType = interviewType;
     this.interviewMethod = interviewMethod;

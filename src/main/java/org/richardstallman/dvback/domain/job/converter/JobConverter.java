@@ -11,13 +11,17 @@ public class JobConverter {
 
   public JobEntity toEntity(JobDomain jobDomain) {
     return new JobEntity(
-        jobDomain.getJobId(), jobDomain.getJobName(), jobDomain.getJobDescription());
+        jobDomain.getJobId(),
+        jobDomain.getJobName(),
+        jobDomain.getJobNameKorean(),
+        jobDomain.getJobDescription());
   }
 
   public JobDomain toDomain(JobEntity jobEntity) {
     return JobDomain.builder()
         .jobId(jobEntity.getJobId())
         .jobName(jobEntity.getJobName())
+        .jobNameKorean(jobEntity.getJobNameKorean())
         .jobDescription(jobEntity.getJobDescription())
         .build();
   }

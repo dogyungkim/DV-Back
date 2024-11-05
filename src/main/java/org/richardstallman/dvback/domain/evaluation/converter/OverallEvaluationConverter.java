@@ -5,11 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.response.AnswerEvaluationResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationResponseDto;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationUserInfoResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.response.EvaluationCriteriaResponseDto;
 import org.richardstallman.dvback.domain.evaluation.entity.overall.OverallEvaluationEntity;
 import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -43,5 +45,12 @@ public class OverallEvaluationConverter {
         interviewConverter.fromDomainToDto(interviewDomain, fileResponseDtos),
         evaluationCriteriaResponseDtos,
         answerEvaluationResponseDtos);
+  }
+
+  public OverallEvaluationUserInfoResponseDto toUserInfoResponseDto(
+      InterviewEvaluationResponseDto interviewEvaluationResponseDto) {
+    return new OverallEvaluationUserInfoResponseDto(
+        interviewEvaluationResponseDto.interviewTitle(),
+        interviewEvaluationResponseDto.interviewId());
   }
 }

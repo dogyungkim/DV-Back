@@ -42,4 +42,11 @@ public class FakeInterviewRepository implements InterviewRepository {
         .findAny()
         .orElse(null);
   }
+
+  @Override
+  public List<InterviewDomain> findInterviewsByUserId(Long userId) {
+    return data.stream()
+        .filter(item -> Objects.equals(item.getUserDomain().getId(), userId))
+        .toList();
+  }
 }

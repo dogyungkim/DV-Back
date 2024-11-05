@@ -6,6 +6,7 @@ import org.richardstallman.dvback.domain.job.domain.JobDomain;
 
 public record InterviewQuestionResponseDto(
     @NotNull Long interviewId,
+    @NotNull String interviewTitle,
     @NotNull CommonConstants.InterviewStatus interviewStatus,
     @NotNull CommonConstants.InterviewType interviewType,
     @NotNull CommonConstants.InterviewMethod interviewMethod,

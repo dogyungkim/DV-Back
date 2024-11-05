@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OverallEvaluationJpaRepository
-    extends JpaRepository<OverallEvaluationEntity, Long> {}
+    extends JpaRepository<OverallEvaluationEntity, Long> {
+
+  OverallEvaluationEntity findByInterviewInterviewId(Long interviewInterviewId);
+}

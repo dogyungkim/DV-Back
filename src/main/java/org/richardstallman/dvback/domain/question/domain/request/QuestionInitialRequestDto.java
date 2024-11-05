@@ -8,6 +8,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 
 public record QuestionInitialRequestDto(
     @NotNull Long interviewId,
+    @NotNull String interviewTitle,
     @NotNull InterviewStatus interviewStatus,
     @NotNull InterviewType interviewType,
     @NotNull InterviewMethod interviewMethod,

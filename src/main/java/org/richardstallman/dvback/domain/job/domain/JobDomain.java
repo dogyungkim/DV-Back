@@ -9,5 +9,6 @@ public class JobDomain {
 
   private Long jobId;
   private String jobName;
+  private String jobNameKorean;
   private String jobDescription;
 }
