@@ -50,4 +50,11 @@ public class UserController {
     final UserResponseDto userResponseDto = userService.updateUserInfo(userId, userRequestDto);
     return ResponseEntity.ok(DvApiResponse.of(userResponseDto));
   }
+
+  @GetMapping("/info")
+  public ResponseEntity<DvApiResponse<UserResponseDto>> getUserInfo(
+      @AuthenticationPrincipal Long userId) {
+    final UserResponseDto userResponseDto = userService.getUserInfo(userId);
+    return ResponseEntity.ok(DvApiResponse.of(userResponseDto));
+  }
 }

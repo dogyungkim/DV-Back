@@ -21,7 +21,6 @@ public class UserServiceImpl implements UserService {
 
   @Transactional
   public UserResponseDto updateUserInfo(Long userId, UserRequestDto userRequestDto) {
-    log.info("updateUserInfo");
     UserDomain user = findUserById(userId);
     UserEntity userEntity = userConverter.fromDomainToEntity(user);
 
