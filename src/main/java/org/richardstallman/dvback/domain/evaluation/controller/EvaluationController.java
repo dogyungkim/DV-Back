@@ -27,7 +27,7 @@ public class EvaluationController {
   private final EvaluationService evaluationService;
 
   @PostMapping
-  public ResponseEntity<DvApiResponse<OverallEvaluationResponseDto>> getOverallEvaluation(
+  public ResponseEntity<DvApiResponse<OverallEvaluationResponseDto>> getOverallEvaluationFromPython(
       @Valid @RequestBody final OverallEvaluationRequestDto overallEvaluationRequestDto) {
     final OverallEvaluationResponseDto overallEvaluationResponseDto =
         evaluationService.getOverallEvaluation(overallEvaluationRequestDto);

@@ -8,7 +8,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseBody;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -24,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.richardstallman.dvback.client.s3.service.S3Service;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
 import org.richardstallman.dvback.domain.file.domain.response.CoverLetterResponseDto;
+import org.richardstallman.dvback.domain.file.domain.response.PreSignedUrlResponseDto;
 import org.richardstallman.dvback.domain.file.service.CoverLetterService;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +61,7 @@ public class FileControllerTest {
     Long interviewId = 2L;
     String fileName = "testFile.txt";
     String expectedUrl = "https://s3.aws.com/testFile.txt";
+    PreSignedUrlResponseDto preSignedUrlResponseDto = new PreSignedUrlResponseDto(expectedUrl);
 
     String accessToken = jwtUtil.generateAccessToken(1L);
     MockCookie authCookie = new MockCookie("access_token", accessToken);
@@ -68,7 +69,7 @@ public class FileControllerTest {
     // Mock S3Service behavior
     when(s3Service.createPreSignedURL(
             eq(FileType.COVER_LETTER), eq(fileName), eq(userId), eq(interviewId), isNull()))
-        .thenReturn(expectedUrl);
+        .thenReturn(preSignedUrlResponseDto);
 
     // When & Then
     ResultActions resultActions =
@@ -81,7 +82,7 @@ public class FileControllerTest {
     resultActions
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(content().string(expectedUrl));
+        .andExpect(jsonPath("data.preSignedUrl").value(expectedUrl));
 
     // REST Docs
     resultActions.andDo(
@@ -91,7 +92,12 @@ public class FileControllerTest {
             pathParameters(
                 parameterWithName("interviewId").description("면접 ID"),
                 parameterWithName("fileName").description("업로드할 파일명")),
-            responseBody()));
+            responseFields(
+                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                fieldWithPath("data.preSignedUrl")
+                    .type(JsonFieldType.STRING)
+                    .description("aws s3 preSigned Url"))));
   }
 
   @Test
@@ -102,6 +108,7 @@ public class FileControllerTest {
     Long userId = 1L;
     String fileName = "testFile.txt";
     String expectedUrl = "https://s3.aws.com/testFile.txt";
+    PreSignedUrlResponseDto preSignedUrlResponseDto = new PreSignedUrlResponseDto(expectedUrl);
 
     String accessToken = jwtUtil.generateAccessToken(userId);
     MockCookie authCookie = new MockCookie("access_token", accessToken);
@@ -109,7 +116,7 @@ public class FileControllerTest {
     // Mock S3Service behavior
     when(s3Service.createPreSignedURL(
             eq(FileType.COVER_LETTER), eq(fileName), eq(userId), isNull(), isNull()))
-        .thenReturn(expectedUrl);
+        .thenReturn(preSignedUrlResponseDto);
 
     // When & Then
     ResultActions resultActions =
@@ -122,7 +129,7 @@ public class FileControllerTest {
     resultActions
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(content().string(expectedUrl));
+        .andExpect(jsonPath("data.preSignedUrl").value(expectedUrl));
 
     // REST Docs
     resultActions.andDo(
@@ -130,7 +137,12 @@ public class FileControllerTest {
             "마이페이지에서 PreSigned URL 생성",
             preprocessResponse(prettyPrint()),
             pathParameters(parameterWithName("fileName").description("업로드할 파일명")),
-            responseBody()));
+            responseFields(
+                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                fieldWithPath("data.preSignedUrl")
+                    .type(JsonFieldType.STRING)
+                    .description("aws s3 PreSigned Url"))));
   }
 
   @Test
