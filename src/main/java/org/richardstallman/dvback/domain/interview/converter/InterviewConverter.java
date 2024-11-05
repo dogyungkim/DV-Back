@@ -1,16 +1,21 @@
 package org.richardstallman.dvback.domain.interview.converter;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.domain.file.converter.CoverLetterConverter;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
+import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewQuestionResponseDto;
 import org.richardstallman.dvback.domain.interview.entity.InterviewEntity;
 import org.richardstallman.dvback.domain.job.converter.JobConverter;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
+import org.richardstallman.dvback.domain.user.converter.UserConverter;
+import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,11 +24,12 @@ public class InterviewConverter {
 
   private final JobConverter jobConverter;
   private final CoverLetterConverter coverLetterConverter;
+  private final UserConverter userConverter;
 
   public InterviewEntity fromDomainToEntity(InterviewDomain interviewDomain) {
     return new InterviewEntity(
-        interviewDomain.getUserId(),
         interviewDomain.getInterviewId(),
+        userConverter.fromDomainToEntity(interviewDomain.getUserDomain()),
         interviewDomain.getInterviewStatus(),
         interviewDomain.getInterviewType(),
         interviewDomain.getInterviewMethod(),
@@ -34,7 +40,7 @@ public class InterviewConverter {
 
   public InterviewEntity fromDomainToEntityWhenCreate(InterviewDomain interviewDomain) {
     return new InterviewEntity(
-        interviewDomain.getUserId(),
+        userConverter.fromDomainToEntity(interviewDomain.getUserDomain()),
         interviewDomain.getInterviewStatus(),
         interviewDomain.getInterviewType(),
         interviewDomain.getInterviewMethod(),
@@ -45,7 +51,7 @@ public class InterviewConverter {
 
   public InterviewDomain fromEntityToDomain(InterviewEntity interviewEntity) {
     return InterviewDomain.builder()
-        .userId(interviewEntity.getUserId())
+        .userDomain(userConverter.fromEntityToDomain(interviewEntity.getUser()))
         .interviewId(interviewEntity.getInterviewId())
         .interviewStatus(interviewEntity.getInterviewStatus())
         .interviewType(interviewEntity.getInterviewType())
@@ -57,9 +63,11 @@ public class InterviewConverter {
   }
 
   public InterviewDomain fromDtoToDomainWithStatusInitial(
-      InterviewCreateRequestDto interviewCreateRequestDto, JobDomain job) {
+      InterviewCreateRequestDto interviewCreateRequestDto,
+      JobDomain job,
+      UserResponseDto userResponseDto) {
     return InterviewDomain.builder()
-        .userId(interviewCreateRequestDto.userId())
+        .userDomain(userConverter.fromResponseDtoToDomain(userResponseDto))
         .interviewStatus(InterviewStatus.INITIAL)
         .interviewType(interviewCreateRequestDto.interviewType())
         .interviewMethod(interviewCreateRequestDto.interviewMethod())
@@ -71,9 +79,10 @@ public class InterviewConverter {
   public InterviewDomain fromDtoToDomainWithStatusInitialWithModeReal(
       InterviewCreateRequestDto interviewCreateRequestDto,
       JobDomain job,
-      CoverLetterDomain coverLetterDomain) {
+      CoverLetterDomain coverLetterDomain,
+      UserResponseDto userResponseDto) {
     return InterviewDomain.builder()
-        .userId(interviewCreateRequestDto.userId())
+        .userDomain(userConverter.fromResponseDtoToDomain(userResponseDto))
         .interviewStatus(InterviewStatus.INITIAL)
         .interviewType(interviewCreateRequestDto.interviewType())
         .interviewMethod(interviewCreateRequestDto.interviewMethod())
@@ -83,7 +92,8 @@ public class InterviewConverter {
         .build();
   }
 
-  public InterviewCreateResponseDto fromDomainToDto(InterviewDomain interviewDomain) {
+  public InterviewCreateResponseDto fromDomainToDto(
+      InterviewDomain interviewDomain, List<FileResponseDto> fileResponseDtos) {
     return new InterviewCreateResponseDto(
         interviewDomain.getInterviewId(),
         interviewDomain.getInterviewStatus(),
@@ -91,7 +101,18 @@ public class InterviewConverter {
         interviewDomain.getInterviewMethod(),
         interviewDomain.getInterviewMode(),
         interviewDomain.getJob(),
-        interviewDomain.getCoverLetter());
+        fileResponseDtos);
+  }
+
+  public InterviewQuestionResponseDto fromDomainToQuestionResponseDto(
+      InterviewDomain interviewDomain) {
+    return new InterviewQuestionResponseDto(
+        interviewDomain.getInterviewId(),
+        interviewDomain.getInterviewStatus(),
+        interviewDomain.getInterviewType(),
+        interviewDomain.getInterviewMethod(),
+        interviewDomain.getInterviewMode(),
+        interviewDomain.getJob());
   }
 
   public InterviewDomain fromInterviewInitialQuestionRequestDtoToDomain(

@@ -8,9 +8,9 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.answer.converter.AnswerConverter;
 import org.richardstallman.dvback.domain.answer.repository.AnswerRepository;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
-import org.richardstallman.dvback.domain.file.service.CoverLetterService;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
-import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewQuestionResponseDto;
 import org.richardstallman.dvback.domain.interview.repository.InterviewRepository;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.job.service.JobService;
@@ -42,7 +42,6 @@ public class QuestionServiceImpl implements QuestionService {
   private final QuestionRepository questionRepository;
   private final AnswerRepository answerRepository;
   private final AnswerConverter answerConverter;
-  private final CoverLetterService coverLetterService;
 
   @Override
   @Transactional(propagation = Propagation.REQUIRED)
@@ -90,13 +89,15 @@ public class QuestionServiceImpl implements QuestionService {
                 getCreatedQuestionDomain(
                     questionInitialRequestDto, q, jobDomain, coverLetterDomain));
 
-    InterviewCreateResponseDto interviewCreateResponseDto =
-        interviewConverter.fromDomainToDto(
-            interviewConverter.fromInterviewInitialQuestionRequestDtoToDomain(
-                questionInitialRequestDto, jobDomain, coverLetterDomain));
+    InterviewDomain interviewDomain =
+        interviewConverter.fromInterviewInitialQuestionRequestDtoToDomain(
+            questionInitialRequestDto, jobDomain, coverLetterDomain);
+
+    InterviewQuestionResponseDto interviewQuestionResponseDto =
+        interviewConverter.fromDomainToQuestionResponseDto(interviewDomain);
 
     return questionConverter.fromQuestionExternalDomainToQuestionResponseDto(
-        firstQuestion, interviewCreateResponseDto, nextQuestion, hasNext);
+        firstQuestion, interviewQuestionResponseDto, nextQuestion, hasNext);
   }
 
   @Override
@@ -117,7 +118,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     return questionConverter.fromQuestionExternalDomainToQuestionResponseDto(
         previousQuestion,
-        interviewConverter.fromDomainToDto(previousQuestion.getInterviewDomain()),
+        interviewConverter.fromDomainToQuestionResponseDto(previousQuestion.getInterviewDomain()),
         nextQuestion,
         hasNext);
   }

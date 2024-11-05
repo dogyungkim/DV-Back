@@ -21,6 +21,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatu
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.file.entity.CoverLetterEntity;
 import org.richardstallman.dvback.domain.job.entity.JobEntity;
+import org.richardstallman.dvback.domain.user.entity.UserEntity;
 import org.richardstallman.dvback.global.entity.BaseEntity;
 
 @Entity
@@ -36,7 +37,9 @@ public class InterviewEntity extends BaseEntity {
   private Long interviewId;
 
   //  변경 예정
-  @NotNull(message = "User is required") private Long userId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "id", nullable = false)
+  private UserEntity user;
 
   @NotNull(message = "Interview Status is required") @Enumerated(EnumType.STRING)
   private InterviewStatus interviewStatus;
@@ -59,7 +62,7 @@ public class InterviewEntity extends BaseEntity {
   private CoverLetterEntity coverLetter;
 
   public InterviewEntity(
-      Long userId,
+      UserEntity user,
       InterviewStatus interviewStatus,
       InterviewType interviewType,
       InterviewMethod interviewMethod,
@@ -67,7 +70,7 @@ public class InterviewEntity extends BaseEntity {
       JobEntity job,
       CoverLetterEntity coverLetter) {
     super();
-    this.userId = userId;
+    this.user = user;
     this.interviewStatus = interviewStatus;
     this.interviewType = interviewType;
     this.interviewMethod = interviewMethod;

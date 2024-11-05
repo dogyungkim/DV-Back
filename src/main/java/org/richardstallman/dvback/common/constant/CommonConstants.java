@@ -95,6 +95,7 @@ public class CommonConstants {
   public enum FileType {
     COVER_LETTER("cover-letter"),
     RESUME("resume"),
+    PORTFOLIO("portfolio"),
     AUDIO_ANSWER("audio-answer"),
     AUDIO_QUESTION("audio-question"),
     VIDEO_ANSWER("video-answer"),

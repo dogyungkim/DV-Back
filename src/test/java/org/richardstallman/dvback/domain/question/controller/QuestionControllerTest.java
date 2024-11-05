@@ -22,8 +22,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousRequestDto;
-import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
-import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewQuestionResponseDto;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionNextRequestDto;
@@ -61,7 +60,7 @@ public class QuestionControllerTest {
             1L,
             InterviewStatus.FILE_UPLOADED,
             InterviewType.TECHNICAL,
-            InterviewMethod.VIDEO,
+            InterviewMethod.CHAT,
             InterviewMode.GENERAL,
             "",
             1L);
@@ -70,22 +69,16 @@ public class QuestionControllerTest {
     when(questionService.getInitialQuestion(any()))
         .thenReturn(
             new QuestionResponseDto(
-                new InterviewCreateResponseDto(
+                new InterviewQuestionResponseDto(
                     1L,
                     InterviewStatus.FILE_UPLOADED,
                     InterviewType.TECHNICAL,
-                    InterviewMethod.VIDEO,
+                    InterviewMethod.CHAT,
                     InterviewMode.GENERAL,
                     JobDomain.builder()
                         .jobId(1L)
                         .jobName("BACK_END")
                         .jobDescription("백엔드 직무입니다.")
-                        .build(),
-                    CoverLetterDomain.builder()
-                        .coverLetterId(1L)
-                        .userId(1L)
-                        .fileName("file_name")
-                        .s3FileUrl("url")
                         .build()),
                 "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
                 2L,
@@ -104,7 +97,7 @@ public class QuestionControllerTest {
         .andExpect(jsonPath("data.interview.interviewId").value(1))
         .andExpect(jsonPath("data.interview.interviewStatus").value("FILE_UPLOADED"))
         .andExpect(jsonPath("data.interview.interviewType").value("TECHNICAL"))
-        .andExpect(jsonPath("data.interview.interviewMethod").value("VIDEO"))
+        .andExpect(jsonPath("data.interview.interviewMethod").value("CHAT"))
         .andExpect(jsonPath("data.interview.interviewMode").value("GENERAL"))
         .andExpect(jsonPath("data.interview.job.jobId").value(1L))
         .andExpect(jsonPath("data.interview.job.jobName").value("BACK_END"))
@@ -158,18 +151,6 @@ public class QuestionControllerTest {
                 fieldWithPath("data.interview.job.jobDescription")
                     .type(JsonFieldType.STRING)
                     .description("직무 설명"),
-                fieldWithPath("data.interview.coverLetter.coverLetterId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("자소서 식별자"),
-                fieldWithPath("data.interview.coverLetter.userId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("자소서 유저 식별자"),
-                fieldWithPath("data.interview.coverLetter.fileName")
-                    .type(JsonFieldType.STRING)
-                    .description("자소서 이름"),
-                fieldWithPath("data.interview.coverLetter.s3FileUrl")
-                    .type(JsonFieldType.STRING)
-                    .description("자소서 저장 URL"),
                 fieldWithPath("data.questionText").type(JsonFieldType.STRING).description("질문 내용"),
                 fieldWithPath("data.nextQuestionId")
                     .type(JsonFieldType.NUMBER)
@@ -197,7 +178,7 @@ public class QuestionControllerTest {
     when(questionService.getInitialQuestion(any()))
         .thenReturn(
             new QuestionResponseDto(
-                new InterviewCreateResponseDto(
+                new InterviewQuestionResponseDto(
                     1L,
                     InterviewStatus.FILE_UPLOADED,
                     InterviewType.TECHNICAL,
@@ -207,12 +188,6 @@ public class QuestionControllerTest {
                         .jobId(1L)
                         .jobName("BACK_END")
                         .jobDescription("백엔드 직무입니다.")
-                        .build(),
-                    CoverLetterDomain.builder()
-                        .coverLetterId(1L)
-                        .userId(1L)
-                        .fileName("file_name")
-                        .s3FileUrl("cover_letter_s3_url/file_name")
                         .build()),
                 "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
                 2L,
@@ -285,18 +260,6 @@ public class QuestionControllerTest {
                 fieldWithPath("data.interview.job.jobDescription")
                     .type(JsonFieldType.STRING)
                     .description("직무 설명"),
-                fieldWithPath("data.interview.coverLetter.coverLetterId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("자소서 식별자"),
-                fieldWithPath("data.interview.coverLetter.userId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("자소서 유저 식별자"),
-                fieldWithPath("data.interview.coverLetter.fileName")
-                    .type(JsonFieldType.STRING)
-                    .description("자소서 이름"),
-                fieldWithPath("data.interview.coverLetter.s3FileUrl")
-                    .type(JsonFieldType.STRING)
-                    .description("자소서 저장 URL"),
                 fieldWithPath("data.questionText").type(JsonFieldType.STRING).description("질문 내용"),
                 fieldWithPath("data.nextQuestionId")
                     .type(JsonFieldType.NUMBER)
@@ -319,7 +282,7 @@ public class QuestionControllerTest {
     when(questionService.getNextQuestion(any()))
         .thenReturn(
             new QuestionResponseDto(
-                new InterviewCreateResponseDto(
+                new InterviewQuestionResponseDto(
                     1L,
                     InterviewStatus.FILE_UPLOADED,
                     InterviewType.TECHNICAL,
@@ -329,12 +292,6 @@ public class QuestionControllerTest {
                         .jobId(1L)
                         .jobName("BACK_END")
                         .jobDescription("백엔드 직무입니다.")
-                        .build(),
-                    CoverLetterDomain.builder()
-                        .coverLetterId(1L)
-                        .userId(1L)
-                        .fileName("file_name")
-                        .s3FileUrl("url")
                         .build()),
                 "리액트와 스프링 간의 연동 경험을 설명해 주세요.",
                 3L,
@@ -409,18 +366,6 @@ public class QuestionControllerTest {
                 fieldWithPath("data.interview.job.jobDescription")
                     .type(JsonFieldType.STRING)
                     .description("직무 설명"),
-                fieldWithPath("data.interview.coverLetter.coverLetterId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("자소서 식별자"),
-                fieldWithPath("data.interview.coverLetter.userId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("자소서 유저 식별자"),
-                fieldWithPath("data.interview.coverLetter.fileName")
-                    .type(JsonFieldType.STRING)
-                    .description("자소서 이름"),
-                fieldWithPath("data.interview.coverLetter.s3FileUrl")
-                    .type(JsonFieldType.STRING)
-                    .description("자소서 저장 URL"),
                 fieldWithPath("data.questionText").type(JsonFieldType.STRING).description("질문 내용"),
                 fieldWithPath("data.nextQuestionId")
                     .type(JsonFieldType.NUMBER)

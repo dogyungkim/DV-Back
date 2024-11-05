@@ -8,13 +8,14 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatu
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
+import org.richardstallman.dvback.domain.user.domain.UserDomain;
 
 @Builder
 @Getter
 public class InterviewDomain {
 
   private final Long interviewId;
-  private final Long userId;
+  private final UserDomain userDomain;
   private InterviewStatus interviewStatus;
   private InterviewType interviewType;
   private InterviewMethod interviewMethod;
@@ -22,6 +23,6 @@ public class InterviewDomain {
   private JobDomain job;
   private CoverLetterDomain coverLetter;
 
-  //  private Long coverLetterId;
+  //  private Long resumeId;
   //  private Long portfolioId;
 }

@@ -68,6 +68,31 @@ dependencies {
 
 }
 
+tasks.processTestResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from('src/test/resources') {
+        include 'application-test.yml'
+        include 'initial_data.yml'
+    }
+}
+
+tasks.processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+sourceSets {
+    test {
+        resources {
+            srcDir 'src/test/resources'
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'spring.profiles.active', 'test'
+}
+
 tasks.named('testClasses') {
     doFirst {
         delete file('build/docs/asciidoc')

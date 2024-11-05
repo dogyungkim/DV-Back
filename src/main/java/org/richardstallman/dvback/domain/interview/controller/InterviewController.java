@@ -10,6 +10,7 @@ import org.richardstallman.dvback.domain.interview.service.InterviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +26,14 @@ public class InterviewController {
 
   @PostMapping
   public ResponseEntity<DvApiResponse<InterviewCreateResponseDto>> createInterview(
+      @AuthenticationPrincipal Long userId,
       @Valid @RequestBody final InterviewCreateRequestDto interviewCreateRequestDto) {
+
+    log.info("Authenticated user ID: {}", userId);
+
     final InterviewCreateResponseDto interviewCreateResponseDto =
-        interviewService.createInterview(interviewCreateRequestDto);
+        interviewService.createInterview(interviewCreateRequestDto, userId);
+
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(DvApiResponse.of(interviewCreateResponseDto));
   }
