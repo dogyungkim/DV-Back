@@ -86,3 +86,27 @@ include::{snippets}/다음 질문 요청(텍스트 성공)/request-fields.adoc[]
 
 include::{snippets}/다음 질문 요청(텍스트 성공)/http-response.adoc[]
 include::{snippets}/다음 질문 요청(텍스트 성공)/response-fields.adoc[]
+
+== 회원
+
+=== 유저 정보 업데이트 - 성공
+
+==== 요청
+
+include::{snippets}/유저 정보 업데이트 - 성공/http-request.adoc[]
+include::{snippets}/유저 정보 업데이트 - 성공/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/유저 정보 업데이트 - 성공/http-response.adoc[]
+include::{snippets}/유저 정보 업데이트 - 성공/response-fields.adoc[]
+
+=== 로그아웃 - 성공
+
+==== 요청
+
+include::{snippets}/로그아웃 - 성공/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/로그아웃 - 성공/http-response.adoc[]
