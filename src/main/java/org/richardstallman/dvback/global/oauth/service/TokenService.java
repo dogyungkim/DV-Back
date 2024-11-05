@@ -46,7 +46,7 @@ public class TokenService {
             .findById(storedRefreshToken.getUserId())
             .orElseThrow(() -> new EntityNotFoundException("User not found."));
 
-    UserEntity userEntity = userConverter.toEntity(userDomain);
+    UserEntity userEntity = userConverter.fromDomainToEntity(userDomain);
     return jwtUtil.generateAccessToken(userEntity.getId());
   }
 

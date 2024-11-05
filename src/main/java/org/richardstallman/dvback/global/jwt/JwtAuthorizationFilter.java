@@ -30,6 +30,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     Cookie[] cookies = request.getCookies();
     if (cookies == null || !existAccessToken(cookies)) {
+      log.info("cookie is null");
       filterChain.doFilter(request, response);
       return;
     }
@@ -58,20 +59,21 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   }
 
   private void writeErrorResponse(HttpServletResponse response) throws IOException {
-    // Todo: 예외 처리 형식 공부 후 다시 작성
-    // ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO("Invalid token", 403);
     response.setStatus(403);
     response.setContentType("application/json; charset=utf-8");
-    // response.getWriter().write(objectMapper.writeValueAsString(exceptionResponseDTO));
   }
 
   private void setAuthInSecurityContext(String accessToken) {
     JwtClaimResponseDto jwtClaimResponseDto = jwtUtil.extractClaims(accessToken);
+    if (jwtClaimResponseDto == null) {
+      log.warn("Failed to extract claims from token.");
+      return;
+    }
 
     UsernamePasswordAuthenticationToken authentication =
-        new UsernamePasswordAuthenticationToken(jwtClaimResponseDto.getUserId(), null, null);
-
+            new UsernamePasswordAuthenticationToken(jwtClaimResponseDto.getUserId(), null, null);
     SecurityContextHolder.getContext().setAuthentication(authentication);
+
   }
 
   private String extractCookie(Cookie[] cookies, String cookieName) {
@@ -83,6 +85,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   }
 
   private boolean existAccessToken(Cookie[] authCookies) {
-    return Arrays.stream(authCookies).anyMatch(name -> name.getName().equals("AccessToken"));
+    return Arrays.stream(authCookies).anyMatch(name -> name.getName().equals("access_token"));
   }
 }
