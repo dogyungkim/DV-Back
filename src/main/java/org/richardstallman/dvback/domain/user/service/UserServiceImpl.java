@@ -22,10 +22,7 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public UserResponseDto updateUserInfo(Long userId, UserRequestDto userRequestDto) {
     log.info("updateUserInfo");
-    UserDomain user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+    UserDomain user = findUserById(userId);
     UserEntity userEntity = userConverter.fromDomainToEntity(user);
 
     UserEntity updatedUser =
@@ -44,5 +41,18 @@ public class UserServiceImpl implements UserService {
         updatedUser.getLeave(),
         updatedUser.getGender(),
         updatedUser.getBirthdate());
+  }
+
+  @Override
+  public UserResponseDto getUserInfo(Long userId) {
+    log.info("getUserInfo");
+    UserDomain userDomain = findUserById(userId);
+    return userConverter.fromDomainToDto(userDomain);
+  }
+
+  private UserDomain findUserById(Long userId) {
+    return userRepository
+        .findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
   }
 }

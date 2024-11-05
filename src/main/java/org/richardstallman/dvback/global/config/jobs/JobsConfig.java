@@ -5,10 +5,12 @@ import lombok.Data;
 import org.richardstallman.dvback.global.config.yml.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @Data
+@Profile("!test")
 @PropertySource(
     value = "classpath:/properties/${spring.profiles.active}/initial_data.yml",
     factory = YamlPropertySourceFactory.class)

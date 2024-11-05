@@ -75,6 +75,18 @@ include::{snippets}/질문 생성 - 최초 요청(모의 면접 성공)/request-
 include::{snippets}/질문 생성 - 최초 요청(모의 면접 성공)/http-response.adoc[]
 include::{snippets}/질문 생성 - 최초 요청(모의 면접 성공)/response-fields.adoc[]
 
+=== 질문 생성 - 최초 요청(실전 면접 성공)
+
+==== 요청
+
+include::{snippets}/질문 생성 - 최초 요청(실전 면접 성공)/http-request.adoc[]
+include::{snippets}/질문 생성 - 최초 요청(실전 면접 성공)/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/질문 생성 - 최초 요청(실전 면접 성공)/http-response.adoc[]
+include::{snippets}/질문 생성 - 최초 요청(실전 면접 성공)/response-fields.adoc[]
+
 === 다음 질문 요청(텍스트 성공)
 
 ==== 요청
@@ -86,6 +98,20 @@ include::{snippets}/다음 질문 요청(텍스트 성공)/request-fields.adoc[]
 
 include::{snippets}/다음 질문 요청(텍스트 성공)/http-response.adoc[]
 include::{snippets}/다음 질문 요청(텍스트 성공)/response-fields.adoc[]
+
+== 포인트
+
+=== 포인트 조회
+
+==== 요청
+
+include::{snippets}/포인트 조회 테스트/http-request.adoc[]
+include::{snippets}/포인트 조회 테스트/path-parameters.adoc[]
+
+==== 응답
+
+include::{snippets}/포인트 조회 테스트/http-response.adoc[]
+include::{snippets}/포인트 조회 테스트/response-fields.adoc[]
 
 == 회원
 
@@ -110,3 +136,30 @@ include::{snippets}/로그아웃 - 성공/http-request.adoc[]
 ==== 응답
 
 include::{snippets}/로그아웃 - 성공/http-response.adoc[]
+
+== 파일
+
+=== 면접 정보 입력 시 PreSigned URL 생성
+
+==== 요청
+
+include::{snippets}/면접 정보 입력 시 PreSigned URL 생성/http-request.adoc[]
+include::{snippets}/면접 정보 입력 시 PreSigned URL 생성/path-parameters.adoc[]
+
+==== 응답
+
+include::{snippets}/면접 정보 입력 시 PreSigned URL 생성/http-response.adoc[]
+include::{snippets}/면접 정보 입력 시 PreSigned URL 생성/response-body.adoc[]
+
+=== 마이페이지에서 PreSigned URL 생성
+
+==== 요청
+
+include::{snippets}/마이페이지에서 PreSigned URL 생성/http-request.adoc[]
+include::{snippets}/마이페이지에서 PreSigned URL 생성/path-parameters.adoc[]
+
+==== 응답
+
+include::{snippets}/마이페이지에서 PreSigned URL 생성/http-response.adoc[]
+include::{snippets}/마이페이지에서 PreSigned URL 생성/response-body.adoc[]
+

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
-import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewQuestionResponseDto;
 import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
 import org.richardstallman.dvback.domain.question.domain.external.QuestionExternalDomain;
 import org.richardstallman.dvback.domain.question.domain.external.request.QuestionExternalRequestDto;
@@ -71,11 +71,11 @@ public class QuestionConverter {
 
   public QuestionResponseDto fromQuestionExternalDomainToQuestionResponseDto(
       QuestionDomain firstQuestionDomain,
-      InterviewCreateResponseDto interviewCreateResponseDto,
+      InterviewQuestionResponseDto interviewQuestionResponseDto,
       QuestionDomain secondQuestionDomain,
       Boolean hasNext) {
     return new QuestionResponseDto(
-        interviewCreateResponseDto,
+        interviewQuestionResponseDto,
         firstQuestionDomain.getQuestionText(),
         secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionId(),
         hasNext);

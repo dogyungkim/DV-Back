@@ -1,8 +1,8 @@
 package org.richardstallman.dvback.domain.user.converter;
 
 import lombok.RequiredArgsConstructor;
-import org.richardstallman.dvback.domain.job.converter.JobConverter;
 import org.richardstallman.dvback.domain.user.domain.UserDomain;
+import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.richardstallman.dvback.domain.user.entity.UserEntity;
 import org.richardstallman.dvback.global.oauth.KakaoUserInfo;
 import org.springframework.stereotype.Component;
@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class UserConverter {
-
-  private final JobConverter jobConverter;
 
   public UserEntity fromDomainToEntity(UserDomain userDomain) {
     return new UserEntity(
@@ -49,5 +47,32 @@ public class UserConverter {
         kakaoUserInfo.getProfileImage(),
         null,
         null);
+  }
+
+  public UserResponseDto fromDomainToDto(UserDomain userDomain) {
+    return new UserResponseDto(
+        userDomain.getId(),
+        userDomain.getSocialId(),
+        userDomain.getEmail(),
+        userDomain.getName(),
+        userDomain.getNickname(),
+        userDomain.getS3ProfileImageUrl(),
+        userDomain.getLeave(),
+        userDomain.getGender(),
+        userDomain.getBirthdate());
+  }
+
+  public UserDomain fromResponseDtoToDomain(UserResponseDto userResponseDto) {
+    return UserDomain.builder()
+        .id(userResponseDto.userId())
+        .socialId(userResponseDto.socialId())
+        .email(userResponseDto.email())
+        .name(userResponseDto.name())
+        .nickname(userResponseDto.nickname())
+        .s3ProfileImageUrl(userResponseDto.s3ProfileImageUrl())
+        .leave(userResponseDto.leave())
+        .gender(userResponseDto.gender())
+        .birthdate(userResponseDto.birthdate())
+        .build();
   }
 }

@@ -8,7 +8,9 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -20,6 +22,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants;
 import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.richardstallman.dvback.domain.user.service.UserService;
+import org.richardstallman.dvback.global.jwt.JwtUtil;
 import org.richardstallman.dvback.global.jwt.refreshtoken.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -29,16 +32,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockCookie;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @SpringBootTest
+@ActiveProfiles("test")
 public class UserControllerTest {
 
   @Autowired private MockMvc mockMvc;
   @Autowired private ObjectMapper objectMapper;
+  @Autowired private JwtUtil jwtUtil;
 
   @MockBean private UserService userService;
   @MockBean private RefreshTokenRepository refreshTokenRepository;
@@ -51,6 +57,7 @@ public class UserControllerTest {
     UserRequestDto userRequestDto =
         new UserRequestDto("왕감자", new Date(), CommonConstants.Gender.WOMAN);
     String content = objectMapper.writeValueAsString(userRequestDto);
+    String accessToken = jwtUtil.generateAccessToken(1L);
 
     UserResponseDto userResponseDto =
         new UserResponseDto(
@@ -68,10 +75,7 @@ public class UserControllerTest {
         .thenReturn(userResponseDto);
 
     // Mocked Cookie
-    MockCookie authCookie =
-        new MockCookie(
-            "access_token",
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDc3MjA1NH0.TRlXoLTrhGiKHqvwrZByJB8gpQn9oGU8NZsOoQ1jft16-3giHYytUfHtCJ6-69epvQuhxT4M6Fv8fnsmWZfQiA");
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
 
     // when
     ResultActions resultActions =
@@ -119,14 +123,10 @@ public class UserControllerTest {
   @DisplayName("로그아웃 - 성공")
   void logout_success() throws Exception {
     // Mocked Cookie
-    MockCookie accessTokenCookie =
-        new MockCookie(
-            "access_token",
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDc3MjA1NH0.TRlXoLTrhGiKHqvwrZByJB8gpQn9oGU8NZsOoQ1jft16-3giHYytUfHtCJ6-69epvQuhxT4M6Fv8fnsmWZfQiA");
-    MockCookie refreshTokenCookie =
-        new MockCookie(
-            "refresh_token",
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyZWZyZXNoX3Rva2VuIiwidXNlcklkIjoxLCJleHAiOjE3MzEzNzMyNTR9.fv7nUtmYukFaiBjveoOvSMbo5bpVJ7YFKZr8fDQ-pk1PaZedFBBHQ11WKbVpbwButHrrW5GPJJqLF9E4M5sysg");
+    String accessToken = jwtUtil.generateAccessToken(1L);
+    String refreshToken = jwtUtil.generateRefreshToken(1L);
+    MockCookie accessTokenCookie = new MockCookie("access_token", accessToken);
+    MockCookie refreshTokenCookie = new MockCookie("refresh_token", refreshToken);
 
     // when
     ResultActions resultActions =

@@ -5,9 +5,11 @@ import org.richardstallman.dvback.domain.job.repository.JobRepository;
 import org.richardstallman.dvback.global.config.jobs.JobsConfig;
 import org.richardstallman.dvback.global.config.jobs.JobsConfig.Jobs;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("!test")
 public class DataInitializer implements CommandLineRunner {
 
   private final JobRepository jobRepository;

@@ -5,5 +5,6 @@ import org.richardstallman.dvback.domain.interview.domain.response.InterviewCrea
 
 public interface InterviewService {
 
-  InterviewCreateResponseDto createInterview(InterviewCreateRequestDto interviewCreateRequestDto);
+  InterviewCreateResponseDto createInterview(
+      InterviewCreateRequestDto interviewCreateRequestDto, Long userId);
 }

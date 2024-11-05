@@ -458,13 +458,25 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_질문_question">질문 Question</a>
 <ul class="sectlevel2">
 <li><a href="#_질문_생성_최초_요청모의_면접_성공">질문 생성 - 최초 요청(모의 면접 성공)</a></li>
+<li><a href="#_질문_생성_최초_요청실전_면접_성공">질문 생성 - 최초 요청(실전 면접 성공)</a></li>
 <li><a href="#_다음_질문_요청텍스트_성공">다음 질문 요청(텍스트 성공)</a></li>
+</ul>
+</li>
+<li><a href="#_포인트">포인트</a>
+<ul class="sectlevel2">
+<li><a href="#_포인트_조회">포인트 조회</a></li>
 </ul>
 </li>
 <li><a href="#_회원">회원</a>
 <ul class="sectlevel2">
 <li><a href="#_유저_정보_업데이트_성공">유저 정보 업데이트 - 성공</a></li>
 <li><a href="#_로그아웃_성공">로그아웃 - 성공</a></li>
+</ul>
+</li>
+<li><a href="#_파일">파일</a>
+<ul class="sectlevel2">
+<li><a href="#_면접_정보_입력_시_presigned_url_생성">면접 정보 입력 시 PreSigned URL 생성</a></li>
+<li><a href="#_마이페이지에서_presigned_url_생성">마이페이지에서 PreSigned URL 생성</a></li>
 </ul>
 </li>
 </ul>
@@ -482,14 +494,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /interview HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 114
+Content-Length: 225
 Host: localhost:8080
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDc5MjUzN30.9YQSLsItIqzW3XKHCpJmSMOLVtIzkqgKnKt_kqNowT4lrYvNhfoxQ8unaXIWfH05lYAEKoy7tlrjWlMLzXmOpw
 
 {
   "interviewType" : "TECHNICAL",
   "interviewMethod" : "VIDEO",
   "interviewMode" : "REAL",
-  "jobId" : 2
+  "jobId" : 2,
+  "files" : [ {
+    "type" : "COVER_LETTER",
+    "filePath" : "COVER_LETTER/1/1730788937931/coverLetterName"
+  } ]
 }</code></pre>
 </div>
 </div>
@@ -527,6 +544,16 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">직무 식별자</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>files[0].type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">파일 유형: COVER_LETTER, RESUME, PORTFOLIO</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>files[0].filePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -545,7 +572,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 355
+Content-Length: 523
 
 {
   "code" : 200,
@@ -560,7 +587,13 @@ Content-Length: 355
       "jobId" : 1,
       "jobName" : "BACK_END",
       "jobDescription" : "백엔드 직무입니다."
-    }
+    },
+    "files" : [ {
+      "fileId" : 1,
+      "type" : "COVER_LETTER",
+      "fileName" : "coverLetterName",
+      "s3FileUrl" : "COVER_LETTER/1/1730788937931/coverLetterName"
+    } ]
   }
 }</code></pre>
 </div>
@@ -629,6 +662,26 @@ Content-Length: 355
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">직무 설명</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.files[0].fileId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">파일 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.files[0].type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">파일 유형: COVER_LETTER, RESUME, PORTFOLIO</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.files[0].fileName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">파일 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.files[0].s3FileUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -641,14 +694,19 @@ Content-Length: 355
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /interview HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 114
+Content-Length: 225
 Host: localhost:8080
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDc5MjUzOH0.jYCG-OTR6nI3I-IWcfLLG-aD1QbWPVfRm43zn-wI9msJ5kAWeVhdJ6bNUX45k0D7h5hc4rizg0tmeQOfDAHpFg
 
 {
   "interviewType" : "TECHNICAL",
   "interviewMethod" : "VIDEO",
   "interviewMode" : "REAL",
-  "jobId" : 2
+  "jobId" : 2,
+  "files" : [ {
+    "type" : "COVER_LETTER",
+    "filePath" : "COVER_LETTER/1/1730788938071/coverLetterName"
+  } ]
 }</code></pre>
 </div>
 </div>
@@ -668,7 +726,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 115
+Content-Length: 111
 
 {
   "code" : 500,
@@ -718,7 +776,7 @@ Content-Length: 115
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /interview HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 117
+Content-Length: 112
 Host: localhost:8080
 
 {
@@ -745,7 +803,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 103
+Content-Length: 99
 
 {
   "code" : 400,
@@ -795,14 +853,19 @@ Content-Length: 103
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /interview HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 116
+Content-Length: 227
 Host: localhost:8080
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDc5MjUzOH0.jYCG-OTR6nI3I-IWcfLLG-aD1QbWPVfRm43zn-wI9msJ5kAWeVhdJ6bNUX45k0D7h5hc4rizg0tmeQOfDAHpFg
 
 {
   "interviewType" : "TECHNICAL",
   "interviewMethod" : "VIDEO",
   "interviewMode" : "REAL",
-  "jobId" : 999
+  "jobId" : 999,
+  "files" : [ {
+    "type" : "COVER_LETTER",
+    "filePath" : "COVER_LETTER/1/1730788938033/coverLetterName"
+  } ]
 }</code></pre>
 </div>
 </div>
@@ -822,7 +885,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 101
+Content-Length: 97
 
 {
   "code" : 500,
@@ -872,14 +935,18 @@ Content-Length: 101
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /interview HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 107
+Content-Length: 218
 Host: localhost:8080
 
 {
   "interviewType" : null,
   "interviewMethod" : "VIDEO",
   "interviewMode" : "REAL",
-  "jobId" : 2
+  "jobId" : 2,
+  "files" : [ {
+    "type" : "COVER_LETTER",
+    "filePath" : "COVER_LETTER/1/1730788938049/coverLetterName"
+  } ]
 }</code></pre>
 </div>
 </div>
@@ -899,7 +966,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 107
+Content-Length: 103
 
 {
   "code" : 400,
@@ -954,14 +1021,14 @@ Content-Length: 107
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /question/initial-question HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 207
+Content-Length: 198
 Host: localhost:8080
 
 {
   "interviewId" : 1,
   "interviewStatus" : "FILE_UPLOADED",
   "interviewType" : "TECHNICAL",
-  "interviewMethod" : "VIDEO",
+  "interviewMethod" : "CHAT",
   "interviewMode" : "GENERAL",
   "coverLetterS3Url" : "",
   "jobId" : 1
@@ -1035,7 +1102,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 622
+Content-Length: 601
 
 {
   "code" : 200,
@@ -1045,8 +1112,205 @@ Content-Length: 622
       "interviewId" : 1,
       "interviewStatus" : "FILE_UPLOADED",
       "interviewType" : "TECHNICAL",
-      "interviewMethod" : "VIDEO",
+      "interviewMethod" : "CHAT",
       "interviewMode" : "GENERAL",
+      "job" : {
+        "jobId" : 1,
+        "jobName" : "BACK_END",
+        "jobDescription" : "백엔드 직무입니다."
+      }
+    },
+    "questionText" : "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
+    "nextQuestionId" : 2,
+    "hasNext" : true
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.interviewId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.interviewStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 상태</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.interviewType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.interviewMethod</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 방식</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.interviewMode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 모드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.job.jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.job.jobName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.job.jobDescription</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무 설명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.questionText</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">질문 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.nextQuestionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">다음 질문 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.hasNext</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">다음 질문 존재 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_질문_생성_최초_요청실전_면접_성공">질문 생성 - 최초 요청(실전 면접 성공)</h3>
+<div class="sect3">
+<h4 id="_요청_7">요청</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /question/initial-question HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 224
+Host: localhost:8080
+
+{
+  "interviewId" : 1,
+  "interviewStatus" : "FILE_UPLOADED",
+  "interviewType" : "TECHNICAL",
+  "interviewMethod" : "CHAT",
+  "interviewMode" : "REAL",
+  "coverLetterS3Url" : "cover_letter_s3_url/file_name",
+  "jobId" : 1
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 상태</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewMethod</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 방식</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewMode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 모드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>coverLetterS3Url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">자소서 s3 url</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무 식별자</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_7">응답</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 598
+
+{
+  "code" : 200,
+  "message" : "SUCCESS",
+  "data" : {
+    "interview" : {
+      "interviewId" : 1,
+      "interviewStatus" : "FILE_UPLOADED",
+      "interviewType" : "TECHNICAL",
+      "interviewMethod" : "CHAT",
+      "interviewMode" : "REAL",
       "job" : {
         "jobId" : 1,
         "jobName" : "BACK_END",
@@ -1146,12 +1410,12 @@ Content-Length: 622
 <div class="sect2">
 <h3 id="_다음_질문_요청텍스트_성공">다음 질문 요청(텍스트 성공)</h3>
 <div class="sect3">
-<h4 id="_요청_7">요청</h4>
+<h4 id="_요청_8">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /question/next-question HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 155
+Content-Length: 147
 Host: localhost:8080
 
 {
@@ -1208,7 +1472,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_응답_7">응답</h4>
+<h4 id="_응답_8">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1222,7 +1486,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 554
+Content-Length: 534
 
 {
   "code" : 200,
@@ -1333,23 +1597,118 @@ Content-Length: 554
 </div>
 </div>
 <div class="sect1">
+<h2 id="_포인트">포인트</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_포인트_조회">포인트 조회</h3>
+<div class="sect3">
+<h4 id="_요청_9">요청</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /point/user/1?userId=1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /point/user/{userId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유저 식별자</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_9">응답</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 82
+
+{
+  "code" : 200,
+  "message" : "SUCCESS",
+  "data" : {
+    "balance" : 1000
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.balance</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포인트 잔액</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_회원">회원</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_유저_정보_업데이트_성공">유저 정보 업데이트 - 성공</h3>
 <div class="sect3">
-<h4 id="_요청_8">요청</h4>
+<h4 id="_요청_10">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /user/info HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 105
+Content-Length: 101
 Host: localhost:8080
-Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDc3MjA1NH0.TRlXoLTrhGiKHqvwrZByJB8gpQn9oGU8NZsOoQ1jft16-3giHYytUfHtCJ6-69epvQuhxT4M6Fv8fnsmWZfQiA
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDc5MjU0MX0.sIf3zdr5dj7F_dcXe8G0TxY-gcKEVFOlprwa4zaqLlOyx1yodzFe93lSY7IvEccQyDIxpGzP73FLkE4nEs3YlQ
 
 {
   "nickname" : "왕감자",
-  "birthdate" : "2024-11-05T01:40:51.760+00:00",
+  "birthdate" : "2024-11-05T06:42:21.782+00:00",
   "gender" : "WOMAN"
 }</code></pre>
 </div>
@@ -1387,7 +1746,7 @@ Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySW
 </table>
 </div>
 <div class="sect3">
-<h4 id="_응답_8">응답</h4>
+<h4 id="_응답_10">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1401,7 +1760,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 363
+Content-Length: 349
 
 {
   "code" : 200,
@@ -1415,7 +1774,7 @@ Content-Length: 363
     "s3ProfileImageUrl" : "https://example.com/image.jpg",
     "leave" : false,
     "gender" : "WOMAN",
-    "birthdate" : "2024-11-05T01:40:51.763+00:00"
+    "birthdate" : "2024-11-05T06:42:21.784+00:00"
   }
 }</code></pre>
 </div>
@@ -1496,25 +1855,27 @@ Content-Length: 363
 <div class="sect2">
 <h3 id="_로그아웃_성공">로그아웃 - 성공</h3>
 <div class="sect3">
-<h4 id="_요청_9">요청</h4>
+<h4 id="_요청_11">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /user/logout HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
-Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDc3MjA1NH0.TRlXoLTrhGiKHqvwrZByJB8gpQn9oGU8NZsOoQ1jft16-3giHYytUfHtCJ6-69epvQuhxT4M6Fv8fnsmWZfQiA
-Cookie: refresh_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyZWZyZXNoX3Rva2VuIiwidXNlcklkIjoxLCJleHAiOjE3MzEzNzMyNTR9.fv7nUtmYukFaiBjveoOvSMbo5bpVJ7YFKZr8fDQ-pk1PaZedFBBHQ11WKbVpbwButHrrW5GPJJqLF9E4M5sysg</code></pre>
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDc5MjU0MX0.sIf3zdr5dj7F_dcXe8G0TxY-gcKEVFOlprwa4zaqLlOyx1yodzFe93lSY7IvEccQyDIxpGzP73FLkE4nEs3YlQ
+Cookie: refresh_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyZWZyZXNoX3Rva2VuIiwidXNlcklkIjoxLCJleHAiOjE3MzEzOTM3NDF9.VtWqygchSc0rkT1H7gfraZBs1ohFUu4kR1UANxaEyGoiJA-9QcgteOarH3X3z9z_eQGCXNHXmdgceJujGKIzJg</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_9">응답</h4>
+<h4 id="_응답_11">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
+Set-Cookie: access_token=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly
+Set-Cookie: refresh_token=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly
 Content-Type: application/json
 Content-Length: 23
 X-Content-Type-Options: nosniff
@@ -1531,11 +1892,138 @@ Logged out successfully</code></pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_파일">파일</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_면접_정보_입력_시_presigned_url_생성">면접 정보 입력 시 PreSigned URL 생성</h3>
+<div class="sect3">
+<h4 id="_요청_12">요청</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /file/cover-letter/2/testFile.txt/upload-url HTTP/1.1
+Accept: application/json
+Host: localhost:8080
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDc5MjUzNn0.xgkXzdCuQ68WpF0w6ZXSA89ohYLRXLvbNCLxnrUYh83Rt-Y0MTOM55z1DVBTkY0SvgXN4zmoe6fQqsIlErp0nQ</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. /file/cover-letter/{interviewId}/{fileName}/upload-url</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fileName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">업로드할 파일명</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_12">응답</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 31
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+
+https://s3.aws.com/testFile.txt</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-json hljs" data-lang="json">https://s3.aws.com/testFile.txt</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_마이페이지에서_presigned_url_생성">마이페이지에서 PreSigned URL 생성</h3>
+<div class="sect3">
+<h4 id="_요청_13">요청</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /file/cover-letter/testFile.txt/upload-url HTTP/1.1
+Accept: application/json
+Host: localhost:8080
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDc5MjUzNn0.xgkXzdCuQ68WpF0w6ZXSA89ohYLRXLvbNCLxnrUYh83Rt-Y0MTOM55z1DVBTkY0SvgXN4zmoe6fQqsIlErp0nQ</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. /file/cover-letter/{fileName}/upload-url</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fileName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">업로드할 파일명</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_13">응답</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 31
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+
+https://s3.aws.com/testFile.txt</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-json hljs" data-lang="json">https://s3.aws.com/testFile.txt</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-11-05 10:40:26 +0900
+Last updated 2024-11-05 15:42:00 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

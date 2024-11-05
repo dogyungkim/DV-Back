@@ -7,6 +7,7 @@ import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvalua
 import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.response.EvaluationCriteriaResponseDto;
 import org.richardstallman.dvback.domain.evaluation.entity.overall.OverallEvaluationEntity;
+import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.springframework.stereotype.Component;
@@ -36,9 +37,10 @@ public class OverallEvaluationConverter {
   public OverallEvaluationResponseDto toResponseDto(
       InterviewDomain interviewDomain,
       List<EvaluationCriteriaResponseDto> evaluationCriteriaResponseDtos,
-      List<AnswerEvaluationResponseDto> answerEvaluationResponseDtos) {
+      List<AnswerEvaluationResponseDto> answerEvaluationResponseDtos,
+      List<FileResponseDto> fileResponseDtos) {
     return new OverallEvaluationResponseDto(
-        interviewConverter.fromDomainToDto(interviewDomain),
+        interviewConverter.fromDomainToDto(interviewDomain, fileResponseDtos),
         evaluationCriteriaResponseDtos,
         answerEvaluationResponseDtos);
   }
