@@ -20,7 +20,7 @@ public class FileController {
 
   private final S3Service s3Service;
 
-  @GetMapping("/cover-letter/{userId}/{interviewId}/{fileName}/upload-url")
+  @GetMapping("/cover-letter/{interviewId}/{fileName}/upload-url")
   public ResponseEntity<String> getCoverLetterUploadUrlWhenInputInterviewInfo(
       @AuthenticationPrincipal Long userId,
       @PathVariable Long interviewId,
@@ -33,10 +33,10 @@ public class FileController {
     String preSignedUrl =
         s3Service.createPreSignedURL(FileType.COVER_LETTER, fileName, userId, interviewId, null);
 
-    return ResponseEntity.ok(preSignedUrl);
+    return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(preSignedUrl);
   }
 
-  @GetMapping("/cover-letter/{userId}/{fileName}/upload-url")
+  @GetMapping("/cover-letter/{fileName}/upload-url")
   public ResponseEntity<String> getCoverLetterUploadUrlOnMyPage(
       @AuthenticationPrincipal Long userId, @PathVariable String fileName) {
     log.info("Generating preSigned URL for file upload: fileName={}", fileName);
