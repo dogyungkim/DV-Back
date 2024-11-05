@@ -15,16 +15,16 @@ public class UserRepositoryImpl implements UserRepository {
 
   @Override
   public Optional<UserDomain> findById(long id) {
-    return userJpaRepository.findById(id).map(userConverter::fromEntityToDomain);
+    return userJpaRepository.findById(id).map(userConverter::toDomain);
   }
 
   @Override
   public Optional<UserDomain> findBySocialId(String socialId) {
-    return userJpaRepository.findBySocialId(socialId).map(userConverter::fromEntityToDomain);
+    return userJpaRepository.findBySocialId(socialId).map(userConverter::toDomain);
   }
 
   @Override
   public UserDomain save(UserDomain userDomain) {
-    return userConverter.fromEntityToDomain(userJpaRepository.save(userConverter.fromDomainToEntity(userDomain)));
+    return userConverter.toDomain(userJpaRepository.save(userConverter.toEntity(userDomain)));
   }
 }

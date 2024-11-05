@@ -82,11 +82,4 @@ public class CommonConstants {
     DEPOSIT, // 적립
     WITHDRAWAL // 사용
   }
-
-  @Getter
-  @AllArgsConstructor
-  public enum Gender {
-    WOMAN, // 여성
-    MAN // 남성
-  }
 }

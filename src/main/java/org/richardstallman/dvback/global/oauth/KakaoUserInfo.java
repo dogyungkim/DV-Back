@@ -16,9 +16,6 @@ public class KakaoUserInfo {
 
   public String getEmail() {
     Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
-    if (account == null || account.get("email") == null) {
-      throw new IllegalStateException("이메일 정보가 없습니다.");
-    }
     return (String) account.get("email");
   }
 

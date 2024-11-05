@@ -1,18 +1,21 @@
 package org.richardstallman.dvback.domain.user.entity;
 
-import jakarta.persistence.*;
-import java.util.Date;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.richardstallman.dvback.common.constant.CommonConstants;
-import org.richardstallman.dvback.domain.job.entity.JobEntity;
 
 @Entity
 @Getter
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users")
 public class UserEntity {
 
   @Id
@@ -24,9 +27,6 @@ public class UserEntity {
   private String socialId;
 
   @Column(nullable = false)
-  private String email;
-
-  @Column(nullable = false)
   private String name;
 
   @Column(nullable = false, unique = true)
@@ -35,42 +35,11 @@ public class UserEntity {
   @Column(name = "s3_profile_image_url")
   private String s3ProfileImageUrl;
 
-  @Column private Boolean leave = false;
-
-  @Enumerated(EnumType.STRING)
-  private CommonConstants.Gender gender;
-
-  @Column private Date birthdate;
-
-//  @OneToOne(fetch = FetchType.EAGER)
-//  @JoinColumn(name = "job_id", nullable = false)
-//  private JobEntity job;
-
-  public UserEntity(String socialId, String email, String name, String nickname, String s3ProfileImageUrl, CommonConstants.Gender gender, JobEntity job) {
+  public UserEntity(String socialId, String name, String nickname, String s3ProfileImageUrl) {
+    super();
     this.socialId = socialId;
-    this.email = email;
     this.name = name;
     this.nickname = nickname;
     this.s3ProfileImageUrl = s3ProfileImageUrl;
-    this.leave = false;
-    this.gender = gender;
-    this.birthdate = new Date();
-//    this.job = job;
   }
-
-  public UserEntity updatedUserEntity(String nickname, Date birthdate, CommonConstants.Gender gender) {
-    return new UserEntity(
-            this.id,
-            this.socialId,
-            this.email,
-            this.name,
-            nickname,
-            this.s3ProfileImageUrl,
-            this.leave,
-            gender,
-            birthdate
-//            this.job
-    );
-  }
-
 }
