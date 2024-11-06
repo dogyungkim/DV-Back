@@ -3,8 +3,7 @@ package org.richardstallman.dvback.domain.user.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -143,5 +142,63 @@ public class UserControllerTest {
     // restdocs
     resultActions.andDo(
         document("로그아웃 - 성공", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())));
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("유저 정보 조회 - 성공")
+  void get_user_info_success() throws Exception {
+    // given
+    Long userId = 1L;
+    UserResponseDto userResponseDto =
+        new UserResponseDto(
+            userId,
+            "12345",
+            "example@test.com",
+            "김수현",
+            "왕감자",
+            "https://example.com/image.jpg",
+            false,
+            CommonConstants.Gender.WOMAN,
+            new Date());
+
+    when(userService.getUserInfo(userId)).thenReturn(userResponseDto);
+
+    // Mocked Cookie for authorization
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/user/info").contentType(MediaType.APPLICATION_JSON).cookie(authCookie));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code").value(200))
+        .andExpect(jsonPath("$.message").value("SUCCESS"))
+        .andExpect(jsonPath("$.data.userId").value(userId))
+        .andExpect(jsonPath("$.data.nickname").value("왕감자"))
+        .andExpect(jsonPath("$.data.email").value("example@test.com"));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "유저 정보 조회 - 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            responseFields(
+                fieldWithPath("code").description("응답 코드"),
+                fieldWithPath("message").description("응답 메시지"),
+                fieldWithPath("data.userId").description("유저 ID"),
+                fieldWithPath("data.socialId").description("소셜 ID"),
+                fieldWithPath("data.email").description("이메일"),
+                fieldWithPath("data.name").description("유저 이름"),
+                fieldWithPath("data.nickname").description("유저 닉네임"),
+                fieldWithPath("data.s3ProfileImageUrl").description("프로필 이미지 URL"),
+                fieldWithPath("data.leave").description("탈퇴 여부"),
+                fieldWithPath("data.gender").description("성별"),
+                fieldWithPath("data.birthdate").description("생년월일"))));
   }
 }
