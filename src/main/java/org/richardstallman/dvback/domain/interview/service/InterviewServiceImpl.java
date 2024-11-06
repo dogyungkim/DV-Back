@@ -56,15 +56,16 @@ public class InterviewServiceImpl implements InterviewService {
 
     InterviewDomain interviewDomain =
         initializeInterviewDomain(interviewCreateRequestDto, jobDomain, userId);
-
     validateInterviewIdNull(interviewDomain);
 
     InterviewDomain createdInterviewDomain = interviewRepository.save(interviewDomain);
     validateInterviewIdAssigned(createdInterviewDomain);
 
     List<FileResponseDto> fileResponseDtos = new ArrayList<>();
-    fileResponseDtos.add(
-        coverLetterConverter.fromDomainToResponseDto(createdInterviewDomain.getCoverLetter()));
+    if (interviewCreateRequestDto.interviewMode() == InterviewMode.REAL) {
+      fileResponseDtos.add(
+          coverLetterConverter.fromDomainToResponseDto(createdInterviewDomain.getCoverLetter()));
+    }
 
     return interviewConverter.fromDomainToDto(createdInterviewDomain, fileResponseDtos);
   }
@@ -86,6 +87,10 @@ public class InterviewServiceImpl implements InterviewService {
     if (interviewCreateRequestDto.interviewMode() == InterviewMode.REAL) {
       String fileName =
           fileService.getFileName(getCoverLetterUrl(interviewCreateRequestDto.files()));
+      if (fileName == null) {
+        String[] sp = getCoverLetterUrl(interviewCreateRequestDto.files()).split("/");
+        fileName = sp[sp.length - 1];
+      }
       UserResponseDto userResponseDto = userService.getUserInfo(userId);
       CoverLetterDomain coverLetterDomain =
           createCoverLetter(interviewCreateRequestDto, fileName, userResponseDto);
@@ -100,12 +105,21 @@ public class InterviewServiceImpl implements InterviewService {
     }
   }
 
-  private String generateTitle(String jobType, String interviewMode) {
+  private String generateTitle(
+      String jobType, String interviewMode, String interviewType, String interviewMethod) {
     LocalDateTime now = LocalDateTime.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmm");
     String dateTime = now.format(formatter);
 
-    return dateTime + "_" + jobType + "_" + interviewMode;
+    return dateTime
+        + "_"
+        + jobType
+        + "_"
+        + interviewMode
+        + "_"
+        + interviewType
+        + "_"
+        + interviewMethod;
   }
 
   private InterviewDomain validateInterviewTitle(InterviewDomain interviewDomain) {
@@ -113,10 +127,20 @@ public class InterviewServiceImpl implements InterviewService {
         || interviewDomain.getInterviewTitle().isEmpty()) {
       return interviewDomain
           .builder()
+          .interviewId(interviewDomain.getInterviewId())
+          .userDomain(interviewDomain.getUserDomain())
           .interviewTitle(
               generateTitle(
                   interviewDomain.getJob().getJobNameKorean(),
-                  interviewDomain.getInterviewMode().getDescription()))
+                  interviewDomain.getInterviewMode().getKoreanName(),
+                  interviewDomain.getInterviewType().getKoreanName(),
+                  interviewDomain.getInterviewMethod().getKoreanName()))
+          .interviewStatus(interviewDomain.getInterviewStatus())
+          .interviewType(interviewDomain.getInterviewType())
+          .interviewMethod(interviewDomain.getInterviewMethod())
+          .interviewMode(interviewDomain.getInterviewMode())
+          .job(interviewDomain.getJob())
+          .coverLetter(interviewDomain.getCoverLetter())
           .build();
     }
     return interviewDomain;
@@ -124,14 +148,14 @@ public class InterviewServiceImpl implements InterviewService {
 
   private String getCoverLetterUrl(List<FileRequestDto> files) {
     CoverLetterRequestDto coverLetterRequestDto =
-        (CoverLetterRequestDto)
+        coverLetterConverter.fromFileRequestDtoToRequestDto(
             files.stream()
-                .filter(item -> item.getType().equals(FileType.COVER_LETTER))
+                .filter(item -> item.getType() == (FileType.COVER_LETTER))
                 .findFirst()
                 .orElseThrow(
                     () ->
                         new ApiException(
-                            HttpStatus.NOT_FOUND, "There is no cover letter in files."));
+                            HttpStatus.NOT_FOUND, "There is no cover letter in files.")));
     return coverLetterRequestDto.getFilePath();
   }
 

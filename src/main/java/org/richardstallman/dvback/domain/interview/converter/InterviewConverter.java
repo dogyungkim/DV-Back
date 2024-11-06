@@ -2,6 +2,7 @@ package org.richardstallman.dvback.domain.interview.converter;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.domain.file.converter.CoverLetterConverter;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
@@ -49,7 +50,9 @@ public class InterviewConverter {
         interviewDomain.getInterviewMethod(),
         interviewDomain.getInterviewMode(),
         jobConverter.toEntity(interviewDomain.getJob()),
-        coverLetterConverter.fromDomainToEntity(interviewDomain.getCoverLetter()));
+        interviewDomain.getInterviewMode() == InterviewMode.REAL
+            ? coverLetterConverter.fromDomainToEntity(interviewDomain.getCoverLetter())
+            : null);
   }
 
   public InterviewDomain fromEntityToDomain(InterviewEntity interviewEntity) {
@@ -62,7 +65,10 @@ public class InterviewConverter {
         .interviewMethod(interviewEntity.getInterviewMethod())
         .interviewMode(interviewEntity.getInterviewMode())
         .job(jobConverter.toDomain(interviewEntity.getJob()))
-        .coverLetter(coverLetterConverter.fromEntityToDomain(interviewEntity.getCoverLetter()))
+        .coverLetter(
+            interviewEntity.getInterviewMode() == InterviewMode.REAL
+                ? coverLetterConverter.fromEntityToDomain(interviewEntity.getCoverLetter())
+                : null)
         .build();
   }
 
