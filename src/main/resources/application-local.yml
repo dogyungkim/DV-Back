@@ -36,6 +36,9 @@ spring:
             user-name-attribute: id
   main:
     allow-bean-definition-overriding: true
+  mvc:
+    favicon:
+      enabled: false
 
 python:
   server:
