@@ -78,7 +78,7 @@ public class InterviewControllerTest {
 
     InterviewCreateRequestDto interviewCreateRequestDto =
         new InterviewCreateRequestDto(
-            InterviewType.TECHNICAL, InterviewMethod.VIDEO, InterviewMode.REAL, 2L, files);
+            "면접 제목", InterviewType.TECHNICAL, InterviewMethod.VIDEO, InterviewMode.REAL, 2L, files);
 
     MockCookie authCookie = new MockCookie("access_token", accessToken);
 
@@ -96,6 +96,7 @@ public class InterviewControllerTest {
         .thenReturn(
             new InterviewCreateResponseDto(
                 1L,
+                "면접 제목",
                 InterviewStatus.INITIAL,
                 InterviewType.TECHNICAL,
                 InterviewMethod.VIDEO,
@@ -103,6 +104,7 @@ public class InterviewControllerTest {
                 JobDomain.builder()
                     .jobId(1L)
                     .jobName("BACK_END")
+                    .jobNameKorean("백엔드")
                     .jobDescription("백엔드 직무입니다.")
                     .build(),
                 fileResponseDtos));
@@ -125,6 +127,7 @@ public class InterviewControllerTest {
         .andExpect(jsonPath("data.interviewMode").value("REAL"))
         .andExpect(jsonPath("data.job.jobId").value(1L))
         .andExpect(jsonPath("data.job.jobName").value("BACK_END"))
+        .andExpect(jsonPath("data.job.jobNameKorean").value("백엔드"))
         .andExpect(jsonPath("data.job.jobDescription").value("백엔드 직무입니다."));
 
     // restdocs
@@ -134,6 +137,7 @@ public class InterviewControllerTest {
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
             requestFields(
+                fieldWithPath("interviewTitle").type(JsonFieldType.STRING).description("면접 제목"),
                 fieldWithPath("interviewType")
                     .type(JsonFieldType.STRING)
                     .description("면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"),
@@ -154,6 +158,9 @@ public class InterviewControllerTest {
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
                 fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
                 fieldWithPath("data.interviewId").type(JsonFieldType.NUMBER).description("면접 식별자"),
+                fieldWithPath("data.interviewTitle")
+                    .type(JsonFieldType.STRING)
+                    .description("면접 제목"),
                 fieldWithPath("data.interviewStatus")
                     .type(JsonFieldType.STRING)
                     .description(
@@ -171,6 +178,9 @@ public class InterviewControllerTest {
                 fieldWithPath("data.job.jobName")
                     .type(JsonFieldType.STRING)
                     .description("직무 이름: BACK_END(백엔드), FRONT_END(프론트엔드), INFRA(인프라), AI(인공지능)"),
+                fieldWithPath("data.job.jobNameKorean")
+                    .type(JsonFieldType.STRING)
+                    .description("직무 이름: 백엔드, 프론트엔드, 인프라, 인공지능"),
                 fieldWithPath("data.job.jobDescription")
                     .type(JsonFieldType.STRING)
                     .description("직무 설명"),
@@ -200,7 +210,8 @@ public class InterviewControllerTest {
         new CoverLetterRequestDto(
             FileType.COVER_LETTER, "COVER_LETTER/1/" + timestamp + "/coverLetterName"));
     InterviewCreateRequestDto interviewCreateRequestDto =
-        new InterviewCreateRequestDto(null, InterviewMethod.VIDEO, InterviewMode.REAL, 2L, files);
+        new InterviewCreateRequestDto(
+            null, null, InterviewMethod.VIDEO, InterviewMode.REAL, 2L, files);
     String content = objectMapper.writeValueAsString(interviewCreateRequestDto);
 
     // when
@@ -247,6 +258,7 @@ public class InterviewControllerTest {
 
     InterviewCreateRequestDto interviewCreateRequestDto =
         new InterviewCreateRequestDto(
+            "interview title",
             InterviewType.TECHNICAL,
             InterviewMethod.VIDEO,
             InterviewMode.REAL,
@@ -303,7 +315,12 @@ public class InterviewControllerTest {
 
     InterviewCreateRequestDto interviewCreateRequestDto =
         new InterviewCreateRequestDto(
-            InterviewType.TECHNICAL, InterviewMethod.VIDEO, InterviewMode.REAL, 2L, files);
+            "interview title",
+            InterviewType.TECHNICAL,
+            InterviewMethod.VIDEO,
+            InterviewMode.REAL,
+            2L,
+            files);
     String content = objectMapper.writeValueAsString(interviewCreateRequestDto);
 
     MockCookie authCookie = new MockCookie("access_token", accessToken);

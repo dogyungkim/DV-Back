@@ -23,6 +23,7 @@ public class JobsConfig {
   public static class Jobs {
 
     private String jobName;
+    private String jobNameKorean;
     private String jobDescription;
   }
 }

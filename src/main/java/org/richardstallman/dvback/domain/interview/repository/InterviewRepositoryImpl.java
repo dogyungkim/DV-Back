@@ -1,5 +1,6 @@
 package org.richardstallman.dvback.domain.interview.repository;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
@@ -23,5 +24,12 @@ public class InterviewRepositoryImpl implements InterviewRepository {
   public InterviewDomain findById(Long interviewId) {
     return interviewConverter.fromEntityToDomain(
         interviewJpaRepository.findById(interviewId).orElse(null));
+  }
+
+  @Override
+  public List<InterviewDomain> findInterviewsByUserId(Long userId) {
+    return interviewJpaRepository.findByUserId(userId).stream()
+        .map(interviewConverter::fromEntityToDomain)
+        .toList();
   }
 }

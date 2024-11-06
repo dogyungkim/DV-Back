@@ -32,4 +32,11 @@ public class AnswerEvaluationRepositoryImpl implements AnswerEvaluationRepositor
         .map(answerEvaluationConverter::fromEntityToDomain)
         .toList();
   }
+
+  @Override
+  public List<AnswerEvaluationDomain> findByInterviewId(Long interviewId) {
+    return answerEvaluationJpaRepository.findByQuestionInterviewInterviewId(interviewId).stream()
+        .map(answerEvaluationConverter::fromEntityToDomain)
+        .toList();
+  }
 }

@@ -8,6 +8,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
 
 public record InterviewCreateRequestDto(
+    String interviewTitle,
     @NotNull(message = "Interview Type is required") InterviewType interviewType,
     @NotNull(message = "Interview Method is required") InterviewMethod interviewMethod,
     @NotNull(message = "Interview Mode is required") InterviewMode interviewMode,

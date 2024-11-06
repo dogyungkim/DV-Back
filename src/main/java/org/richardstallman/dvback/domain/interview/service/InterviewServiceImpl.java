@@ -1,6 +1,8 @@
 package org.richardstallman.dvback.domain.interview.service;
 
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
 import org.richardstallman.dvback.domain.interview.repository.InterviewRepository;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.job.service.JobService;
@@ -66,6 +69,18 @@ public class InterviewServiceImpl implements InterviewService {
     return interviewConverter.fromDomainToDto(createdInterviewDomain, fileResponseDtos);
   }
 
+  @Override
+  public List<InterviewEvaluationResponseDto> getInterviewsByUserId(Long userId) {
+    return interviewRepository.findInterviewsByUserId(userId).stream()
+        .map(interviewConverter::fromDomainToEvaluationResponseDto)
+        .toList();
+  }
+
+  @Override
+  public InterviewDomain getInterviewById(Long interviewId) {
+    return interviewRepository.findById(interviewId);
+  }
+
   private InterviewDomain initializeInterviewDomain(
       InterviewCreateRequestDto interviewCreateRequestDto, JobDomain jobDomain, Long userId) {
     if (interviewCreateRequestDto.interviewMode() == InterviewMode.REAL) {
@@ -74,13 +89,37 @@ public class InterviewServiceImpl implements InterviewService {
       UserResponseDto userResponseDto = userService.getUserInfo(userId);
       CoverLetterDomain coverLetterDomain =
           createCoverLetter(interviewCreateRequestDto, fileName, userResponseDto);
-      return interviewConverter.fromDtoToDomainWithStatusInitialWithModeReal(
-          interviewCreateRequestDto, jobDomain, coverLetterDomain, userResponseDto);
+      return validateInterviewTitle(
+          interviewConverter.fromDtoToDomainWithStatusInitialWithModeReal(
+              interviewCreateRequestDto, jobDomain, coverLetterDomain, userResponseDto));
     } else {
       UserResponseDto userResponseDto = userService.getUserInfo(userId);
-      return interviewConverter.fromDtoToDomainWithStatusInitial(
-          interviewCreateRequestDto, jobDomain, userResponseDto);
+      return validateInterviewTitle(
+          interviewConverter.fromDtoToDomainWithStatusInitial(
+              interviewCreateRequestDto, jobDomain, userResponseDto));
     }
+  }
+
+  private String generateTitle(String jobType, String interviewMode) {
+    LocalDateTime now = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmm");
+    String dateTime = now.format(formatter);
+
+    return dateTime + "_" + jobType + "_" + interviewMode;
+  }
+
+  private InterviewDomain validateInterviewTitle(InterviewDomain interviewDomain) {
+    if (interviewDomain.getInterviewTitle() == null
+        || interviewDomain.getInterviewTitle().isEmpty()) {
+      return interviewDomain
+          .builder()
+          .interviewTitle(
+              generateTitle(
+                  interviewDomain.getJob().getJobNameKorean(),
+                  interviewDomain.getInterviewMode().getDescription()))
+          .build();
+    }
+    return interviewDomain;
   }
 
   private String getCoverLetterUrl(List<FileRequestDto> files) {

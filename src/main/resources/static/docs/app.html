@@ -470,7 +470,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_회원">회원</a>
 <ul class="sectlevel2">
 <li><a href="#_유저_정보_업데이트_성공">유저 정보 업데이트 - 성공</a></li>
-<li><a href="#_유저_정보_조회_성공">유저 정보 조회 - 성공</a></li>
 <li><a href="#_로그아웃_성공">로그아웃 - 성공</a></li>
 </ul>
 </li>
@@ -478,6 +477,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_면접_정보_입력_시_presigned_url_생성">면접 정보 입력 시 PreSigned URL 생성</a></li>
 <li><a href="#_마이페이지에서_presigned_url_생성">마이페이지에서 PreSigned URL 생성</a></li>
+<li><a href="#_유저가_올린_자소서_목록_조회">유저가 올린 자소서 목록 조회</a></li>
+</ul>
+</li>
+<li><a href="#_마이페이지">마이페이지</a>
+<ul class="sectlevel2">
+<li><a href="#_마이페이지_면접_평가_조회_위한_면접_정보_목록면접_식별자_면접_제목_조회_성공">마이페이지 - 면접 평가 조회 위한 면접 정보 목록(면접 식별자, 면접 제목) 조회 - 성공</a></li>
+<li><a href="#_마이페이지_면접_평가_조회_성공">마이페이지 - 면접 평가 조회 - 성공</a></li>
 </ul>
 </li>
 </ul>
@@ -495,18 +501,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /interview HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 234
+Content-Length: 263
 Host: localhost:8080
-Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0ODc1OX0.CoxTYwzGNyjI5r6zGwtihvRi98RgHSjWgK9I_IJmeRVhmwh5qIcOOEla8YfSKijg557SQVadgynmfP2ZakRWOA
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0NzE3Nn0.1t_SECmZLGAybHsfjJIAqYB3FagNApUsx9iihZDEk5BFm7W1r9cYm3ERIOV7QxkmNmPNQ1CkbN5J5vTbEpja-w
 
 {
+  "interviewTitle" : "면접 제목",
   "interviewType" : "TECHNICAL",
   "interviewMethod" : "VIDEO",
   "interviewMode" : "REAL",
   "jobId" : 2,
   "files" : [ {
     "type" : "COVER_LETTER",
-    "filePath" : "COVER_LETTER/1/1730845159800/coverLetterName"
+    "filePath" : "COVER_LETTER/1/1730843576213/coverLetterName"
   } ]
 }</code></pre>
 </div>
@@ -525,6 +532,11 @@ Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySW
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewTitle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 제목</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
@@ -573,13 +585,14 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 544
+Content-Length: 600
 
 {
   "code" : 200,
   "message" : "SUCCESS",
   "data" : {
     "interviewId" : 1,
+    "interviewTitle" : "면접 제목",
     "interviewStatus" : "INITIAL",
     "interviewType" : "TECHNICAL",
     "interviewMethod" : "VIDEO",
@@ -587,13 +600,14 @@ Content-Length: 544
     "job" : {
       "jobId" : 1,
       "jobName" : "BACK_END",
+      "jobNameKorean" : "백엔드",
       "jobDescription" : "백엔드 직무입니다."
     },
     "files" : [ {
       "fileId" : 1,
       "type" : "COVER_LETTER",
       "fileName" : "coverLetterName",
-      "s3FileUrl" : "COVER_LETTER/1/1730845159800/coverLetterName"
+      "s3FileUrl" : "COVER_LETTER/1/1730843576213/coverLetterName"
     } ]
   }
 }</code></pre>
@@ -629,6 +643,11 @@ Content-Length: 544
 <td class="tableblock halign-left valign-top"><p class="tableblock">면접 식별자</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interviewTitle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 제목</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interviewStatus</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">면접 상태: INITIAL(최초 정보 입력 상태), FILE_UPLOADED(자소서 및 파일 업로드 완료 상태), WAITING_FOR_QUESTION(질문 생성 요청 후 대기 상태), (READY면접 시작 가능 상태), IN_PROGRESS(면접 진행 중 상태), WAITING_FOR_FEEDBACK(피드백 생성 요청 후 대기 상태), COMPLETED(피드백 완료 상태)</p></td>
@@ -657,6 +676,11 @@ Content-Length: 544
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.job.jobName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">직무 이름: BACK_END(백엔드), FRONT_END(프론트엔드), INFRA(인프라), AI(인공지능)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.job.jobNameKorean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무 이름: 백엔드, 프론트엔드, 인프라, 인공지능</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.job.jobDescription</code></p></td>
@@ -695,18 +719,19 @@ Content-Length: 544
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /interview HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 234
+Content-Length: 265
 Host: localhost:8080
-Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0ODc2MH0.999Rk7NGboKshjFjIwjEOVw0ktmz9Oq5w2xkomoNkxA4QiSPXsdCQaAMoEBApscHQNXYujfNxjF56jYhmddvzw
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0NzE3Nn0.1t_SECmZLGAybHsfjJIAqYB3FagNApUsx9iihZDEk5BFm7W1r9cYm3ERIOV7QxkmNmPNQ1CkbN5J5vTbEpja-w
 
 {
+  "interviewTitle" : "interview title",
   "interviewType" : "TECHNICAL",
   "interviewMethod" : "VIDEO",
   "interviewMode" : "REAL",
   "jobId" : 2,
   "files" : [ {
     "type" : "COVER_LETTER",
-    "filePath" : "COVER_LETTER/1/1730845160307/coverLetterName"
+    "filePath" : "COVER_LETTER/1/1730843576282/coverLetterName"
   } ]
 }</code></pre>
 </div>
@@ -727,7 +752,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 115
+Content-Length: 111
 
 {
   "code" : 500,
@@ -777,7 +802,7 @@ Content-Length: 115
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /interview HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 117
+Content-Length: 112
 Host: localhost:8080
 
 {
@@ -804,7 +829,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 103
+Content-Length: 99
 
 {
   "code" : 400,
@@ -854,18 +879,19 @@ Content-Length: 103
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /interview HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 236
+Content-Length: 267
 Host: localhost:8080
-Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0ODc2MH0.999Rk7NGboKshjFjIwjEOVw0ktmz9Oq5w2xkomoNkxA4QiSPXsdCQaAMoEBApscHQNXYujfNxjF56jYhmddvzw
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0NzE3Nn0.1t_SECmZLGAybHsfjJIAqYB3FagNApUsx9iihZDEk5BFm7W1r9cYm3ERIOV7QxkmNmPNQ1CkbN5J5vTbEpja-w
 
 {
+  "interviewTitle" : "interview title",
   "interviewType" : "TECHNICAL",
   "interviewMethod" : "VIDEO",
   "interviewMode" : "REAL",
   "jobId" : 999,
   "files" : [ {
     "type" : "COVER_LETTER",
-    "filePath" : "COVER_LETTER/1/1730845160210/coverLetterName"
+    "filePath" : "COVER_LETTER/1/1730843576254/coverLetterName"
   } ]
 }</code></pre>
 </div>
@@ -886,7 +912,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 101
+Content-Length: 97
 
 {
   "code" : 500,
@@ -936,17 +962,18 @@ Content-Length: 101
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /interview HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 227
+Content-Length: 245
 Host: localhost:8080
 
 {
+  "interviewTitle" : null,
   "interviewType" : null,
   "interviewMethod" : "VIDEO",
   "interviewMode" : "REAL",
   "jobId" : 2,
   "files" : [ {
     "type" : "COVER_LETTER",
-    "filePath" : "COVER_LETTER/1/1730845160244/coverLetterName"
+    "filePath" : "COVER_LETTER/1/1730843576266/coverLetterName"
   } ]
 }</code></pre>
 </div>
@@ -967,7 +994,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 107
+Content-Length: 103
 
 {
   "code" : 400,
@@ -1022,11 +1049,12 @@ Content-Length: 107
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /question/initial-question HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 206
+Content-Length: 236
 Host: localhost:8080
 
 {
   "interviewId" : 1,
+  "interviewTitle" : "면접 제목",
   "interviewStatus" : "FILE_UPLOADED",
   "interviewType" : "TECHNICAL",
   "interviewMethod" : "CHAT",
@@ -1054,6 +1082,11 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">면접 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewTitle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 제목</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewStatus</code></p></td>
@@ -1103,7 +1136,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 621
+Content-Length: 682
 
 {
   "code" : 200,
@@ -1111,6 +1144,7 @@ Content-Length: 621
   "data" : {
     "interview" : {
       "interviewId" : 1,
+      "interviewTitle" : "면접 제목",
       "interviewStatus" : "FILE_UPLOADED",
       "interviewType" : "TECHNICAL",
       "interviewMethod" : "CHAT",
@@ -1118,6 +1152,7 @@ Content-Length: 621
       "job" : {
         "jobId" : 1,
         "jobName" : "BACK_END",
+        "jobNameKorean" : "백엔드",
         "jobDescription" : "백엔드 직무입니다."
       }
     },
@@ -1158,6 +1193,11 @@ Content-Length: 621
 <td class="tableblock halign-left valign-top"><p class="tableblock">면접 식별자</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.interviewTitle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 제목</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.interviewStatus</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">면접 상태</p></td>
@@ -1186,6 +1226,11 @@ Content-Length: 621
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.job.jobName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">직무 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.job.jobNameKorean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무 한글 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.job.jobDescription</code></p></td>
@@ -1219,11 +1264,12 @@ Content-Length: 621
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /question/initial-question HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 232
+Content-Length: 262
 Host: localhost:8080
 
 {
   "interviewId" : 1,
+  "interviewTitle" : "면접 제목",
   "interviewStatus" : "FILE_UPLOADED",
   "interviewType" : "TECHNICAL",
   "interviewMethod" : "CHAT",
@@ -1251,6 +1297,11 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">면접 식별자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewTitle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 제목</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>interviewStatus</code></p></td>
@@ -1300,7 +1351,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 618
+Content-Length: 679
 
 {
   "code" : 200,
@@ -1308,6 +1359,7 @@ Content-Length: 618
   "data" : {
     "interview" : {
       "interviewId" : 1,
+      "interviewTitle" : "면접 제목",
       "interviewStatus" : "FILE_UPLOADED",
       "interviewType" : "TECHNICAL",
       "interviewMethod" : "CHAT",
@@ -1315,6 +1367,7 @@ Content-Length: 618
       "job" : {
         "jobId" : 1,
         "jobName" : "BACK_END",
+        "jobNameKorean" : "백엔드",
         "jobDescription" : "백엔드 직무입니다."
       }
     },
@@ -1355,6 +1408,11 @@ Content-Length: 618
 <td class="tableblock halign-left valign-top"><p class="tableblock">면접 식별자</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.interviewTitle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 제목</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.interviewStatus</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">면접 상태</p></td>
@@ -1383,6 +1441,11 @@ Content-Length: 618
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.job.jobName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">직무 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.job.jobNameKorean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무 한글 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.job.jobDescription</code></p></td>
@@ -1416,7 +1479,7 @@ Content-Length: 618
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /question/next-question HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 155
+Content-Length: 147
 Host: localhost:8080
 
 {
@@ -1487,7 +1550,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 554
+Content-Length: 615
 
 {
   "code" : 200,
@@ -1495,6 +1558,7 @@ Content-Length: 554
   "data" : {
     "interview" : {
       "interviewId" : 1,
+      "interviewTitle" : "면접 제목",
       "interviewStatus" : "FILE_UPLOADED",
       "interviewType" : "TECHNICAL",
       "interviewMethod" : "CHAT",
@@ -1502,6 +1566,7 @@ Content-Length: 554
       "job" : {
         "jobId" : 1,
         "jobName" : "BACK_END",
+        "jobNameKorean" : "백엔드",
         "jobDescription" : "백엔드 직무입니다."
       }
     },
@@ -1542,6 +1607,11 @@ Content-Length: 554
 <td class="tableblock halign-left valign-top"><p class="tableblock">면접 식별자</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.interviewTitle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">면접 제목</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.interviewStatus</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">면접 상태</p></td>
@@ -1570,6 +1640,11 @@ Content-Length: 554
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.job.jobName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">직무 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.job.jobNameKorean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무 한글 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.interview.job.jobDescription</code></p></td>
@@ -1646,7 +1721,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 88
+Content-Length: 82
 
 {
   "code" : 200,
@@ -1703,13 +1778,13 @@ Content-Length: 88
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /user/info HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 105
+Content-Length: 101
 Host: localhost:8080
-Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0ODc2OH0.YHfVGOLb9g7m6K8V-BrqEuVftjXBQjW-E_YN9mxydF-vejO00l-KbvYieDmx-UQGLtoKxs2gBGnN7XZE49pmvQ
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0NzE3OX0.oydKwuIsLDMM6huEmxDo9IacqYyD8VmZw6ZcM_UTkTkF1zvEaeZAzAOOdNwcADFq3IovQhHb3srXRS4idM_-sg
 
 {
   "nickname" : "왕감자",
-  "birthdate" : "2024-11-05T22:19:28.095+00:00",
+  "birthdate" : "2024-11-05T21:52:59.235+00:00",
   "gender" : "WOMAN"
 }</code></pre>
 </div>
@@ -1761,7 +1836,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 363
+Content-Length: 349
 
 {
   "code" : 200,
@@ -1775,127 +1850,7 @@ Content-Length: 363
     "s3ProfileImageUrl" : "https://example.com/image.jpg",
     "leave" : false,
     "gender" : "WOMAN",
-    "birthdate" : "2024-11-05T22:19:28.097+00:00"
-  }
-}</code></pre>
-</div>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">응답 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">응답 메시지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">유저 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.socialId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">소셜 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.email</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">유저 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.nickname</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">유저 닉네임</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.s3ProfileImageUrl</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 이미지 URL</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.leave</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">탈퇴 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.gender</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">성별</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.birthdate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">생년월일</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_유저_정보_조회_성공">유저 정보 조회 - 성공</h3>
-<div class="sect3">
-<h4 id="_요청_11">요청</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /user/info HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Host: localhost:8080
-Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0ODc2OH0.YHfVGOLb9g7m6K8V-BrqEuVftjXBQjW-E_YN9mxydF-vejO00l-KbvYieDmx-UQGLtoKxs2gBGnN7XZE49pmvQ</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_응답_11">응답</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Content-Type: application/json
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 0
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: DENY
-Content-Length: 363
-
-{
-  "code" : 200,
-  "message" : "SUCCESS",
-  "data" : {
-    "userId" : 1,
-    "socialId" : "12345",
-    "email" : "example@test.com",
-    "name" : "김수현",
-    "nickname" : "왕감자",
-    "s3ProfileImageUrl" : "https://example.com/image.jpg",
-    "leave" : false,
-    "gender" : "WOMAN",
-    "birthdate" : "2024-11-05T22:19:28.121+00:00"
+    "birthdate" : "2024-11-05T21:52:59.237+00:00"
   }
 }</code></pre>
 </div>
@@ -1976,19 +1931,19 @@ Content-Length: 363
 <div class="sect2">
 <h3 id="_로그아웃_성공">로그아웃 - 성공</h3>
 <div class="sect3">
-<h4 id="_요청_12">요청</h4>
+<h4 id="_요청_11">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /user/logout HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
-Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0ODc2OH0.YHfVGOLb9g7m6K8V-BrqEuVftjXBQjW-E_YN9mxydF-vejO00l-KbvYieDmx-UQGLtoKxs2gBGnN7XZE49pmvQ
-Cookie: refresh_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyZWZyZXNoX3Rva2VuIiwidXNlcklkIjoxLCJleHAiOjE3MzE0NDk5Njh9.UzXOgcA-DrqfWwwtrwsDjKvcuSpF_85WeHaQXX3t6tYR2Khg-5c9-WuROXEw11C28rsgd3_MfBUGJrd_RgZ01g</code></pre>
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0NzE3OX0.oydKwuIsLDMM6huEmxDo9IacqYyD8VmZw6ZcM_UTkTkF1zvEaeZAzAOOdNwcADFq3IovQhHb3srXRS4idM_-sg
+Cookie: refresh_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyZWZyZXNoX3Rva2VuIiwidXNlcklkIjoxLCJleHAiOjE3MzE0NDgzNzl9.w-zzrywpUA6iwJ4CLRFiQ06G2qbl-fjnYMmTSjIdG9m5QTn_Gm4w6DJS3ZbTxjXXI_Js6MJq6g3X2sbG_X9rwA</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_12">응답</h4>
+<h4 id="_응답_11">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -2019,13 +1974,13 @@ Logged out successfully</code></pre>
 <div class="sect2">
 <h3 id="_면접_정보_입력_시_presigned_url_생성">면접 정보 입력 시 PreSigned URL 생성</h3>
 <div class="sect3">
-<h4 id="_요청_13">요청</h4>
+<h4 id="_요청_12">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /file/cover-letter/2/testFile.txt/upload-url HTTP/1.1
 Accept: application/json
 Host: localhost:8080
-Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0ODc1Nn0.Afqux-I9wsNQnXkcQrQDuqqTh0FXmACqodEgvAtbre3gC9RQPz6XHb1ngoSSNcVrTruOaQSB60CCF6mcGAQoeA</code></pre>
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0NzE3NX0.BPJrP-PDoqT94rnl30YlwfM2wuNKRgT1WUm9yfbf0vkyFTv1HxPpFB8yNLSld-sfqfKqHOw8GWBINfsWoYSH2w</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -2053,7 +2008,7 @@ Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySW
 </table>
 </div>
 <div class="sect3">
-<h4 id="_응답_13">응답</h4>
+<h4 id="_응답_12">응답</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -2061,20 +2016,32 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 31
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
+Content-Length: 116
 
-https://s3.aws.com/testFile.txt</code></pre>
+{
+  "code" : 200,
+  "message" : "SUCCESS",
+  "data" : {
+    "preSignedUrl" : "https://s3.aws.com/testFile.txt"
+  }
+}</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-json hljs" data-lang="json">https://s3.aws.com/testFile.txt</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-json hljs" data-lang="json">{
+  "code" : 200,
+  "message" : "SUCCESS",
+  "data" : {
+    "preSignedUrl" : "https://s3.aws.com/testFile.txt"
+  }
+}</code></pre>
 </div>
 </div>
 </div>
@@ -2082,13 +2049,13 @@ https://s3.aws.com/testFile.txt</code></pre>
 <div class="sect2">
 <h3 id="_마이페이지에서_presigned_url_생성">마이페이지에서 PreSigned URL 생성</h3>
 <div class="sect3">
-<h4 id="_요청_14">요청</h4>
+<h4 id="_요청_13">요청</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /file/cover-letter/testFile.txt/upload-url HTTP/1.1
 Accept: application/json
 Host: localhost:8080
-Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0ODc1N30._JRrq6_qOTWLz2fKlmj_a3WTpS91mtLSs8Ngil-fHcKBHXwBngcXssuLCXjLGlZmbQ558dmHFqA4JR6u0oWmBg</code></pre>
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0NzE3NX0.BPJrP-PDoqT94rnl30YlwfM2wuNKRgT1WUm9yfbf0vkyFTv1HxPpFB8yNLSld-sfqfKqHOw8GWBINfsWoYSH2w</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -2112,6 +2079,63 @@ Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySW
 </table>
 </div>
 <div class="sect3">
+<h4 id="_응답_13">응답</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 116
+
+{
+  "code" : 200,
+  "message" : "SUCCESS",
+  "data" : {
+    "preSignedUrl" : "https://s3.aws.com/testFile.txt"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-json hljs" data-lang="json">{
+  "code" : 200,
+  "message" : "SUCCESS",
+  "data" : {
+    "preSignedUrl" : "https://s3.aws.com/testFile.txt"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_유저가_올린_자소서_목록_조회">유저가 올린 자소서 목록 조회</h3>
+<div class="sect3">
+<h4 id="_요청_14">요청</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /file/cover-letter HTTP/1.1
+Accept: application/json
+Host: localhost:8080
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0NzE3NX0.BPJrP-PDoqT94rnl30YlwfM2wuNKRgT1WUm9yfbf0vkyFTv1HxPpFB8yNLSld-sfqfKqHOw8GWBINfsWoYSH2w</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs"></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_응답_14">응답</h4>
 <div class="listingblock">
 <div class="content">
@@ -2120,20 +2144,273 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 31
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
+Content-Length: 536
 
-https://s3.aws.com/testFile.txt</code></pre>
+{
+  "code" : 200,
+  "message" : "SUCCESS",
+  "data" : {
+    "coverLetters" : [ {
+      "fileId" : 1,
+      "type" : "COVER_LETTER",
+      "fileName" : "testFile.txt",
+      "s3FileUrl" : "https://s3.aws.com/testFile.txt"
+    }, {
+      "fileId" : 2,
+      "type" : "COVER_LETTER",
+      "fileName" : "testFile2.txt",
+      "s3FileUrl" : "https://s3.aws.com/testFile2.txt"
+    }, {
+      "fileId" : 3,
+      "type" : "COVER_LETTER",
+      "fileName" : "testFile3.txt",
+      "s3FileUrl" : "https://s3.aws.com/testFile3.txt"
+    } ]
+  }
+}</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-json hljs" data-lang="json">https://s3.aws.com/testFile.txt</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-json hljs" data-lang="json">{
+  "code" : 200,
+  "message" : "SUCCESS",
+  "data" : {
+    "coverLetters" : [ {
+      "fileId" : 1,
+      "type" : "COVER_LETTER",
+      "fileName" : "testFile.txt",
+      "s3FileUrl" : "https://s3.aws.com/testFile.txt"
+    }, {
+      "fileId" : 2,
+      "type" : "COVER_LETTER",
+      "fileName" : "testFile2.txt",
+      "s3FileUrl" : "https://s3.aws.com/testFile2.txt"
+    }, {
+      "fileId" : 3,
+      "type" : "COVER_LETTER",
+      "fileName" : "testFile3.txt",
+      "s3FileUrl" : "https://s3.aws.com/testFile3.txt"
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_마이페이지">마이페이지</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_마이페이지_면접_평가_조회_위한_면접_정보_목록면접_식별자_면접_제목_조회_성공">마이페이지 - 면접 평가 조회 위한 면접 정보 목록(면접 식별자, 면접 제목) 조회 - 성공</h3>
+<div class="sect3">
+<h4 id="_요청_15">요청</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /evaluation HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0NzE3NH0.tbPQuYGGINpD90f4uyzsCVinrAJzHKOZU8cdRyJmtQExJ6GwheXoH0EbmD-aQdOpyFjslCLODjfiQoy8XuGa4A</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-json hljs" data-lang="json"></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_응답_15">응답</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 440
+
+{
+  "code" : 200,
+  "message" : "SUCCESS",
+  "data" : {
+    "evaluationInfos" : [ {
+      "interviewTitle" : "241101_백엔드_모의",
+      "interviewId" : 1
+    }, {
+      "interviewTitle" : "241103_프론트엔드_실전",
+      "interviewId" : 3
+    }, {
+      "interviewTitle" : "241105_클라우드_실전",
+      "interviewId" : 5
+    }, {
+      "interviewTitle" : "241105_인공지능_모의",
+      "interviewId" : 6
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-json hljs" data-lang="json">{
+  "code" : 200,
+  "message" : "SUCCESS",
+  "data" : {
+    "evaluationInfos" : [ {
+      "interviewTitle" : "241101_백엔드_모의",
+      "interviewId" : 1
+    }, {
+      "interviewTitle" : "241103_프론트엔드_실전",
+      "interviewId" : 3
+    }, {
+      "interviewTitle" : "241105_클라우드_실전",
+      "interviewId" : 5
+    }, {
+      "interviewTitle" : "241105_인공지능_모의",
+      "interviewId" : 6
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_마이페이지_면접_평가_조회_성공">마이페이지 - 면접 평가 조회 - 성공</h3>
+<div class="sect3">
+<h4 id="_요청_16">요청</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /evaluation/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+Cookie: access_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2Nlc3NfdG9rZW4iLCJ1c2VySWQiOjEsImV4cCI6MTczMDg0NzE3NH0.tbPQuYGGINpD90f4uyzsCVinrAJzHKOZU8cdRyJmtQExJ6GwheXoH0EbmD-aQdOpyFjslCLODjfiQoy8XuGa4A</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-json hljs" data-lang="json"></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_응답_16">응답</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 1264
+
+{
+  "code" : 200,
+  "message" : "SUCCESS",
+  "data" : {
+    "interview" : {
+      "interviewId" : 1,
+      "interviewTitle" : "면접 제목",
+      "interviewStatus" : "INITIAL",
+      "interviewType" : "TECHNICAL",
+      "interviewMethod" : "CHAT",
+      "interviewMode" : "GENERAL",
+      "job" : {
+        "jobId" : 1,
+        "jobName" : "BACK_END",
+        "jobNameKorean" : "백엔드",
+        "jobDescription" : "백엔드 직무입니다."
+      },
+      "files" : [ ]
+    },
+    "evaluationCriteria" : [ {
+      "evaluationCriteriaId" : 1,
+      "evaluationCriteria" : "GROWTH_POTENTIAL",
+      "feedbackText" : "피드백입니다.",
+      "score" : 1
+    } ],
+    "answerEvaluations" : [ {
+      "answerEvaluationId" : 1,
+      "questionText" : "질문 텍스트 입니다.",
+      "answerText" : "답변 텍스트 입니다.",
+      "answerFeedbackStrength" : "answerFeedbackStrength",
+      "answerFeedbackImprovement" : "answerFeedbackImprovement",
+      "answerFeedbackSuggestion" : "answerFeedbackSuggestion",
+      "answerEvaluationScores" : [ {
+        "answerEvaluationScoreId" : 1,
+        "answerEvaluationScoreName" : "APPROPRIATE_RESPONSE",
+        "score" : 4,
+        "rationale" : "Excellent, thorough response."
+      } ]
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-json hljs" data-lang="json">{
+  "code" : 200,
+  "message" : "SUCCESS",
+  "data" : {
+    "interview" : {
+      "interviewId" : 1,
+      "interviewTitle" : "면접 제목",
+      "interviewStatus" : "INITIAL",
+      "interviewType" : "TECHNICAL",
+      "interviewMethod" : "CHAT",
+      "interviewMode" : "GENERAL",
+      "job" : {
+        "jobId" : 1,
+        "jobName" : "BACK_END",
+        "jobNameKorean" : "백엔드",
+        "jobDescription" : "백엔드 직무입니다."
+      },
+      "files" : [ ]
+    },
+    "evaluationCriteria" : [ {
+      "evaluationCriteriaId" : 1,
+      "evaluationCriteria" : "GROWTH_POTENTIAL",
+      "feedbackText" : "피드백입니다.",
+      "score" : 1
+    } ],
+    "answerEvaluations" : [ {
+      "answerEvaluationId" : 1,
+      "questionText" : "질문 텍스트 입니다.",
+      "answerText" : "답변 텍스트 입니다.",
+      "answerFeedbackStrength" : "answerFeedbackStrength",
+      "answerFeedbackImprovement" : "answerFeedbackImprovement",
+      "answerFeedbackSuggestion" : "answerFeedbackSuggestion",
+      "answerEvaluationScores" : [ {
+        "answerEvaluationScoreId" : 1,
+        "answerEvaluationScoreName" : "APPROPRIATE_RESPONSE",
+        "score" : 4,
+        "rationale" : "Excellent, thorough response."
+      } ]
+    } ]
+  }
+}</code></pre>
 </div>
 </div>
 </div>
@@ -2144,7 +2421,7 @@ https://s3.aws.com/testFile.txt</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-11-06 07:12:22 +0900
+Last updated 2024-11-06 06:39:08 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

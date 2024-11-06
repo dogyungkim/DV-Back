@@ -28,10 +28,11 @@ public class CommonConstants {
   @Getter
   @AllArgsConstructor
   public enum InterviewMode {
-    REAL("real"), // 실전 면접 모드
-    GENERAL("general"); // 일반/모의 면접 모드
+    REAL("real", "실전"), // 실전 면접 모드
+    GENERAL("general", "모의"); // 일반/모의 면접 모드
 
     private final String pythonFormat;
+    private final String description;
   }
 
   @Getter

@@ -11,6 +11,7 @@ import org.richardstallman.dvback.domain.job.domain.JobDomain;
 
 public record InterviewCreateResponseDto(
     @NotNull Long interviewId,
+    @NotNull String interviewTitle,
     @NotNull InterviewStatus interviewStatus,
     @NotNull InterviewType interviewType,
     @NotNull InterviewMethod interviewMethod,
