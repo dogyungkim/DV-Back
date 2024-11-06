@@ -63,7 +63,7 @@ public class CommonConstants {
   @JsonFormat(shape = JsonFormat.Shape.STRING)
   public enum EvaluationCriteria {
     ANSWER("answer"),
-    JOB_FIT("jobFit"),
+    JOB_FIT("job_fit"),
     GROWTH_POTENTIAL("growth_potential"),
     TECHNICAL_DEPTH("technical_depth"),
     WORK_ATTITUDE("work_attitude");

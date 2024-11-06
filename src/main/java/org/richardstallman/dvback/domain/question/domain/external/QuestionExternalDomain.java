@@ -10,18 +10,18 @@ import lombok.Getter;
 @Getter
 public class QuestionExternalDomain {
 
-  @NotNull @JsonProperty("key_terms")
-  List<String> keyTerms;
-
-  @NotNull @JsonProperty("model_answer")
-  String modelAnswer;
-
   @NotNull @JsonProperty("question_id")
   int questionId;
+
+  @NotNull @JsonProperty("question_excerpt")
+  String questionExcerpt;
+
+  @NotNull @JsonProperty("question_text")
+  String questionText;
 
   @NotNull @JsonProperty("question_intent")
   String questionIntent;
 
-  @NotNull @JsonProperty("question_text")
-  String questionText;
+  @NotNull @JsonProperty("key_terms")
+  List<String> keyTerms;
 }

@@ -9,12 +9,12 @@ import lombok.Getter;
 @Getter
 public class AnswerEvaluationExternalDomain {
 
-  @NotNull @JsonProperty("feedback")
-  AnswerEvaluationFeedbackExternalDomain answerEvaluationFeedbackExternalDomain;
-
   @NotNull @JsonProperty("question_id")
   long questionId;
 
   @NotNull @JsonProperty("scores")
   AnswerEvaluationScoreExternalDomain answerEvaluationScoreExternalDomain;
+
+  @NotNull @JsonProperty("feedback")
+  AnswerEvaluationFeedbackExternalDomain answerEvaluationFeedbackExternalDomain;
 }

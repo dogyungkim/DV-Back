@@ -67,8 +67,12 @@ public class EvaluationServiceImpl implements EvaluationService {
       OverallEvaluationRequestDto overallEvaluationRequestDto) {
     List<QuestionDomain> questions = retrieveQuestions(overallEvaluationRequestDto.interviewId());
     InterviewDomain interviewDomain = questions.get(0).getInterviewDomain();
+
+    List<String> filePaths = new ArrayList<>();
+    filePaths.add(interviewDomain.getCoverLetter().getS3FileUrl());
+
     EvaluationExternalResponseDto evaluationExternalResponseDto =
-        callPythonEvaluationService(questions);
+        callPythonEvaluationService(questions, filePaths);
 
     OverallEvaluationDomain createdOverallEvaluationDomain = saveOverallEvaluation(interviewDomain);
     saveEvaluationCriteria(
@@ -111,7 +115,7 @@ public class EvaluationServiceImpl implements EvaluationService {
   }
 
   private EvaluationExternalResponseDto callPythonEvaluationService(
-      List<QuestionDomain> questions) {
+      List<QuestionDomain> questions, List<String> filePaths) {
     List<String> questionTexts = questions.stream().map(QuestionDomain::getQuestionText).toList();
     List<String> answerTexts =
         questions.stream()
@@ -123,13 +127,13 @@ public class EvaluationServiceImpl implements EvaluationService {
     InterviewDomain interviewDomain = questions.get(0).getInterviewDomain();
     EvaluationExternalRequestDto requestDto =
         new EvaluationExternalRequestDto(
-            "",
-            questionTexts,
-            answerTexts,
             interviewDomain.getInterviewMode(),
             interviewDomain.getInterviewType(),
             interviewDomain.getInterviewMethod(),
-            interviewDomain.getJob().getJobName());
+            interviewDomain.getJob().getJobName(),
+            questionTexts,
+            answerTexts,
+            filePaths);
 
     return pythonService.getOverallEvaluations(requestDto);
   }
@@ -146,8 +150,8 @@ public class EvaluationServiceImpl implements EvaluationService {
         Map.of(
             EvaluationCriteria.JOB_FIT, externalEvaluation.getJobFit(),
             EvaluationCriteria.GROWTH_POTENTIAL, externalEvaluation.getGrowthPotential(),
-            EvaluationCriteria.TECHNICAL_DEPTH, externalEvaluation.getTechnicalDepth(),
-            EvaluationCriteria.WORK_ATTITUDE, externalEvaluation.getWorkAttitude());
+            EvaluationCriteria.WORK_ATTITUDE, externalEvaluation.getWorkAttitude(),
+            EvaluationCriteria.TECHNICAL_DEPTH, externalEvaluation.getTechnicalDepth());
 
     List<EvaluationCriteriaDomain> criteriaDomains =
         criteriaMap.entrySet().stream()
