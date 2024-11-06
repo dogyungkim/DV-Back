@@ -2,29 +2,30 @@ package org.richardstallman.dvback.domain.question.domain.external.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 
 public record QuestionExternalRequestDto(
-    @JsonProperty("cover_letter_s3_url") String coverLetterS3Url,
     @JsonProperty("interview_mode") @NotNull String interviewMode,
     @JsonProperty("interview_type") @NotNull String interviewType,
     @JsonProperty("interview_method") @NotNull String interviewMethod,
-    @JsonProperty("job_name") @NotNull String jobName) {
+    @JsonProperty("job_role") @NotNull String jobName,
+    @JsonProperty("file_paths") @NotNull List<String> filePaths) {
 
   public QuestionExternalRequestDto(
-      String coverLetterS3Url,
       InterviewMode interviewMode,
       InterviewType interviewType,
       InterviewMethod interviewMethod,
-      String jobName) {
+      String jobName,
+      List<String> filePaths) {
     this(
-        coverLetterS3Url,
         interviewMode.getPythonFormat(),
         interviewType.getPythonFormat(),
         interviewMethod.getPythonFormat(),
-        convertJobNameToPythonFormat(jobName));
+        convertJobNameToPythonFormat(jobName),
+        filePaths);
   }
 
   private static String convertJobNameToPythonFormat(String jobName) {

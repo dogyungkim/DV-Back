@@ -36,18 +36,18 @@ public class QuestionEntity extends BaseEntity {
   @JoinColumn(name = "interview_id", nullable = false)
   private InterviewEntity interview;
 
+  @Column(columnDefinition = "TEXT")
+  private String questionExcerpt;
+
   @NotNull(message = "Question Text is required") @Column(columnDefinition = "TEXT")
   private String questionText;
+
+  @NotNull(message = "Question Intent is required") @Column(columnDefinition = "TEXT")
+  private String questionIntent;
 
   @NotNull(message = "keyTerms are required") @Column(columnDefinition = "jsonb")
   @JdbcTypeCode(SqlTypes.JSON)
   private List<String> keyTerms;
-
-  @NotNull(message = "Model Answer is required") @Column(columnDefinition = "TEXT")
-  private String modelAnswer;
-
-  @NotNull(message = "Question Intent is required") @Column(columnDefinition = "TEXT")
-  private String questionIntent;
 
   private String s3AudioUrl;
   private String s3VideoUrl;

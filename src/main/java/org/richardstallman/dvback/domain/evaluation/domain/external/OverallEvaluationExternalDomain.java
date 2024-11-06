@@ -16,9 +16,9 @@ public class OverallEvaluationExternalDomain {
   @JsonProperty("growth_potential")
   private EvaluationCriteriaExternalDomain growthPotential;
 
-  @JsonProperty("technical_depth")
-  private EvaluationCriteriaExternalDomain technicalDepth;
-
   @JsonProperty("work_attitude")
   private EvaluationCriteriaExternalDomain workAttitude;
+
+  @JsonProperty("technical_depth")
+  private EvaluationCriteriaExternalDomain technicalDepth;
 }

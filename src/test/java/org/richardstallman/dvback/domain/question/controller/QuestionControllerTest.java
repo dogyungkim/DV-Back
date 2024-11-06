@@ -14,14 +14,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.richardstallman.dvback.DvBackApplication;
+import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousRequestDto;
+import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewQuestionResponseDto;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
@@ -63,7 +67,7 @@ public class QuestionControllerTest {
             InterviewType.TECHNICAL,
             InterviewMethod.CHAT,
             InterviewMode.GENERAL,
-            "",
+            null,
             1L);
     String content = objectMapper.writeValueAsString(questionInitialRequestDto);
 
@@ -126,9 +130,9 @@ public class QuestionControllerTest {
                 fieldWithPath("interviewType").type(JsonFieldType.STRING).description("면접 유형"),
                 fieldWithPath("interviewMethod").type(JsonFieldType.STRING).description("면접 방식"),
                 fieldWithPath("interviewMode").type(JsonFieldType.STRING).description("면접 모드"),
-                fieldWithPath("coverLetterS3Url")
-                    .type(JsonFieldType.STRING)
-                    .description("자소서 s3 url"),
+                fieldWithPath("files")
+                    .type(JsonFieldType.NULL)
+                    .description("모의 면접이므로 파일 정보 없어야 함."),
                 fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자")),
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
@@ -176,6 +180,10 @@ public class QuestionControllerTest {
   @DisplayName("질문 생성 - 최초 요청(실전 면접 성공) 테스트")
   void get_question_by_request_python_server_real() throws Exception {
     // given
+    FileType fileType = FileType.COVER_LETTER;
+    String file = "cover_letter_s3_url/file_name";
+    List<FileRequestDto> files = new ArrayList<>();
+    files.add(new FileRequestDto(fileType, file));
     QuestionInitialRequestDto questionInitialRequestDto =
         new QuestionInitialRequestDto(
             1L,
@@ -184,7 +192,7 @@ public class QuestionControllerTest {
             InterviewType.TECHNICAL,
             InterviewMethod.CHAT,
             InterviewMode.REAL,
-            "cover_letter_s3_url/file_name",
+            files,
             1L);
     String content = objectMapper.writeValueAsString(questionInitialRequestDto);
 
@@ -247,9 +255,12 @@ public class QuestionControllerTest {
                 fieldWithPath("interviewType").type(JsonFieldType.STRING).description("면접 유형"),
                 fieldWithPath("interviewMethod").type(JsonFieldType.STRING).description("면접 방식"),
                 fieldWithPath("interviewMode").type(JsonFieldType.STRING).description("면접 모드"),
-                fieldWithPath("coverLetterS3Url")
+                fieldWithPath("files[0].filePath")
                     .type(JsonFieldType.STRING)
-                    .description("자소서 s3 url"),
+                    .description("파일 s3 url"),
+                fieldWithPath("files[0].type")
+                    .type(JsonFieldType.STRING)
+                    .description("파일 유형: COVER_LETTER(자소서), RESUME(이력서), PORTFOLIO(포트폴리오)"),
                 fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자")),
             responseFields(
                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
