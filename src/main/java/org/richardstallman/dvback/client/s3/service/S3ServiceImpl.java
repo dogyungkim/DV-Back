@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
+import org.richardstallman.dvback.domain.file.domain.response.PreSignedUrlResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class S3ServiceImpl implements S3Service {
   }
 
   @Override
-  public String createPreSignedURL(
+  public PreSignedUrlResponseDto createPreSignedURL(
       FileType fileType,
       String fileName,
       Long userId,
@@ -53,11 +54,11 @@ public class S3ServiceImpl implements S3Service {
         s3Presigner.presignPutObject(
             builder -> builder.signatureDuration(urlDuration).putObjectRequest(putObjectRequest));
 
-    return presignedPutObjectRequest.url().toString();
+    return new PreSignedUrlResponseDto(presignedPutObjectRequest.url().toString());
   }
 
   @Override
-  public String getDownloadURL(
+  public PreSignedUrlResponseDto getDownloadURL(
       FileType fileType, String fileName, Long userId, @Nullable Long interviewId) {
     String filePathKey = makeS3FilePath(fileType, fileName, userId, interviewId);
 
@@ -68,7 +69,7 @@ public class S3ServiceImpl implements S3Service {
         s3Presigner.presignGetObject(
             builder -> builder.signatureDuration(urlDuration).getObjectRequest(getObjectRequest));
 
-    return presignedGetObjectRequest.url().toString();
+    return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString());
   }
 
   private String makeS3FilePath(

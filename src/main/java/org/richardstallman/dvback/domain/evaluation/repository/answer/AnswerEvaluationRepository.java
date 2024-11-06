@@ -8,4 +8,6 @@ public interface AnswerEvaluationRepository {
   AnswerEvaluationDomain save(AnswerEvaluationDomain answerEvaluationDomain);
 
   List<AnswerEvaluationDomain> saveAll(List<AnswerEvaluationDomain> answerEvaluationDomains);
+
+  List<AnswerEvaluationDomain> findByInterviewId(Long interviewId);
 }

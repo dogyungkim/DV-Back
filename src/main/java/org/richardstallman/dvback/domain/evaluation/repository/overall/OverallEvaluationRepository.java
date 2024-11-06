@@ -5,4 +5,6 @@ import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvalua
 public interface OverallEvaluationRepository {
 
   OverallEvaluationDomain save(OverallEvaluationDomain overallEvaluationDomain);
+
+  OverallEvaluationDomain findByInterviewId(Long interviewId);
 }

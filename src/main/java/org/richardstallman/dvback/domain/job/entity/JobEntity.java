@@ -27,6 +27,8 @@ public class JobEntity extends BaseEntity {
 
   @NotNull(message = "Job Name is required") private String jobName;
 
+  @NotNull(message = "Job Name Korean is required") private String jobNameKorean;
+
   @Column(columnDefinition = "TEXT")
   @NotNull(message = "Job Description is required") private String jobDescription;
 }

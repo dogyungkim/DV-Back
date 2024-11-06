@@ -16,6 +16,7 @@ public class InterviewDomain {
 
   private final Long interviewId;
   private final UserDomain userDomain;
+  private String interviewTitle;
   private InterviewStatus interviewStatus;
   private InterviewType interviewType;
   private InterviewMethod interviewMethod;

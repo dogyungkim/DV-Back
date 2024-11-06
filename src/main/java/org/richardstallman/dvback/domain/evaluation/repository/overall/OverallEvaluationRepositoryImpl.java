@@ -22,4 +22,10 @@ public class OverallEvaluationRepositoryImpl implements OverallEvaluationReposit
             overallEvaluationConverter.fromDomainToEntity(overallEvaluationDomain));
     return overallEvaluationConverter.fromEntityToDomain(savedEntity);
   }
+
+  @Override
+  public OverallEvaluationDomain findByInterviewId(Long interviewId) {
+    return overallEvaluationConverter.fromEntityToDomain(
+        overallEvaluationJpaRepository.findByInterviewInterviewId(interviewId));
+  }
 }
