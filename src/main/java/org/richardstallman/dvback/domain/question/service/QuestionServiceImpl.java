@@ -23,6 +23,8 @@ import org.richardstallman.dvback.domain.question.domain.request.QuestionInitial
 import org.richardstallman.dvback.domain.question.domain.request.QuestionNextRequestDto;
 import org.richardstallman.dvback.domain.question.domain.response.QuestionResponseDto;
 import org.richardstallman.dvback.domain.question.repository.QuestionRepository;
+import org.richardstallman.dvback.domain.user.domain.UserDomain;
+import org.richardstallman.dvback.domain.user.repository.UserRepository;
 import org.richardstallman.dvback.global.advice.exceptions.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -42,14 +44,19 @@ public class QuestionServiceImpl implements QuestionService {
   private final QuestionRepository questionRepository;
   private final AnswerRepository answerRepository;
   private final AnswerConverter answerConverter;
+  private final UserRepository userRepository;
 
   @Override
   @Transactional(propagation = Propagation.REQUIRED)
   public QuestionResponseDto getInitialQuestion(
-      QuestionInitialRequestDto questionInitialRequestDto) {
+      QuestionInitialRequestDto questionInitialRequestDto, Long userId) {
 
     JobDomain jobDomain = jobService.findJobById(questionInitialRequestDto.jobId());
 
+    UserDomain userDomain =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, userId + " is not found"));
     QuestionExternalRequestDto questionExternalRequestDto =
         questionConverter.reactRequestToPythonRequest(
             questionInitialRequestDto, jobDomain.getJobName());
@@ -75,11 +82,19 @@ public class QuestionServiceImpl implements QuestionService {
 
     QuestionDomain firstQuestion =
         getCreatedQuestionDomain(
-            questionInitialRequestDto, createdQuestions.get(0), jobDomain, coverLetterDomain);
+            questionInitialRequestDto,
+            createdQuestions.get(0),
+            jobDomain,
+            coverLetterDomain,
+            userDomain);
     QuestionDomain nextQuestion =
         hasNext
             ? getCreatedQuestionDomain(
-                questionInitialRequestDto, createdQuestions.get(1), jobDomain, coverLetterDomain)
+                questionInitialRequestDto,
+                createdQuestions.get(1),
+                jobDomain,
+                coverLetterDomain,
+                userDomain)
             : null;
 
     createdQuestions.stream()
@@ -87,11 +102,11 @@ public class QuestionServiceImpl implements QuestionService {
         .forEach(
             q ->
                 getCreatedQuestionDomain(
-                    questionInitialRequestDto, q, jobDomain, coverLetterDomain));
+                    questionInitialRequestDto, q, jobDomain, coverLetterDomain, userDomain));
 
     InterviewDomain interviewDomain =
         interviewConverter.fromInterviewInitialQuestionRequestDtoToDomain(
-            questionInitialRequestDto, jobDomain, coverLetterDomain);
+            questionInitialRequestDto, jobDomain, coverLetterDomain, userDomain);
 
     InterviewQuestionResponseDto interviewQuestionResponseDto =
         interviewConverter.fromDomainToQuestionResponseDto(interviewDomain);
@@ -127,12 +142,13 @@ public class QuestionServiceImpl implements QuestionService {
       QuestionInitialRequestDto questionInitialRequestDto,
       QuestionExternalDomain questionExternalDomain,
       JobDomain jobDomain,
-      CoverLetterDomain coverLetterDomain) {
+      CoverLetterDomain coverLetterDomain,
+      UserDomain userDomain) {
     return questionRepository.save(
         questionConverter.fromQuestionExternalDomainToDomain(
             questionExternalDomain,
             interviewConverter.fromInterviewInitialQuestionRequestDtoToDomain(
-                questionInitialRequestDto, jobDomain, coverLetterDomain)));
+                questionInitialRequestDto, jobDomain, coverLetterDomain, userDomain)));
   }
 
   private QuestionDomain findQuestionById(List<QuestionDomain> questions, Long questionId) {

@@ -17,6 +17,7 @@ import org.richardstallman.dvback.domain.job.converter.JobConverter;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
+import org.richardstallman.dvback.domain.user.domain.UserDomain;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +39,9 @@ public class InterviewConverter {
         interviewDomain.getInterviewMethod(),
         interviewDomain.getInterviewMode(),
         jobConverter.toEntity(interviewDomain.getJob()),
-        coverLetterConverter.fromDomainToEntity(interviewDomain.getCoverLetter()));
+        interviewDomain.getInterviewMode() == InterviewMode.REAL
+            ? coverLetterConverter.fromDomainToEntity(interviewDomain.getCoverLetter())
+            : null);
   }
 
   public InterviewEntity fromDomainToEntityWhenCreate(InterviewDomain interviewDomain) {
@@ -132,9 +135,11 @@ public class InterviewConverter {
   public InterviewDomain fromInterviewInitialQuestionRequestDtoToDomain(
       QuestionInitialRequestDto questionInitialRequestDto,
       JobDomain jobDomain,
-      CoverLetterDomain coverLetterDomain) {
+      CoverLetterDomain coverLetterDomain,
+      UserDomain userDomain) {
     return InterviewDomain.builder()
         .interviewId(questionInitialRequestDto.interviewId())
+        .userDomain(userDomain)
         .interviewTitle(questionInitialRequestDto.interviewTitle())
         .interviewStatus(InterviewStatus.IN_PROGRESS)
         .interviewType(questionInitialRequestDto.interviewType())

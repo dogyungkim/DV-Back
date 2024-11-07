@@ -12,8 +12,8 @@ public record EvaluationExternalRequestDto(
     @JsonProperty("interview_type") @NotNull String interviewType,
     @JsonProperty("interview_method") @NotNull String interviewMethod,
     @JsonProperty("job_role") @NotNull String jobName,
-    @JsonProperty("questions") @NotNull List<String> questions,
-    @JsonProperty("answers") @NotNull List<String> answers,
+    @JsonProperty("questions") @NotNull EvaluationExternalQuestionsRequestDto questions,
+    @JsonProperty("answers") @NotNull EvaluationExternalAnswersRequestDto answers,
     @JsonProperty("file_paths") List<String> filePaths) {
 
   public EvaluationExternalRequestDto(
@@ -21,8 +21,8 @@ public record EvaluationExternalRequestDto(
       InterviewType interviewType,
       InterviewMethod interviewMethod,
       String jobName,
-      List<String> questions,
-      List<String> answers,
+      EvaluationExternalQuestionsRequestDto questions,
+      EvaluationExternalAnswersRequestDto answers,
       List<String> filePaths) {
     this(
         interviewMode.getPythonFormat(),

@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.domain.question.converter;
 
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionRequestDto;
 import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
@@ -64,7 +65,9 @@ public class QuestionConverter {
         questionInitialRequestDto.interviewType(),
         questionInitialRequestDto.interviewMethod(),
         jobName,
-        questionInitialRequestDto.files().stream().map(FileRequestDto::getFilePath).toList());
+        questionInitialRequestDto.files().stream()
+            .map(FileRequestDto::getFilePath)
+            .toArray(String[]::new));
   }
 
   public QuestionResponseDto fromQuestionExternalDomainToQuestionResponseDto(
@@ -77,5 +80,15 @@ public class QuestionConverter {
         firstQuestionDomain.getQuestionText(),
         secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionId(),
         hasNext);
+  }
+
+  public EvaluationExternalQuestionRequestDto fromDomainToEvaluationExternalRequestDto(
+      QuestionDomain questionDomain) {
+    return new EvaluationExternalQuestionRequestDto(
+        questionDomain.getQuestionId(),
+        questionDomain.getQuestionExcerpt(),
+        questionDomain.getQuestionText(),
+        questionDomain.getQuestionIntent(),
+        questionDomain.getKeyTerms());
   }
 }
