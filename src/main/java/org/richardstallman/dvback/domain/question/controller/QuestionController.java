@@ -7,6 +7,7 @@ import org.richardstallman.dvback.domain.question.domain.request.QuestionNextReq
 import org.richardstallman.dvback.domain.question.domain.response.QuestionResponseDto;
 import org.richardstallman.dvback.domain.question.service.QuestionService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,9 +23,10 @@ public class QuestionController {
 
   @PostMapping("/initial-question")
   public ResponseEntity<DvApiResponse<QuestionResponseDto>> getInitialQuestion(
+      @AuthenticationPrincipal Long userId,
       @Validated @RequestBody final QuestionInitialRequestDto questionInitialRequestDto) {
     final QuestionResponseDto questionResponseDto =
-        questionService.getInitialQuestion(questionInitialRequestDto);
+        questionService.getInitialQuestion(questionInitialRequestDto, userId);
     return ResponseEntity.ok(DvApiResponse.of(questionResponseDto));
   }
 

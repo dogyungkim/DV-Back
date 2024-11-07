@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.client.python.PythonService;
 import org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluationScore;
 import org.richardstallman.dvback.common.constant.CommonConstants.EvaluationCriteria;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.answer.repository.AnswerRepository;
 import org.richardstallman.dvback.domain.evaluation.converter.AnswerEvaluationConverter;
 import org.richardstallman.dvback.domain.evaluation.converter.AnswerEvaluationScoreConverter;
@@ -21,6 +22,10 @@ import org.richardstallman.dvback.domain.evaluation.domain.external.AnswerEvalua
 import org.richardstallman.dvback.domain.evaluation.domain.external.AnswerEvaluationExternalDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.external.EvaluationCriteriaExternalDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.external.OverallEvaluationExternalDomain;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalAnswerRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalAnswersRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionsRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.response.EvaluationExternalResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
@@ -37,6 +42,7 @@ import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
 import org.richardstallman.dvback.domain.interview.service.InterviewService;
+import org.richardstallman.dvback.domain.question.converter.QuestionConverter;
 import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
 import org.richardstallman.dvback.domain.question.repository.QuestionRepository;
 import org.richardstallman.dvback.global.advice.exceptions.ApiException;
@@ -61,6 +67,7 @@ public class EvaluationServiceImpl implements EvaluationService {
   private final AnswerEvaluationScoreConverter answerEvaluationScoreConverter;
   private final CoverLetterConverter coverLetterConverter;
   private final InterviewService interviewService;
+  private final QuestionConverter questionConverter;
 
   @Override
   public OverallEvaluationResponseDto getOverallEvaluation(
@@ -69,14 +76,18 @@ public class EvaluationServiceImpl implements EvaluationService {
     InterviewDomain interviewDomain = questions.get(0).getInterviewDomain();
 
     List<String> filePaths = new ArrayList<>();
-    filePaths.add(interviewDomain.getCoverLetter().getS3FileUrl());
+    if (interviewDomain.getInterviewMode() == InterviewMode.REAL) {
+      filePaths.add(interviewDomain.getCoverLetter().getS3FileUrl());
+    }
 
     EvaluationExternalResponseDto evaluationExternalResponseDto =
         callPythonEvaluationService(questions, filePaths);
 
     OverallEvaluationDomain createdOverallEvaluationDomain = saveOverallEvaluation(interviewDomain);
+
     saveEvaluationCriteria(
         createdOverallEvaluationDomain, evaluationExternalResponseDto.overallEvaluation());
+
     List<AnswerEvaluationDomain> createdAnswerEvaluations =
         saveAnswerEvaluations(
             createdOverallEvaluationDomain, evaluationExternalResponseDto.answerEvaluations());
@@ -116,12 +127,20 @@ public class EvaluationServiceImpl implements EvaluationService {
 
   private EvaluationExternalResponseDto callPythonEvaluationService(
       List<QuestionDomain> questions, List<String> filePaths) {
-    List<String> questionTexts = questions.stream().map(QuestionDomain::getQuestionText).toList();
-    List<String> answerTexts =
+    List<EvaluationExternalQuestionRequestDto> questionTexts =
+        questions.stream()
+            .map(questionConverter::fromDomainToEvaluationExternalRequestDto)
+            .toList();
+    System.out.println("BB");
+    List<EvaluationExternalAnswerRequestDto> answerTexts =
         questions.stream()
             .map(
                 question ->
-                    answerRepository.findByQuestionId(question.getQuestionId()).getAnswerText())
+                    new EvaluationExternalAnswerRequestDto(
+                        question.getQuestionId(),
+                        answerRepository
+                            .findByQuestionId(question.getQuestionId())
+                            .getAnswerText()))
             .toList();
 
     InterviewDomain interviewDomain = questions.get(0).getInterviewDomain();
@@ -131,8 +150,8 @@ public class EvaluationServiceImpl implements EvaluationService {
             interviewDomain.getInterviewType(),
             interviewDomain.getInterviewMethod(),
             interviewDomain.getJob().getJobName(),
-            questionTexts,
-            answerTexts,
+            new EvaluationExternalQuestionsRequestDto(questionTexts),
+            new EvaluationExternalAnswersRequestDto(answerTexts),
             filePaths);
 
     return pythonService.getOverallEvaluations(requestDto);
@@ -256,8 +275,11 @@ public class EvaluationServiceImpl implements EvaluationService {
             .toList();
 
     List<FileResponseDto> fileResponseDtos = new ArrayList<>();
-    fileResponseDtos.add(
-        coverLetterConverter.fromDomainToResponseDto(interviewDomain.getCoverLetter()));
+
+    if (interviewDomain.getInterviewMode() == InterviewMode.REAL) {
+      fileResponseDtos.add(
+          coverLetterConverter.fromDomainToResponseDto(interviewDomain.getCoverLetter()));
+    }
 
     return overallEvaluationConverter.toResponseDto(
         interviewDomain, criteriaResponseDtos, answerEvaluationResponseDtos, fileResponseDtos);
