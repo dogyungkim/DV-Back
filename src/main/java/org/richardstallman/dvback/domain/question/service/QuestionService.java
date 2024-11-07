@@ -6,7 +6,8 @@ import org.richardstallman.dvback.domain.question.domain.response.QuestionRespon
 
 public interface QuestionService {
 
-  QuestionResponseDto getInitialQuestion(QuestionInitialRequestDto questionInitialRequestDto);
+  QuestionResponseDto getInitialQuestion(
+      QuestionInitialRequestDto questionInitialRequestDto, Long userId);
 
   QuestionResponseDto getNextQuestion(QuestionNextRequestDto questionNextRequestDto);
 }

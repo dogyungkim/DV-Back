@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +22,9 @@ import org.richardstallman.dvback.global.entity.BaseEntity;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "answers")
+@Table(
+    name = "answers",
+    uniqueConstraints = {@UniqueConstraint(columnNames = "question_id")})
 public class AnswerEntity extends BaseEntity {
 
   @Id

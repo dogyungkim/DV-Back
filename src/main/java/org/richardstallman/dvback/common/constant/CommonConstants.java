@@ -19,10 +19,11 @@ public class CommonConstants {
   @Getter
   @AllArgsConstructor
   public enum InterviewType {
-    TECHNICAL("technical"), // 기술 면접
-    PERSONAL("personal"); // 인성 면접
+    TECHNICAL("technical", "기술"), // 기술 면접
+    PERSONAL("personal", "인성"); // 인성 면접
 
     private final String pythonFormat;
+    private final String koreanName;
   }
 
   @Getter
@@ -32,17 +33,18 @@ public class CommonConstants {
     GENERAL("general", "모의"); // 일반/모의 면접 모드
 
     private final String pythonFormat;
-    private final String description;
+    private final String koreanName;
   }
 
   @Getter
   @AllArgsConstructor
   public enum InterviewMethod {
-    CHAT("chat"), // 채팅 면접
-    VOICE("voice"), // 음성 면접
-    VIDEO("video"); // 영상 면접
+    CHAT("chat", "채팅"), // 채팅 면접
+    VOICE("voice", "음성"), // 음성 면접
+    VIDEO("video", "영상"); // 영상 면접
 
     private final String pythonFormat;
+    private final String koreanName;
   }
 
   @AllArgsConstructor
@@ -63,7 +65,7 @@ public class CommonConstants {
   @JsonFormat(shape = JsonFormat.Shape.STRING)
   public enum EvaluationCriteria {
     ANSWER("answer"),
-    JOB_FIT("jobFit"),
+    JOB_FIT("job_fit"),
     GROWTH_POTENTIAL("growth_potential"),
     TECHNICAL_DEPTH("technical_depth"),
     WORK_ATTITUDE("work_attitude");

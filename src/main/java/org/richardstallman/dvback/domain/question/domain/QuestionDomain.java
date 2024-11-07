@@ -11,10 +11,10 @@ public class QuestionDomain {
 
   private final Long questionId;
   private InterviewDomain interviewDomain;
+  private String questionExcerpt;
   private String questionText;
-  private List<String> keyTerms;
-  private String modelAnswer;
   private String questionIntent;
+  private List<String> keyTerms;
   private String s3AudioUrl;
   private String s3VideoUrl;
   private String questionType;

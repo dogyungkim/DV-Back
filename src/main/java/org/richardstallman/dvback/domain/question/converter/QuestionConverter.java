@@ -1,7 +1,8 @@
 package org.richardstallman.dvback.domain.question.converter;
 
 import lombok.RequiredArgsConstructor;
-import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionRequestDto;
+import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewQuestionResponseDto;
@@ -23,10 +24,10 @@ public class QuestionConverter {
     return new QuestionEntity(
         questionDomain.getQuestionId(),
         interviewConverter.fromDomainToEntity(questionDomain.getInterviewDomain()),
+        questionDomain.getQuestionExcerpt(),
         questionDomain.getQuestionText(),
-        questionDomain.getKeyTerms(),
-        questionDomain.getModelAnswer(),
         questionDomain.getQuestionIntent(),
+        questionDomain.getKeyTerms(),
         questionDomain.getS3AudioUrl(),
         questionDomain.getS3VideoUrl(),
         questionDomain.getQuestionType());
@@ -36,10 +37,10 @@ public class QuestionConverter {
     return QuestionDomain.builder()
         .questionId(questionEntity.getQuestionId())
         .interviewDomain(interviewConverter.fromEntityToDomain(questionEntity.getInterview()))
+        .questionExcerpt(questionEntity.getQuestionExcerpt())
         .questionText(questionEntity.getQuestionText())
-        .keyTerms(questionEntity.getKeyTerms())
-        .modelAnswer(questionEntity.getModelAnswer())
         .questionIntent(questionEntity.getQuestionIntent())
+        .keyTerms(questionEntity.getKeyTerms())
         .s3AudioUrl(questionEntity.getS3AudioUrl())
         .s3VideoUrl(questionEntity.getS3VideoUrl())
         .questionType(questionEntity.getQuestionType())
@@ -50,23 +51,23 @@ public class QuestionConverter {
       QuestionExternalDomain questionExternalDomain, InterviewDomain interviewDomain) {
     return QuestionDomain.builder()
         .interviewDomain(interviewDomain)
+        .questionExcerpt(questionExternalDomain.getQuestionExcerpt())
         .questionText(questionExternalDomain.getQuestionText())
-        .keyTerms(questionExternalDomain.getKeyTerms())
         .questionIntent(questionExternalDomain.getQuestionIntent())
-        .modelAnswer(questionExternalDomain.getModelAnswer())
+        .keyTerms(questionExternalDomain.getKeyTerms())
         .build();
   }
 
   public QuestionExternalRequestDto reactRequestToPythonRequest(
       QuestionInitialRequestDto questionInitialRequestDto, String jobName) {
     return new QuestionExternalRequestDto(
-        questionInitialRequestDto.interviewMode() == InterviewMode.REAL
-            ? questionInitialRequestDto.coverLetterS3Url()
-            : null,
         questionInitialRequestDto.interviewMode(),
         questionInitialRequestDto.interviewType(),
         questionInitialRequestDto.interviewMethod(),
-        jobName);
+        jobName,
+        questionInitialRequestDto.files().stream()
+            .map(FileRequestDto::getFilePath)
+            .toArray(String[]::new));
   }
 
   public QuestionResponseDto fromQuestionExternalDomainToQuestionResponseDto(
@@ -79,5 +80,15 @@ public class QuestionConverter {
         firstQuestionDomain.getQuestionText(),
         secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionId(),
         hasNext);
+  }
+
+  public EvaluationExternalQuestionRequestDto fromDomainToEvaluationExternalRequestDto(
+      QuestionDomain questionDomain) {
+    return new EvaluationExternalQuestionRequestDto(
+        questionDomain.getQuestionId(),
+        questionDomain.getQuestionExcerpt(),
+        questionDomain.getQuestionText(),
+        questionDomain.getQuestionIntent(),
+        questionDomain.getKeyTerms());
   }
 }

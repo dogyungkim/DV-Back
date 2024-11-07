@@ -2,6 +2,8 @@ package org.richardstallman.dvback.domain.file.converter;
 
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
+import org.richardstallman.dvback.domain.file.domain.request.CoverLetterRequestDto;
+import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
 import org.richardstallman.dvback.domain.file.domain.response.CoverLetterResponseDto;
 import org.richardstallman.dvback.domain.file.entity.CoverLetterEntity;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
@@ -45,5 +47,9 @@ public class CoverLetterConverter {
         coverLetterDomain.getCoverLetterId(),
         coverLetterDomain.getFileName(),
         coverLetterDomain.getS3FileUrl());
+  }
+
+  public CoverLetterRequestDto fromFileRequestDtoToRequestDto(FileRequestDto fileRequestDto) {
+    return new CoverLetterRequestDto(fileRequestDto.getType(), fileRequestDto.getFilePath());
   }
 }

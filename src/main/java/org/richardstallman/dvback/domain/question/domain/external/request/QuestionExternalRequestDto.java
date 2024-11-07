@@ -7,30 +7,30 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 
 public record QuestionExternalRequestDto(
-    @JsonProperty("cover_letter_s3_url") String coverLetterS3Url,
     @JsonProperty("interview_mode") @NotNull String interviewMode,
     @JsonProperty("interview_type") @NotNull String interviewType,
     @JsonProperty("interview_method") @NotNull String interviewMethod,
-    @JsonProperty("job_name") @NotNull String jobName) {
+    @JsonProperty("job_role") @NotNull String jobName,
+    @JsonProperty("file_paths") String[] filePaths) {
 
   public QuestionExternalRequestDto(
-      String coverLetterS3Url,
       InterviewMode interviewMode,
       InterviewType interviewType,
       InterviewMethod interviewMethod,
-      String jobName) {
+      String jobName,
+      String[] filePaths) {
     this(
-        coverLetterS3Url,
         interviewMode.getPythonFormat(),
         interviewType.getPythonFormat(),
         interviewMethod.getPythonFormat(),
-        convertJobNameToPythonFormat(jobName));
+        convertJobNameToPythonFormat(jobName),
+        filePaths);
   }
 
   private static String convertJobNameToPythonFormat(String jobName) {
     return switch (jobName) {
       case "BACK_END" -> "backend";
-      case "FRONTEND" -> "frontend";
+      case "FRONT_END" -> "frontend";
       case "INFRA" -> "infra";
       case "AI" -> "ai";
       default -> jobName.toLowerCase();

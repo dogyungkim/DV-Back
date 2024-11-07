@@ -2,6 +2,7 @@ package org.richardstallman.dvback.domain.interview.converter;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.domain.file.converter.CoverLetterConverter;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
@@ -16,6 +17,7 @@ import org.richardstallman.dvback.domain.job.converter.JobConverter;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
+import org.richardstallman.dvback.domain.user.domain.UserDomain;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +39,9 @@ public class InterviewConverter {
         interviewDomain.getInterviewMethod(),
         interviewDomain.getInterviewMode(),
         jobConverter.toEntity(interviewDomain.getJob()),
-        coverLetterConverter.fromDomainToEntity(interviewDomain.getCoverLetter()));
+        interviewDomain.getInterviewMode() == InterviewMode.REAL
+            ? coverLetterConverter.fromDomainToEntity(interviewDomain.getCoverLetter())
+            : null);
   }
 
   public InterviewEntity fromDomainToEntityWhenCreate(InterviewDomain interviewDomain) {
@@ -49,7 +53,9 @@ public class InterviewConverter {
         interviewDomain.getInterviewMethod(),
         interviewDomain.getInterviewMode(),
         jobConverter.toEntity(interviewDomain.getJob()),
-        coverLetterConverter.fromDomainToEntity(interviewDomain.getCoverLetter()));
+        interviewDomain.getInterviewMode() == InterviewMode.REAL
+            ? coverLetterConverter.fromDomainToEntity(interviewDomain.getCoverLetter())
+            : null);
   }
 
   public InterviewDomain fromEntityToDomain(InterviewEntity interviewEntity) {
@@ -62,7 +68,10 @@ public class InterviewConverter {
         .interviewMethod(interviewEntity.getInterviewMethod())
         .interviewMode(interviewEntity.getInterviewMode())
         .job(jobConverter.toDomain(interviewEntity.getJob()))
-        .coverLetter(coverLetterConverter.fromEntityToDomain(interviewEntity.getCoverLetter()))
+        .coverLetter(
+            interviewEntity.getInterviewMode() == InterviewMode.REAL
+                ? coverLetterConverter.fromEntityToDomain(interviewEntity.getCoverLetter())
+                : null)
         .build();
   }
 
@@ -126,9 +135,11 @@ public class InterviewConverter {
   public InterviewDomain fromInterviewInitialQuestionRequestDtoToDomain(
       QuestionInitialRequestDto questionInitialRequestDto,
       JobDomain jobDomain,
-      CoverLetterDomain coverLetterDomain) {
+      CoverLetterDomain coverLetterDomain,
+      UserDomain userDomain) {
     return InterviewDomain.builder()
         .interviewId(questionInitialRequestDto.interviewId())
+        .userDomain(userDomain)
         .interviewTitle(questionInitialRequestDto.interviewTitle())
         .interviewStatus(InterviewStatus.IN_PROGRESS)
         .interviewType(questionInitialRequestDto.interviewType())
