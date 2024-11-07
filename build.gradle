@@ -26,12 +26,6 @@ repositories {
     mavenCentral()
 }
 
-//swaggerSources {
-//    sample {
-//        setInputFile(file("${project.buildDir}/api-spec/openai3.yaml"))
-//    }
-//}
-
 openapi3 {
     servers = [
             { url = "http://devterview.com"},
@@ -45,18 +39,6 @@ openapi3 {
     outputDirectory = "build/api-spec"
 }
 
-//configurations {
-//    asciidoctorExt
-//}
-//
-//ext {
-//    set('snippetsDir', file("build/generated-snippets"))
-//}
-
-//ext {
-//    snippetsDir = file('build/generated-snippets')
-//}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
@@ -69,7 +51,6 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // restdocs
-//    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation "com.epages:restdocs-api-spec-restassured:${restdocsApiSpecVersion}"
     testImplementation 'io.rest-assured:rest-assured'
@@ -139,45 +120,13 @@ test {
     systemProperty 'spring.profiles.active', 'test'
 }
 
-//tasks.withType(GenerateSwaggerUI) {
-//// openapi3 테스크 이후에 실행 됨
-//    dependsOn 'openapi3'
-//
-//    //기존 파일 삭제했다가, build 에 json 정적파일 복사 (안해도 됨 → local 확인용)
-////    delete file('src/main/resources/static/docs/')
-//    copy {
-//        from "build/resources/main/static/docs"
-//        into "src/main/resources/static/docs/"
-//    }
-//}
-
-//tasks.withType(generateSwaggerUI) {
-//    dependsOn 'openapi3'
-//    doFirst {
-//        def swaggerUIFile = file("${project.buildDir}/api-spec/openapi3.yaml") // 확실한 경로 지정
-//
-//        def securitySchemesContent = """
-//securitySchemes:
-//    APIKey:
-//      type: apiKey
-//      name: access_token  # 쿠키 이름
-//      in: cookie
-//security:
-//  - APIKey: []  # Apply the security scheme here
-//"""
-//        swaggerUIFile.append securitySchemesContent
-//    }
-//}
-
-
 tasks.register('copySwaggerUI', Copy) {
     dependsOn 'openapi3'
-    from("build/api-spec/") // Swagger UI가 참조할 OpenAPI 파일 경로
-    into("src/main/resources/static/docs/") // 복사 대상 경로
+    from("build/api-spec/")
+    into("src/main/resources/static/docs/")
     doLast {
         def openApiFile = file("src/main/resources/static/docs/openapi3.yaml")
 
-        // securitySchemes 설정 내용을 추가
         def securitySchemesContent = """
   securitySchemes:
     APIKey:
@@ -187,8 +136,6 @@ tasks.register('copySwaggerUI', Copy) {
 security:
   - APIKey: []
 """
-
-        // 파일 끝에 securitySchemes 설정 내용을 추가
         openApiFile.append(securitySchemesContent)
     }
 }
