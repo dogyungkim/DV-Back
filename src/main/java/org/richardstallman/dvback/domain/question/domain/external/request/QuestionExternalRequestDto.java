@@ -31,7 +31,7 @@ public record QuestionExternalRequestDto(
   private static String convertJobNameToPythonFormat(String jobName) {
     return switch (jobName) {
       case "BACK_END" -> "backend";
-      case "FRONTEND" -> "frontend";
+      case "FRONT_END" -> "frontend";
       case "INFRA" -> "infra";
       case "AI" -> "ai";
       default -> jobName.toLowerCase();

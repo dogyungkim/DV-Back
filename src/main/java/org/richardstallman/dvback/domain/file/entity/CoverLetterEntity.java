@@ -35,7 +35,7 @@ public class CoverLetterEntity extends BaseEntity {
   @JoinColumn(name = "id", nullable = false)
   private UserEntity user;
 
-  @NotNull(message = "Interview Type is required") private String fileName;
+  @NotNull(message = "File Name is required") private String fileName;
 
   @NotNull(message = "S3 File Url is required") private String s3FileUrl;
 }
