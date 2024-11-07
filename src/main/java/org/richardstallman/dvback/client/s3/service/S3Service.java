@@ -7,13 +7,17 @@ import org.richardstallman.dvback.domain.file.domain.response.PreSignedUrlRespon
 
 public interface S3Service {
 
-  PreSignedUrlResponseDto createPreSignedURL(
+  PreSignedUrlResponseDto getPreSignedUrlForImage(String fileName, Long userId);
+
+  PreSignedUrlResponseDto getDownloadUrlForImage(Long userId);
+
+  PreSignedUrlResponseDto createPreSignedURLForInterview(
       FileType fileType,
       String fileName,
       Long userId,
       @Nullable Long interviewId,
       @Nullable Map<String, String> metadata);
 
-  PreSignedUrlResponseDto getDownloadURL(
-      FileType fileType, String fileName, Long userId, @Nullable Long interviewId);
+  PreSignedUrlResponseDto getDownloadURLForInterview(
+      String filePath, Long userId, @Nullable Long interviewId);
 }

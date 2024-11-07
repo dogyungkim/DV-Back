@@ -7,6 +7,8 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
 import org.richardstallman.dvback.domain.file.domain.response.PreSignedUrlResponseDto;
+import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
+import org.richardstallman.dvback.domain.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,19 +35,16 @@ public class S3ServiceImpl implements S3Service {
 
   private Duration urlDuration;
 
+  private final UserService userService;
+
   @PostConstruct
   private void init() {
     this.urlDuration = Duration.ofMinutes(urlDurationMinutes);
   }
 
   @Override
-  public PreSignedUrlResponseDto createPreSignedURL(
-      FileType fileType,
-      String fileName,
-      Long userId,
-      @Nullable Long interviewId,
-      @Nullable Map<String, String> metadata) {
-    String filePathKey = makeS3FilePath(fileType, fileName, userId, interviewId);
+  public PreSignedUrlResponseDto getPreSignedUrlForImage(String fileName, Long userId) {
+    String filePathKey = makeS3FilePathForImage(FileType.PROFILE_IMAGE, fileName, userId);
 
     PutObjectRequest putObjectRequest =
         PutObjectRequest.builder().bucket(bucketName).key(filePathKey).build();
@@ -58,10 +57,9 @@ public class S3ServiceImpl implements S3Service {
   }
 
   @Override
-  public PreSignedUrlResponseDto getDownloadURL(
-      FileType fileType, String fileName, Long userId, @Nullable Long interviewId) {
-    String filePathKey = makeS3FilePath(fileType, fileName, userId, interviewId);
-
+  public PreSignedUrlResponseDto getDownloadUrlForImage(Long userId) {
+    UserResponseDto userResponseDto = userService.getUserInfo(userId);
+    String filePathKey = userResponseDto.s3ProfileImageUrl();
     GetObjectRequest getObjectRequest =
         GetObjectRequest.builder().bucket(bucketName).key(filePathKey).build();
 
@@ -72,7 +70,44 @@ public class S3ServiceImpl implements S3Service {
     return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString());
   }
 
-  private String makeS3FilePath(
+  @Override
+  public PreSignedUrlResponseDto createPreSignedURLForInterview(
+      FileType fileType,
+      String fileName,
+      Long userId,
+      @Nullable Long interviewId,
+      @Nullable Map<String, String> metadata) {
+    String filePathKey = makeS3FilePathForInterview(fileType, fileName, userId, interviewId);
+
+    PutObjectRequest putObjectRequest =
+        PutObjectRequest.builder().bucket(bucketName).key(filePathKey).build();
+
+    PresignedPutObjectRequest presignedPutObjectRequest =
+        s3Presigner.presignPutObject(
+            builder -> builder.signatureDuration(urlDuration).putObjectRequest(putObjectRequest));
+
+    return new PreSignedUrlResponseDto(presignedPutObjectRequest.url().toString());
+  }
+
+  @Override
+  public PreSignedUrlResponseDto getDownloadURLForInterview(
+      String filePath, Long userId, @Nullable Long interviewId) {
+
+    GetObjectRequest getObjectRequest =
+        GetObjectRequest.builder().bucket(bucketName).key(filePath).build();
+
+    PresignedGetObjectRequest presignedGetObjectRequest =
+        s3Presigner.presignGetObject(
+            builder -> builder.signatureDuration(urlDuration).getObjectRequest(getObjectRequest));
+
+    return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString());
+  }
+
+  private String makeS3FilePathForImage(FileType fileType, String fileName, Long userId) {
+    return String.format("%s/%d/%s", fileType.getFolderName(), userId, fileName);
+  }
+
+  private String makeS3FilePathForInterview(
       FileType fileType, String fileName, Long userId, @Nullable Long interviewId) {
     String timestamp = String.valueOf(System.currentTimeMillis());
 

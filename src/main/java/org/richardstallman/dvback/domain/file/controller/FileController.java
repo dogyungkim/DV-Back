@@ -37,7 +37,8 @@ public class FileController {
         fileName);
 
     PreSignedUrlResponseDto preSignedUrl =
-        s3Service.createPreSignedURL(FileType.COVER_LETTER, fileName, userId, interviewId, null);
+        s3Service.createPreSignedURLForInterview(
+            FileType.COVER_LETTER, fileName, userId, interviewId, null);
 
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_JSON)
@@ -50,9 +51,43 @@ public class FileController {
     log.info("Generating preSigned URL for file upload: fileName={}", fileName);
 
     PreSignedUrlResponseDto preSignedUrl =
-        s3Service.createPreSignedURL(FileType.COVER_LETTER, fileName, userId, null, null);
+        s3Service.createPreSignedURLForInterview(
+            FileType.COVER_LETTER, fileName, userId, null, null);
 
     return ResponseEntity.ok(DvApiResponse.of(preSignedUrl));
+  }
+
+  @GetMapping("/cover-letter/{interviewId}/download-url")
+  public ResponseEntity<DvApiResponse<PreSignedUrlResponseDto>> getCoverLetterDownloadUrlOnMyPage(
+      @AuthenticationPrincipal Long userId, @PathVariable Long interviewId) {
+    log.info("Generating preSigned URL for file download: interviewId={}", interviewId);
+
+    PreSignedUrlResponseDto preSignedUrlResponseDto =
+        s3Service.getDownloadURLForInterview(
+            coverLetterService.findCoverLetterByInterviewId(interviewId).getS3FileUrl(),
+            userId,
+            interviewId);
+
+    return ResponseEntity.ok(DvApiResponse.of(preSignedUrlResponseDto));
+  }
+
+  @GetMapping("/profile-image/{fileName}/upload-url")
+  public ResponseEntity<DvApiResponse<PreSignedUrlResponseDto>> getProfileImageUploadUrl(
+      @AuthenticationPrincipal Long userId, @PathVariable String fileName) {
+    log.info("Generating preSigned URL for profile image upload: userId={}", userId);
+
+    PreSignedUrlResponseDto preSignedUrl = s3Service.getPreSignedUrlForImage(fileName, userId);
+
+    return ResponseEntity.ok(DvApiResponse.of(preSignedUrl));
+  }
+
+  @GetMapping("/profile-image/download-url")
+  public ResponseEntity<DvApiResponse<PreSignedUrlResponseDto>> getProfileImageDownloadUrl(
+      @AuthenticationPrincipal Long userId) {
+    log.info("Generating preSigned URL for profile image upload: userId={}", userId);
+
+    PreSignedUrlResponseDto preSignedUrlResponseDto = s3Service.getDownloadUrlForImage(userId);
+    return ResponseEntity.ok(DvApiResponse.of(preSignedUrlResponseDto));
   }
 
   @GetMapping("/cover-letter")
