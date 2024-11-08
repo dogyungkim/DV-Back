@@ -6,7 +6,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
+import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
+import org.richardstallman.dvback.domain.user.domain.response.UserLoginResponseDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.richardstallman.dvback.domain.user.service.UserService;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
@@ -28,6 +30,7 @@ public class UserController {
   private final CookieService cookieService;
   private final RefreshTokenRepository refreshTokenRepository;
   private final UserService userService;
+  private final UserConverter userConverter;
 
   @PostMapping("/logout")
   public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
@@ -56,5 +59,19 @@ public class UserController {
       @AuthenticationPrincipal Long userId) {
     final UserResponseDto userResponseDto = userService.getUserInfo(userId);
     return ResponseEntity.ok(DvApiResponse.of(userResponseDto));
+  }
+
+  @GetMapping("/login")
+  public ResponseEntity<DvApiResponse<UserLoginResponseDto>> login(
+      @AuthenticationPrincipal Long userId) {
+    final UserResponseDto userResponseDto = userService.getUserInfo(userId);
+    System.out.println(userResponseDto.gender());
+    if (userResponseDto.gender() == null) {
+      return ResponseEntity.ok(
+          DvApiResponse.of(userConverter.forSignUp(userResponseDto, "signup")));
+    }
+    return ResponseEntity.ok(
+        DvApiResponse.of(
+            userConverter.fromResponseDtoToLoginResponseDto(userResponseDto, "login")));
   }
 }

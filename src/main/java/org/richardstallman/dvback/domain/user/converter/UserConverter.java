@@ -2,6 +2,7 @@ package org.richardstallman.dvback.domain.user.converter;
 
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.user.domain.UserDomain;
+import org.richardstallman.dvback.domain.user.domain.response.UserLoginResponseDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.richardstallman.dvback.domain.user.entity.UserEntity;
 import org.richardstallman.dvback.global.oauth.KakaoUserInfo;
@@ -74,5 +75,25 @@ public class UserConverter {
         .gender(userResponseDto.gender())
         .birthdate(userResponseDto.birthdate())
         .build();
+  }
+
+  public UserLoginResponseDto fromResponseDtoToLoginResponseDto(
+      UserResponseDto userResponseDto, String type) {
+    return new UserLoginResponseDto(
+        type,
+        userResponseDto.userId(),
+        userResponseDto.socialId(),
+        userResponseDto.email(),
+        userResponseDto.name(),
+        userResponseDto.nickname(),
+        userResponseDto.s3ProfileImageUrl(),
+        userResponseDto.leave(),
+        userResponseDto.gender(),
+        userResponseDto.birthdate());
+  }
+
+  public UserLoginResponseDto forSignUp(UserResponseDto userResponseDto, String type) {
+    return new UserLoginResponseDto(
+        type, userResponseDto.userId(), null, null, null, null, null, null, null, null);
   }
 }
