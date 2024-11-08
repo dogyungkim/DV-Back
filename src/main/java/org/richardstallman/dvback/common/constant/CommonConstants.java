@@ -102,7 +102,8 @@ public class CommonConstants {
     AUDIO_ANSWER("audio-answer"),
     AUDIO_QUESTION("audio-question"),
     VIDEO_ANSWER("video-answer"),
-    VIDEO_QUESTION("video-question");
+    VIDEO_QUESTION("video-question"),
+    PROFILE_IMAGE("profile-image");
 
     private final String folderName;
   }

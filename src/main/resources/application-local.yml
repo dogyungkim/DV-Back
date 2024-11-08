@@ -39,6 +39,11 @@ spring:
   mvc:
     favicon:
       enabled: false
+    media-types:
+      html: text/html
+  web:
+    resources:
+      static-locations: classpath:/static/
 
 python:
   server:

@@ -24,20 +24,21 @@ public class S3ServiceTest {
     Long userId = 1L;
 
     PreSignedUrlResponseDto url =
-        s3Service.createPreSignedURL(fileType, fileName, userId, interviewId, null);
+        s3Service.createPreSignedURLForInterview(fileType, fileName, userId, interviewId, null);
 
     assertThat(url.preSignedUrl()).isNotNull();
     assertThat(url.preSignedUrl()).contains("cover-letter/");
   }
 
   @Test
-  void getDownloadURL() {
+  void getDownloadURLForInterview() {
     FileType fileType = FileType.COVER_LETTER;
     String fileName = "test";
     Long userId = 1L;
     Long interviewId = 0L;
 
-    PreSignedUrlResponseDto url = s3Service.getDownloadURL(fileType, fileName, userId, interviewId);
+    PreSignedUrlResponseDto url =
+        s3Service.getDownloadURLForInterview("files/cover-letter/1/test", userId, interviewId);
 
     assertThat(url.preSignedUrl()).isNotNull();
     assertThat(url.preSignedUrl()).contains("cover-letter/");

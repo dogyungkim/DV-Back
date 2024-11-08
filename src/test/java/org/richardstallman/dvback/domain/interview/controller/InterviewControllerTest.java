@@ -1,19 +1,19 @@
 package org.richardstallman.dvback.domain.interview.controller;
 
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
@@ -136,66 +136,78 @@ public class InterviewControllerTest {
             "면접 정보 입력 - 면접 저장 성공",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
-            requestFields(
-                fieldWithPath("interviewTitle").type(JsonFieldType.STRING).description("면접 제목"),
-                fieldWithPath("interviewType")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"),
-                fieldWithPath("interviewMethod")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"),
-                fieldWithPath("interviewMode")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"),
-                fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자"),
-                fieldWithPath("files[0].type")
-                    .type(JsonFieldType.STRING)
-                    .description("파일 유형: COVER_LETTER, RESUME, PORTFOLIO"),
-                fieldWithPath("files[0].filePath")
-                    .type(JsonFieldType.STRING)
-                    .description("파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}")),
-            responseFields(
-                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
-                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                fieldWithPath("data.interviewId").type(JsonFieldType.NUMBER).description("면접 식별자"),
-                fieldWithPath("data.interviewTitle")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 제목"),
-                fieldWithPath("data.interviewStatus")
-                    .type(JsonFieldType.STRING)
-                    .description(
-                        "면접 상태: INITIAL(최초 정보 입력 상태), FILE_UPLOADED(자소서 및 파일 업로드 완료 상태), WAITING_FOR_QUESTION(질문 생성 요청 후 대기 상태), (READY면접 시작 가능 상태), IN_PROGRESS(면접 진행 중 상태), WAITING_FOR_FEEDBACK(피드백 생성 요청 후 대기 상태), COMPLETED(피드백 완료 상태)"),
-                fieldWithPath("data.interviewType")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"),
-                fieldWithPath("data.interviewMethod")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"),
-                fieldWithPath("data.interviewMode")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"),
-                fieldWithPath("data.job.jobId").type(JsonFieldType.NUMBER).description("직무 식별자"),
-                fieldWithPath("data.job.jobName")
-                    .type(JsonFieldType.STRING)
-                    .description("직무 이름: BACK_END(백엔드), FRONT_END(프론트엔드), INFRA(인프라), AI(인공지능)"),
-                fieldWithPath("data.job.jobNameKorean")
-                    .type(JsonFieldType.STRING)
-                    .description("직무 이름: 백엔드, 프론트엔드, 인프라, 인공지능"),
-                fieldWithPath("data.job.jobDescription")
-                    .type(JsonFieldType.STRING)
-                    .description("직무 설명"),
-                fieldWithPath("data.files[0].fileId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("파일 식별자"),
-                fieldWithPath("data.files[0].type")
-                    .type(JsonFieldType.STRING)
-                    .description("파일 유형: COVER_LETTER, RESUME, PORTFOLIO"),
-                fieldWithPath("data.files[0].fileName")
-                    .type(JsonFieldType.STRING)
-                    .description("파일 이름"),
-                fieldWithPath("data.files[0].s3FileUrl")
-                    .type(JsonFieldType.STRING)
-                    .description("파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Interview API")
+                    .summary("면접 API")
+                    .requestFields(
+                        fieldWithPath("interviewTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 제목"),
+                        fieldWithPath("interviewType")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"),
+                        fieldWithPath("interviewMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"),
+                        fieldWithPath("interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"),
+                        fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자"),
+                        fieldWithPath("files[0].type")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 유형: COVER_LETTER, RESUME, PORTFOLIO"),
+                        fieldWithPath("files[0].filePath")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.interviewId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("data.interviewTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 제목"),
+                        fieldWithPath("data.interviewStatus")
+                            .type(JsonFieldType.STRING)
+                            .description(
+                                "면접 상태: INITIAL(최초 정보 입력 상태), FILE_UPLOADED(자소서 및 파일 업로드 완료 상태), WAITING_FOR_QUESTION(질문 생성 요청 후 대기 상태), (READY면접 시작 가능 상태), IN_PROGRESS(면접 진행 중 상태), WAITING_FOR_FEEDBACK(피드백 생성 요청 후 대기 상태), COMPLETED(피드백 완료 상태)"),
+                        fieldWithPath("data.interviewType")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"),
+                        fieldWithPath("data.interviewMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"),
+                        fieldWithPath("data.interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"),
+                        fieldWithPath("data.job.jobId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("직무 식별자"),
+                        fieldWithPath("data.job.jobName")
+                            .type(JsonFieldType.STRING)
+                            .description(
+                                "직무 이름: BACK_END(백엔드), FRONT_END(프론트엔드), INFRA(인프라), AI(인공지능)"),
+                        fieldWithPath("data.job.jobNameKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 이름: 백엔드, 프론트엔드, 인프라, 인공지능"),
+                        fieldWithPath("data.job.jobDescription")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 설명"),
+                        fieldWithPath("data.files[0].fileId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("파일 식별자"),
+                        fieldWithPath("data.files[0].type")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 유형: COVER_LETTER, RESUME, PORTFOLIO"),
+                        fieldWithPath("data.files[0].fileName")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 이름"),
+                        fieldWithPath("data.files[0].s3FileUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}"))
+                    .build())));
   }
 
   @Test
@@ -232,14 +244,19 @@ public class InterviewControllerTest {
             "면접 정보 입력 - 필수 필드 누락(400 Bad Request)",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
-            responseFields(
-                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드: 400"),
-                fieldWithPath("message")
-                    .type(JsonFieldType.STRING)
-                    .description("응답 상태: BAD_REQUEST"),
-                fieldWithPath("data")
-                    .type(JsonFieldType.STRING)
-                    .description("에러 메시지: {누락된 필드}: {누락된 필드} is required"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Interview API")
+                    .summary("면접 API")
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드: 400"),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("응답 상태: BAD_REQUEST"),
+                        fieldWithPath("data")
+                            .type(JsonFieldType.STRING)
+                            .description("에러 메시지: {누락된 필드}: {누락된 필드} is required"))
+                    .build())));
   }
 
   @Test
@@ -293,10 +310,15 @@ public class InterviewControllerTest {
             "면접 정보 입력 - 존재하지 않는 직무 ID(500 Internal Server Error)",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
-            responseFields(
-                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
-                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                fieldWithPath("data").type(JsonFieldType.STRING).description("오류 메시지"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Interview API")
+                    .summary("면접 API")
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").type(JsonFieldType.STRING).description("오류 메시지"))
+                    .build())));
   }
 
   @Test
@@ -351,10 +373,15 @@ public class InterviewControllerTest {
             "면접 정보 입력 - 서버 내부 오류(500 Internal Server Error)",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
-            responseFields(
-                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
-                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                fieldWithPath("data").type(JsonFieldType.STRING).description("오류 메시지"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Interview API")
+                    .summary("면접 API")
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").type(JsonFieldType.STRING).description("오류 메시지"))
+                    .build())));
   }
 
   @Test
@@ -382,9 +409,14 @@ public class InterviewControllerTest {
             "면접 정보 입력 - 잘못된 데이터 형식(400 Bad Request)",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
-            responseFields(
-                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
-                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                fieldWithPath("data").type(JsonFieldType.STRING).description("에러 메시지"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Interview API")
+                    .summary("면접 API")
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").type(JsonFieldType.STRING).description("에러 메시지"))
+                    .build())));
   }
 }

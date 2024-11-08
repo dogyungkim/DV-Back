@@ -1,18 +1,18 @@
 package org.richardstallman.dvback.domain.user.controller;
 
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Date;
 import org.junit.jupiter.api.DisplayName;
@@ -99,22 +99,27 @@ public class UserControllerTest {
             "유저 정보 업데이트 - 성공",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
-            requestFields(
-                fieldWithPath("nickname").description("유저의 새로운 닉네임"),
-                fieldWithPath("birthdate").description("유저의 생년월일"),
-                fieldWithPath("gender").description("유저의 성별")),
-            responseFields(
-                fieldWithPath("code").description("응답 코드"),
-                fieldWithPath("message").description("응답 메시지"),
-                fieldWithPath("data.userId").description("유저 ID"),
-                fieldWithPath("data.socialId").description("소셜 ID"),
-                fieldWithPath("data.email").description("이메일"),
-                fieldWithPath("data.name").description("유저 이름"),
-                fieldWithPath("data.nickname").description("유저 닉네임"),
-                fieldWithPath("data.s3ProfileImageUrl").description("프로필 이미지 URL"),
-                fieldWithPath("data.leave").description("탈퇴 여부"),
-                fieldWithPath("data.gender").description("성별"),
-                fieldWithPath("data.birthdate").description("생년월일"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("User API")
+                    .summary("유저 API")
+                    .requestFields(
+                        fieldWithPath("nickname").description("유저의 새로운 닉네임"),
+                        fieldWithPath("birthdate").description("유저의 생년월일"),
+                        fieldWithPath("gender").description("유저의 성별"))
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data.userId").description("유저 ID"),
+                        fieldWithPath("data.socialId").description("소셜 ID"),
+                        fieldWithPath("data.email").description("이메일"),
+                        fieldWithPath("data.name").description("유저 이름"),
+                        fieldWithPath("data.nickname").description("유저 닉네임"),
+                        fieldWithPath("data.s3ProfileImageUrl").description("프로필 이미지 URL"),
+                        fieldWithPath("data.leave").description("탈퇴 여부"),
+                        fieldWithPath("data.gender").description("성별"),
+                        fieldWithPath("data.birthdate").description("생년월일"))
+                    .build())));
   }
 
   @Test
@@ -188,17 +193,22 @@ public class UserControllerTest {
             "유저 정보 조회 - 성공",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
-            responseFields(
-                fieldWithPath("code").description("응답 코드"),
-                fieldWithPath("message").description("응답 메시지"),
-                fieldWithPath("data.userId").description("유저 ID"),
-                fieldWithPath("data.socialId").description("소셜 ID"),
-                fieldWithPath("data.email").description("이메일"),
-                fieldWithPath("data.name").description("유저 이름"),
-                fieldWithPath("data.nickname").description("유저 닉네임"),
-                fieldWithPath("data.s3ProfileImageUrl").description("프로필 이미지 URL"),
-                fieldWithPath("data.leave").description("탈퇴 여부"),
-                fieldWithPath("data.gender").description("성별"),
-                fieldWithPath("data.birthdate").description("생년월일"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("User API")
+                    .summary("유저 API")
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data.userId").description("유저 ID"),
+                        fieldWithPath("data.socialId").description("소셜 ID"),
+                        fieldWithPath("data.email").description("이메일"),
+                        fieldWithPath("data.name").description("유저 이름"),
+                        fieldWithPath("data.nickname").description("유저 닉네임"),
+                        fieldWithPath("data.s3ProfileImageUrl").description("프로필 이미지 URL"),
+                        fieldWithPath("data.leave").description("탈퇴 여부"),
+                        fieldWithPath("data.gender").description("성별"),
+                        fieldWithPath("data.birthdate").description("생년월일"))
+                    .build())));
   }
 }

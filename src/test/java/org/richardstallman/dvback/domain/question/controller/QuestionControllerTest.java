@@ -1,19 +1,19 @@
 package org.richardstallman.dvback.domain.question.controller;
 
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,57 +134,76 @@ public class QuestionControllerTest {
             "질문 생성 - 최초 요청(모의 면접 성공)",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
-            requestFields(
-                fieldWithPath("interviewId").type(JsonFieldType.NUMBER).description("면접 식별자"),
-                fieldWithPath("interviewTitle").type(JsonFieldType.STRING).description("면접 제목"),
-                fieldWithPath("interviewStatus").type(JsonFieldType.STRING).description("면접 상태"),
-                fieldWithPath("interviewType").type(JsonFieldType.STRING).description("면접 유형"),
-                fieldWithPath("interviewMethod").type(JsonFieldType.STRING).description("면접 방식"),
-                fieldWithPath("interviewMode").type(JsonFieldType.STRING).description("면접 모드"),
-                fieldWithPath("files")
-                    .type(JsonFieldType.NULL)
-                    .description("모의 면접이므로 파일 정보 없어야 함."),
-                fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자")),
-            responseFields(
-                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
-                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                fieldWithPath("data.interview.interviewId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("면접 식별자"),
-                fieldWithPath("data.interview.interviewTitle")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 제목"),
-                fieldWithPath("data.interview.interviewStatus")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 상태"),
-                fieldWithPath("data.interview.interviewType")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 유형"),
-                fieldWithPath("data.interview.interviewMethod")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 방식"),
-                fieldWithPath("data.interview.interviewMode")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 모드"),
-                fieldWithPath("data.interview.job.jobId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("직무 식별자"),
-                fieldWithPath("data.interview.job.jobName")
-                    .type(JsonFieldType.STRING)
-                    .description("직무 이름"),
-                fieldWithPath("data.interview.job.jobNameKorean")
-                    .type(JsonFieldType.STRING)
-                    .description("직무 한글 이름"),
-                fieldWithPath("data.interview.job.jobDescription")
-                    .type(JsonFieldType.STRING)
-                    .description("직무 설명"),
-                fieldWithPath("data.questionText").type(JsonFieldType.STRING).description("질문 내용"),
-                fieldWithPath("data.nextQuestionId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("다음 질문 식별자"),
-                fieldWithPath("data.hasNext")
-                    .type(JsonFieldType.BOOLEAN)
-                    .description("다음 질문 존재 여부"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Question API")
+                    .summary("질문 API")
+                    .requestFields(
+                        fieldWithPath("interviewId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("interviewTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 제목"),
+                        fieldWithPath("interviewStatus")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 상태"),
+                        fieldWithPath("interviewType")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 유형"),
+                        fieldWithPath("interviewMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 방식"),
+                        fieldWithPath("interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 모드"),
+                        fieldWithPath("files")
+                            .type(JsonFieldType.NULL)
+                            .description("모의 면접이므로 파일 정보 없어야 함."),
+                        fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.interview.interviewId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("data.interview.interviewTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 제목"),
+                        fieldWithPath("data.interview.interviewStatus")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 상태"),
+                        fieldWithPath("data.interview.interviewType")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 유형"),
+                        fieldWithPath("data.interview.interviewMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 방식"),
+                        fieldWithPath("data.interview.interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 모드"),
+                        fieldWithPath("data.interview.job.jobId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("직무 식별자"),
+                        fieldWithPath("data.interview.job.jobName")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 이름"),
+                        fieldWithPath("data.interview.job.jobNameKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 한글 이름"),
+                        fieldWithPath("data.interview.job.jobDescription")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 설명"),
+                        fieldWithPath("data.questionText")
+                            .type(JsonFieldType.STRING)
+                            .description("질문 내용"),
+                        fieldWithPath("data.nextQuestionId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("다음 질문 식별자"),
+                        fieldWithPath("data.hasNext")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("다음 질문 존재 여부"))
+                    .build())));
   }
 
   @Test
@@ -265,60 +284,79 @@ public class QuestionControllerTest {
             "질문 생성 - 최초 요청(실전 면접 성공)",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
-            requestFields(
-                fieldWithPath("interviewId").type(JsonFieldType.NUMBER).description("면접 식별자"),
-                fieldWithPath("interviewTitle").type(JsonFieldType.STRING).description("면접 제목"),
-                fieldWithPath("interviewStatus").type(JsonFieldType.STRING).description("면접 상태"),
-                fieldWithPath("interviewType").type(JsonFieldType.STRING).description("면접 유형"),
-                fieldWithPath("interviewMethod").type(JsonFieldType.STRING).description("면접 방식"),
-                fieldWithPath("interviewMode").type(JsonFieldType.STRING).description("면접 모드"),
-                fieldWithPath("files[0].filePath")
-                    .type(JsonFieldType.STRING)
-                    .description("파일 s3 url"),
-                fieldWithPath("files[0].type")
-                    .type(JsonFieldType.STRING)
-                    .description("파일 유형: COVER_LETTER(자소서), RESUME(이력서), PORTFOLIO(포트폴리오)"),
-                fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자")),
-            responseFields(
-                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
-                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                fieldWithPath("data.interview.interviewId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("면접 식별자"),
-                fieldWithPath("data.interview.interviewTitle")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 제목"),
-                fieldWithPath("data.interview.interviewStatus")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 상태"),
-                fieldWithPath("data.interview.interviewType")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 유형"),
-                fieldWithPath("data.interview.interviewMethod")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 방식"),
-                fieldWithPath("data.interview.interviewMode")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 모드"),
-                fieldWithPath("data.interview.job.jobId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("직무 식별자"),
-                fieldWithPath("data.interview.job.jobName")
-                    .type(JsonFieldType.STRING)
-                    .description("직무 이름"),
-                fieldWithPath("data.interview.job.jobNameKorean")
-                    .type(JsonFieldType.STRING)
-                    .description("직무 한글 이름"),
-                fieldWithPath("data.interview.job.jobDescription")
-                    .type(JsonFieldType.STRING)
-                    .description("직무 설명"),
-                fieldWithPath("data.questionText").type(JsonFieldType.STRING).description("질문 내용"),
-                fieldWithPath("data.nextQuestionId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("다음 질문 식별자"),
-                fieldWithPath("data.hasNext")
-                    .type(JsonFieldType.BOOLEAN)
-                    .description("다음 질문 존재 여부"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Question API")
+                    .summary("질문 API")
+                    .requestFields(
+                        fieldWithPath("interviewId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("interviewTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 제목"),
+                        fieldWithPath("interviewStatus")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 상태"),
+                        fieldWithPath("interviewType")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 유형"),
+                        fieldWithPath("interviewMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 방식"),
+                        fieldWithPath("interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 모드"),
+                        fieldWithPath("files[0].filePath")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 s3 url"),
+                        fieldWithPath("files[0].type")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 유형: COVER_LETTER(자소서), RESUME(이력서), PORTFOLIO(포트폴리오)"),
+                        fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.interview.interviewId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("data.interview.interviewTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 제목"),
+                        fieldWithPath("data.interview.interviewStatus")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 상태"),
+                        fieldWithPath("data.interview.interviewType")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 유형"),
+                        fieldWithPath("data.interview.interviewMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 방식"),
+                        fieldWithPath("data.interview.interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 모드"),
+                        fieldWithPath("data.interview.job.jobId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("직무 식별자"),
+                        fieldWithPath("data.interview.job.jobName")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 이름"),
+                        fieldWithPath("data.interview.job.jobNameKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 한글 이름"),
+                        fieldWithPath("data.interview.job.jobDescription")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 설명"),
+                        fieldWithPath("data.questionText")
+                            .type(JsonFieldType.STRING)
+                            .description("질문 내용"),
+                        fieldWithPath("data.nextQuestionId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("다음 질문 식별자"),
+                        fieldWithPath("data.hasNext")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("다음 질문 존재 여부"))
+                    .build())));
   }
 
   @Test
@@ -383,57 +421,68 @@ public class QuestionControllerTest {
             "다음 질문 요청(텍스트 성공)",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
-            requestFields(
-                fieldWithPath("interviewId").type(JsonFieldType.NUMBER).description("면접 식별자"),
-                fieldWithPath("questionId").type(JsonFieldType.NUMBER).description("요청 질문 식별자"),
-                fieldWithPath("answer.s3AudioUrl")
-                    .type(JsonFieldType.STRING)
-                    .description("답변 오디오 s3 저장 url"),
-                fieldWithPath("answer.s3VideoUrl")
-                    .type(JsonFieldType.STRING)
-                    .description("답변 비디오 s3 저장 url"),
-                fieldWithPath("answer.answerText")
-                    .type(JsonFieldType.STRING)
-                    .description("이전 질문에 대한 답변")),
-            responseFields(
-                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
-                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                fieldWithPath("data.interview.interviewId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("면접 식별자"),
-                fieldWithPath("data.interview.interviewTitle")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 제목"),
-                fieldWithPath("data.interview.interviewStatus")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 상태"),
-                fieldWithPath("data.interview.interviewType")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 유형"),
-                fieldWithPath("data.interview.interviewMethod")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 방식"),
-                fieldWithPath("data.interview.interviewMode")
-                    .type(JsonFieldType.STRING)
-                    .description("면접 모드"),
-                fieldWithPath("data.interview.job.jobId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("직무 식별자"),
-                fieldWithPath("data.interview.job.jobName")
-                    .type(JsonFieldType.STRING)
-                    .description("직무 이름"),
-                fieldWithPath("data.interview.job.jobNameKorean")
-                    .type(JsonFieldType.STRING)
-                    .description("직무 한글 이름"),
-                fieldWithPath("data.interview.job.jobDescription")
-                    .type(JsonFieldType.STRING)
-                    .description("직무 설명"),
-                fieldWithPath("data.questionText").type(JsonFieldType.STRING).description("질문 내용"),
-                fieldWithPath("data.nextQuestionId")
-                    .type(JsonFieldType.NUMBER)
-                    .description("다음 질문 식별자"),
-                fieldWithPath("data.hasNext")
-                    .type(JsonFieldType.BOOLEAN)
-                    .description("다음 질문 존재 여부"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Question API")
+                    .summary("질문 API")
+                    .requestFields(
+                        fieldWithPath("interviewId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("questionId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("요청 질문 식별자"),
+                        fieldWithPath("answer.s3AudioUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("답변 오디오 s3 저장 url"),
+                        fieldWithPath("answer.s3VideoUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("답변 비디오 s3 저장 url"),
+                        fieldWithPath("answer.answerText")
+                            .type(JsonFieldType.STRING)
+                            .description("이전 질문에 대한 답변"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.interview.interviewId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("data.interview.interviewTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 제목"),
+                        fieldWithPath("data.interview.interviewStatus")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 상태"),
+                        fieldWithPath("data.interview.interviewType")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 유형"),
+                        fieldWithPath("data.interview.interviewMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 방식"),
+                        fieldWithPath("data.interview.interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 모드"),
+                        fieldWithPath("data.interview.job.jobId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("직무 식별자"),
+                        fieldWithPath("data.interview.job.jobName")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 이름"),
+                        fieldWithPath("data.interview.job.jobNameKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 한글 이름"),
+                        fieldWithPath("data.interview.job.jobDescription")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 설명"),
+                        fieldWithPath("data.questionText")
+                            .type(JsonFieldType.STRING)
+                            .description("질문 내용"),
+                        fieldWithPath("data.nextQuestionId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("다음 질문 식별자"),
+                        fieldWithPath("data.hasNext")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("다음 질문 존재 여부"))
+                    .build())));
   }
 }

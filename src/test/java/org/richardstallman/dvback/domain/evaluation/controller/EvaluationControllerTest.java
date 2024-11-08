@@ -1,19 +1,19 @@
 package org.richardstallman.dvback.domain.evaluation.controller;
 
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluationScore.APPROPRIATE_RESPONSE;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -101,11 +101,17 @@ public class EvaluationControllerTest {
         document(
             "마이페이지 - 면접 평가 조회 위한 면접 정보 목록(면접 식별자, 면접 제목) 조회 - 성공",
             preprocessResponse(prettyPrint()),
-            responseFields(
-                fieldWithPath("code").description("응답 코드"),
-                fieldWithPath("message").description("응답 메시지"),
-                fieldWithPath("data.evaluationInfos[0].interviewTitle").description("면접 제목"),
-                fieldWithPath("data.evaluationInfos[0].interviewId").description("면접 식별자"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Evaluation API")
+                    .summary("평가 API")
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data.evaluationInfos[0].interviewTitle")
+                            .description("면접 제목"),
+                        fieldWithPath("data.evaluationInfos[0].interviewId").description("면접 식별자"))
+                    .build())));
   }
 
   @Test
@@ -249,45 +255,54 @@ public class EvaluationControllerTest {
         document(
             "마이페이지 - 면접 평가 조회 - 성공",
             preprocessResponse(prettyPrint()),
-            pathParameters(parameterWithName("interviewId").description("면접 식별자")),
-            responseFields(
-                fieldWithPath("code").description("응답 코드"),
-                fieldWithPath("message").description("응답 메시지"),
-                fieldWithPath("data.interview.interviewId").description("면접 식별자"),
-                fieldWithPath("data.interview.interviewTitle").description("면접 제목"),
-                fieldWithPath("data.interview.interviewStatus").description("면접 상태"),
-                fieldWithPath("data.interview.interviewType").description("면접 유형"),
-                fieldWithPath("data.interview.interviewMethod").description("면접 방식"),
-                fieldWithPath("data.interview.interviewMode").description("면접 모드"),
-                fieldWithPath("data.interview.job.jobId").description("직무 식별자"),
-                fieldWithPath("data.interview.job.jobName").description("직무 이름"),
-                fieldWithPath("data.interview.job.jobNameKorean").description("직무 이름(한국어)"),
-                fieldWithPath("data.interview.job.jobDescription").description("직무 설명"),
-                fieldWithPath("data.interview.files").description("파일 목록"),
-                fieldWithPath("data.evaluationCriteria[0].evaluationCriteriaId")
-                    .description("평가 기준 식별자"),
-                fieldWithPath("data.evaluationCriteria[0].evaluationCriteria").description("평가 기준"),
-                fieldWithPath("data.evaluationCriteria[0].feedbackText").description("피드백 텍스트"),
-                fieldWithPath("data.evaluationCriteria[0].score").description("점수"),
-                fieldWithPath("data.answerEvaluations[0].answerEvaluationId")
-                    .description("답변 평가 식별자"),
-                fieldWithPath("data.answerEvaluations[0].questionText").description("질문 텍스트"),
-                fieldWithPath("data.answerEvaluations[0].answerText").description("답변 텍스트"),
-                fieldWithPath("data.answerEvaluations[0].answerFeedbackStrength")
-                    .description("답변의 강점 피드백"),
-                fieldWithPath("data.answerEvaluations[0].answerFeedbackImprovement")
-                    .description("답변의 개선 사항 피드백"),
-                fieldWithPath("data.answerEvaluations[0].answerFeedbackSuggestion")
-                    .description("답변 개선 제안"),
-                fieldWithPath(
-                        "data.answerEvaluations[0].answerEvaluationScores[0].answerEvaluationScoreId")
-                    .description("답변 평가 점수 식별자"),
-                fieldWithPath(
-                        "data.answerEvaluations[0].answerEvaluationScores[0].answerEvaluationScoreName")
-                    .description("답변 평가 점수 이름"),
-                fieldWithPath("data.answerEvaluations[0].answerEvaluationScores[0].score")
-                    .description("점수"),
-                fieldWithPath("data.answerEvaluations[0].answerEvaluationScores[0].rationale")
-                    .description("평가 근거"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Evaluation API")
+                    .summary("평가 API")
+                    .pathParameters(parameterWithName("interviewId").description("면접 식별자"))
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data.interview.interviewId").description("면접 식별자"),
+                        fieldWithPath("data.interview.interviewTitle").description("면접 제목"),
+                        fieldWithPath("data.interview.interviewStatus").description("면접 상태"),
+                        fieldWithPath("data.interview.interviewType").description("면접 유형"),
+                        fieldWithPath("data.interview.interviewMethod").description("면접 방식"),
+                        fieldWithPath("data.interview.interviewMode").description("면접 모드"),
+                        fieldWithPath("data.interview.job.jobId").description("직무 식별자"),
+                        fieldWithPath("data.interview.job.jobName").description("직무 이름"),
+                        fieldWithPath("data.interview.job.jobNameKorean").description("직무 이름(한국어)"),
+                        fieldWithPath("data.interview.job.jobDescription").description("직무 설명"),
+                        fieldWithPath("data.interview.files").description("파일 목록"),
+                        fieldWithPath("data.evaluationCriteria[0].evaluationCriteriaId")
+                            .description("평가 기준 식별자"),
+                        fieldWithPath("data.evaluationCriteria[0].evaluationCriteria")
+                            .description("평가 기준"),
+                        fieldWithPath("data.evaluationCriteria[0].feedbackText")
+                            .description("피드백 텍스트"),
+                        fieldWithPath("data.evaluationCriteria[0].score").description("점수"),
+                        fieldWithPath("data.answerEvaluations[0].answerEvaluationId")
+                            .description("답변 평가 식별자"),
+                        fieldWithPath("data.answerEvaluations[0].questionText")
+                            .description("질문 텍스트"),
+                        fieldWithPath("data.answerEvaluations[0].answerText").description("답변 텍스트"),
+                        fieldWithPath("data.answerEvaluations[0].answerFeedbackStrength")
+                            .description("답변의 강점 피드백"),
+                        fieldWithPath("data.answerEvaluations[0].answerFeedbackImprovement")
+                            .description("답변의 개선 사항 피드백"),
+                        fieldWithPath("data.answerEvaluations[0].answerFeedbackSuggestion")
+                            .description("답변 개선 제안"),
+                        fieldWithPath(
+                                "data.answerEvaluations[0].answerEvaluationScores[0].answerEvaluationScoreId")
+                            .description("답변 평가 점수 식별자"),
+                        fieldWithPath(
+                                "data.answerEvaluations[0].answerEvaluationScores[0].answerEvaluationScoreName")
+                            .description("답변 평가 점수 이름"),
+                        fieldWithPath("data.answerEvaluations[0].answerEvaluationScores[0].score")
+                            .description("점수"),
+                        fieldWithPath(
+                                "data.answerEvaluations[0].answerEvaluationScores[0].rationale")
+                            .description("평가 근거"))
+                    .build())));
   }
 }

@@ -34,6 +34,11 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+    media-types:
+      html: text/html
+  web:
+    resources:
+      static-locations: classpath:/static/
   main:
     allow-bean-definition-overriding: true
 
@@ -67,3 +72,12 @@ cors:
   allowed-origins:
     list:
       ${ALLOWED_ORIGINS}
+
+springdoc:
+  restdocs:
+    auto: true
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true

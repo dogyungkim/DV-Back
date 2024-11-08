@@ -10,5 +10,7 @@ public interface CoverLetterService {
 
   CoverLetterDomain findCoverLetter(Long coverLetterId);
 
+  CoverLetterDomain findCoverLetterByInterviewId(Long interviewId);
+
   List<CoverLetterResponseDto> findCoverLettersByUserId(Long userId);
 }
