@@ -333,7 +333,7 @@ paths:
                     "jobId" : 2,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1730978387288/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1731045583297/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 존재하지 않는 직무 ID(500 Internal Server Error):
@@ -346,7 +346,7 @@ paths:
                     "jobId" : 999,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1730978387248/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1731045583258/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 필수 필드 누락(400 Bad Request):
@@ -359,7 +359,7 @@ paths:
                     "jobId" : 2,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1730978387262/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1731045583272/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 면접 저장 성공:
@@ -372,7 +372,7 @@ paths:
                     "jobId" : 2,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1730978387197/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1731045583206/coverLetterName"
                     } ]
                   }
       responses:
@@ -454,7 +454,7 @@ paths:
                           "fileId" : 1,
                           "type" : "COVER_LETTER",
                           "fileName" : "coverLetterName",
-                          "s3FileUrl" : "COVER_LETTER/1/1730978387197/coverLetterName"
+                          "s3FileUrl" : "COVER_LETTER/1/1731045583206/coverLetterName"
                         } ]
                       }
                     }
@@ -657,7 +657,7 @@ paths:
                         "s3ProfileImageUrl" : "https://example.com/image.jpg",
                         "leave" : false,
                         "gender" : "WOMAN",
-                        "birthdate" : "2024-11-07T11:19:53.856+00:00"
+                        "birthdate" : "2024-11-08T05:59:49.717+00:00"
                       }
                     }
     put:
@@ -676,7 +676,7 @@ paths:
                 value: |-
                   {
                     "nickname" : "왕감자",
-                    "birthdate" : "2024-11-07T11:19:53.826+00:00",
+                    "birthdate" : "2024-11-08T05:59:49.693+00:00",
                     "gender" : "WOMAN"
                   }
       responses:
@@ -701,7 +701,7 @@ paths:
                         "s3ProfileImageUrl" : "https://example.com/image.jpg",
                         "leave" : false,
                         "gender" : "WOMAN",
-                        "birthdate" : "2024-11-07T11:19:53.830+00:00"
+                        "birthdate" : "2024-11-08T05:59:49.696+00:00"
                       }
                     }
   /user/logout:
@@ -1107,6 +1107,35 @@ components:
         message:
           type: string
           description: "응답 상태: BAD_REQUEST"
+    interview587482769:
+      type: object
+      properties:
+        jobId:
+          type: number
+          description: 직무 식별자
+        interviewType:
+          type: string
+          description: "면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"
+        interviewTitle:
+          type: string
+          description: 면접 제목
+        interviewMethod:
+          type: string
+          description: "면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"
+        files:
+          type: array
+          items:
+            type: object
+            properties:
+              filePath:
+                type: string
+                description: "파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}"
+              type:
+                type: string
+                description: "파일 유형: COVER_LETTER, RESUME, PORTFOLIO"
+        interviewMode:
+          type: string
+          description: "면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"
     user-info810078269:
       type: object
       properties:
@@ -1146,35 +1175,6 @@ components:
         message:
           type: string
           description: 응답 메시지
-    interview587482769:
-      type: object
-      properties:
-        jobId:
-          type: number
-          description: 직무 식별자
-        interviewType:
-          type: string
-          description: "면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"
-        interviewTitle:
-          type: string
-          description: 면접 제목
-        interviewMethod:
-          type: string
-          description: "면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"
-        files:
-          type: array
-          items:
-            type: object
-            properties:
-              filePath:
-                type: string
-                description: "파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}"
-              type:
-                type: string
-                description: "파일 유형: COVER_LETTER, RESUME, PORTFOLIO"
-        interviewMode:
-          type: string
-          description: "면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"
     user-info-311313265:
       type: object
       properties:
