@@ -28,8 +28,10 @@ repositories {
 
 openapi3 {
     servers = [
-            { url = "http://devterview.com"},
-            { url = "http://localhost:8080" }
+            { url = "http://devterview.com:8080"},
+            { url = "http://localhost:8080" },
+            { url = "http://dev-api.devterview.com:8080"},
+            { url = "http://dev-api.devterview.com"}
     ]
     title = "API 문서"
     description = "RestDocs With Swagger"
