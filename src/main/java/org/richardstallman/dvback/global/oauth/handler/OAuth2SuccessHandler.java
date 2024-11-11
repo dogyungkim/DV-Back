@@ -52,7 +52,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
       response.addHeader(SET_COOKIE, refreshTokenCookie.toString());
 
       log.info("frontendDomain: " + frontendDomain);
-      response.sendRedirect(frontendDomain);
+      response.sendRedirect(frontendDomain + "/auth");
     } catch (Exception e) {
       log.error("OAuth2 Login 성공 후 예외 발생 : {}", e.getMessage());
     }
