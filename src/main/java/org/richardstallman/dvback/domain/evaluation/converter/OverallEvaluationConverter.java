@@ -7,9 +7,8 @@ import org.richardstallman.dvback.domain.evaluation.domain.overall.response.Over
 import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationUserInfoResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.response.EvaluationCriteriaResponseDto;
 import org.richardstallman.dvback.domain.evaluation.entity.overall.OverallEvaluationEntity;
-import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
-import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -40,14 +39,11 @@ public class OverallEvaluationConverter {
   }
 
   public OverallEvaluationResponseDto toResponseDto(
-      InterviewDomain interviewDomain,
+      InterviewCreateResponseDto interviewCreateResponseDto,
       List<EvaluationCriteriaResponseDto> evaluationCriteriaResponseDtos,
-      List<AnswerEvaluationResponseDto> answerEvaluationResponseDtos,
-      List<FileResponseDto> fileResponseDtos) {
+      List<AnswerEvaluationResponseDto> answerEvaluationResponseDtos) {
     return new OverallEvaluationResponseDto(
-        interviewConverter.fromDomainToDto(interviewDomain, fileResponseDtos),
-        evaluationCriteriaResponseDtos,
-        answerEvaluationResponseDtos);
+        interviewCreateResponseDto, evaluationCriteriaResponseDtos, answerEvaluationResponseDtos);
   }
 
   public OverallEvaluationUserInfoResponseDto toUserInfoResponseDto(

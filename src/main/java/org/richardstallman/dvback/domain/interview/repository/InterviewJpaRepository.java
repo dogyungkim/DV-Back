@@ -2,7 +2,6 @@ package org.richardstallman.dvback.domain.interview.repository;
 
 import java.util.List;
 import org.richardstallman.dvback.domain.interview.entity.InterviewEntity;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,9 +12,11 @@ public interface InterviewJpaRepository extends JpaRepository<InterviewEntity, L
 
   List<InterviewEntity> findByUserIdOrderByInterviewIdDesc(Long userId);
 
-  @EntityGraph(attributePaths = {"overallEvaluation"})
   @Query(
-      "SELECT i FROM InterviewEntity i WHERE i.user.id = :userId AND i.overallEvaluation IS NOT NULL ORDER BY i.interviewId DESC")
+      "SELECT i FROM InterviewEntity i "
+          + "JOIN i.user u "
+          + "JOIN OverallEvaluationEntity oe ON oe.interview = i "
+          + "WHERE u.id = :userId")
   List<InterviewEntity> findByUserIdWithEvaluationsOrderByInterviewIdDesc(
       @Param("userId") Long userId);
 }

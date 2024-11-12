@@ -4,7 +4,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
-import org.richardstallman.dvback.domain.evaluation.converter.OverallEvaluationConverter;
 import org.richardstallman.dvback.domain.file.converter.CoverLetterConverter;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
@@ -29,7 +28,6 @@ public class InterviewConverter {
   private final JobConverter jobConverter;
   private final CoverLetterConverter coverLetterConverter;
   private final UserConverter userConverter;
-  private final OverallEvaluationConverter overallEvaluationConverter;
 
   public InterviewEntity fromDomainToEntity(InterviewDomain interviewDomain) {
     return new InterviewEntity(
@@ -43,11 +41,7 @@ public class InterviewConverter {
         jobConverter.toEntity(interviewDomain.getJob()),
         interviewDomain.getInterviewMode() == InterviewMode.REAL
             ? coverLetterConverter.fromDomainToEntity(interviewDomain.getCoverLetter())
-            : null,
-        interviewDomain.getOverallEvaluationDomain() == null
-            ? null
-            : overallEvaluationConverter.fromDomainToEntity(
-                interviewDomain.getOverallEvaluationDomain()));
+            : null);
   }
 
   public InterviewEntity fromDomainToEntityWhenCreate(InterviewDomain interviewDomain) {
@@ -78,11 +72,6 @@ public class InterviewConverter {
             interviewEntity.getInterviewMode() == InterviewMode.REAL
                 ? coverLetterConverter.fromEntityToDomain(interviewEntity.getCoverLetter())
                 : null)
-        .overallEvaluationDomain(
-            interviewEntity.getOverallEvaluation() == null
-                ? null
-                : overallEvaluationConverter.fromEntityToDomain(
-                    interviewEntity.getOverallEvaluation()))
         .build();
   }
 

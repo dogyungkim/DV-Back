@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -20,7 +19,6 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMetho
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
-import org.richardstallman.dvback.domain.evaluation.entity.overall.OverallEvaluationEntity;
 import org.richardstallman.dvback.domain.file.entity.CoverLetterEntity;
 import org.richardstallman.dvback.domain.job.entity.JobEntity;
 import org.richardstallman.dvback.domain.user.entity.UserEntity;
@@ -63,9 +61,6 @@ public class InterviewEntity extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "cover_letter_id")
   private CoverLetterEntity coverLetter;
-
-  @OneToOne(mappedBy = "interview", fetch = FetchType.LAZY)
-  private OverallEvaluationEntity overallEvaluation;
 
   public InterviewEntity(
       UserEntity user,

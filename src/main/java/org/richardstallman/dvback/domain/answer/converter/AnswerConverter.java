@@ -1,18 +1,21 @@
 package org.richardstallman.dvback.domain.answer.converter;
 
-import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
 import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousRequestDto;
 import org.richardstallman.dvback.domain.answer.entity.AnswerEntity;
 import org.richardstallman.dvback.domain.question.converter.QuestionConverter;
 import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class AnswerConverter {
 
   private final QuestionConverter questionConverter;
+
+  public AnswerConverter(@Lazy QuestionConverter questionConverter) {
+    this.questionConverter = questionConverter;
+  }
 
   public AnswerEntity fromDomainToEntity(AnswerDomain answerDomain) {
     return new AnswerEntity(

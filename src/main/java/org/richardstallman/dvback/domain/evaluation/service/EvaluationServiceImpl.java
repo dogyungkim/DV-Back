@@ -38,7 +38,9 @@ import org.richardstallman.dvback.domain.evaluation.repository.criteria.Evaluati
 import org.richardstallman.dvback.domain.evaluation.repository.overall.OverallEvaluationRepository;
 import org.richardstallman.dvback.domain.file.converter.CoverLetterConverter;
 import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
+import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.interview.service.InterviewService;
 import org.richardstallman.dvback.domain.question.converter.QuestionConverter;
 import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
@@ -66,6 +68,7 @@ public class EvaluationServiceImpl implements EvaluationService {
   private final CoverLetterConverter coverLetterConverter;
   private final InterviewService interviewService;
   private final QuestionConverter questionConverter;
+  private final InterviewConverter interviewConverter;
 
   @Override
   public OverallEvaluationResponseDto getOverallEvaluation(
@@ -269,7 +272,10 @@ public class EvaluationServiceImpl implements EvaluationService {
           coverLetterConverter.fromDomainToResponseDto(interviewDomain.getCoverLetter()));
     }
 
+    InterviewCreateResponseDto interviewCreateResponseDto =
+        interviewConverter.fromDomainToDto(interviewDomain, fileResponseDtos);
+
     return overallEvaluationConverter.toResponseDto(
-        interviewDomain, criteriaResponseDtos, answerEvaluationResponseDtos, fileResponseDtos);
+        interviewCreateResponseDto, criteriaResponseDtos, answerEvaluationResponseDtos);
   }
 }
