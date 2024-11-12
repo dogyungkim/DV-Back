@@ -73,8 +73,6 @@ public class InterviewServiceImpl implements InterviewService {
 
   @Override
   public InterviewListResponseDto getInterviewsByUserId(Long userId) {
-    //    List<FileResponseDto> fileResponseDtos = new ArrayList<>();
-    //    if(interview)
     List<InterviewCreateResponseDto> interviewCreateResponseDtos =
         interviewRepository.findInterviewsByUserId(userId).stream()
             .map(
@@ -85,7 +83,6 @@ public class InterviewServiceImpl implements InterviewService {
     return new InterviewListResponseDto(interviewCreateResponseDtos);
   }
 
-  //  private InterviewCreateResponseDto fromInterviewDomainToCreateResponseDto
   private List<FileResponseDto> getFiles(InterviewDomain interviewDomain) {
     List<FileResponseDto> fileResponseDtos = new ArrayList<>();
     if (interviewDomain.getInterviewMode() == InterviewMode.REAL) {
