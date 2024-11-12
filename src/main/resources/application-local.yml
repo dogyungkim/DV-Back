@@ -48,8 +48,8 @@ spring:
 python:
   server:
     url: ${PYTHON_SERVER_URL}
-    question-path: /interview/questions-test
-    evaluation-path: /interview/evaluation-test
+    question-path: /interview/questions
+    evaluation-path: /interview/evaluation
 
 cloud:
   aws:
