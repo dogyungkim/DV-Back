@@ -75,7 +75,7 @@ public class QuestionControllerTest {
             InterviewType.TECHNICAL,
             InterviewMethod.CHAT,
             InterviewMode.GENERAL,
-            null,
+            new ArrayList<>(),
             1L);
     String content = objectMapper.writeValueAsString(questionInitialRequestDto);
 
@@ -97,8 +97,10 @@ public class QuestionControllerTest {
                         .jobNameKorean("백엔드")
                         .jobDescription("백엔드 직무입니다.")
                         .build()),
+                1L,
                 "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
                 2L,
+                "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요2.",
                 true));
     ResultActions resultActions =
         mockMvc.perform(
@@ -123,7 +125,7 @@ public class QuestionControllerTest {
         .andExpect(jsonPath("data.interview.job.jobNameKorean").value("백엔드"))
         .andExpect(jsonPath("data.interview.job.jobDescription").value("백엔드 직무입니다."))
         .andExpect(
-            jsonPath("data.questionText")
+            jsonPath("data.currentQuestionText")
                 .value("스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요."))
         .andExpect(jsonPath("data.nextQuestionId").value(2L))
         .andExpect(jsonPath("data.hasNext").value(true));
@@ -158,7 +160,7 @@ public class QuestionControllerTest {
                             .type(JsonFieldType.STRING)
                             .description("면접 모드"),
                         fieldWithPath("files")
-                            .type(JsonFieldType.NULL)
+                            .type(JsonFieldType.ARRAY)
                             .description("모의 면접이므로 파일 정보 없어야 함."),
                         fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자"))
                     .responseFields(
@@ -194,12 +196,18 @@ public class QuestionControllerTest {
                         fieldWithPath("data.interview.job.jobDescription")
                             .type(JsonFieldType.STRING)
                             .description("직무 설명"),
-                        fieldWithPath("data.questionText")
+                        fieldWithPath("data.currentQuestionId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("현재 질문 식별자"),
+                        fieldWithPath("data.currentQuestionText")
                             .type(JsonFieldType.STRING)
-                            .description("질문 내용"),
+                            .description("현재 질문 내용"),
                         fieldWithPath("data.nextQuestionId")
                             .type(JsonFieldType.NUMBER)
                             .description("다음 질문 식별자"),
+                        fieldWithPath("data.nextQuestionText")
+                            .type(JsonFieldType.STRING)
+                            .description("다음 질문 내용"),
                         fieldWithPath("data.hasNext")
                             .type(JsonFieldType.BOOLEAN)
                             .description("다음 질문 존재 여부"))
@@ -247,8 +255,10 @@ public class QuestionControllerTest {
                         .jobNameKorean("백엔드")
                         .jobDescription("백엔드 직무입니다.")
                         .build()),
+                1L,
                 "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
                 2L,
+                "다음 질문입니다.",
                 true));
     ResultActions resultActions =
         mockMvc.perform(
@@ -273,7 +283,7 @@ public class QuestionControllerTest {
         .andExpect(jsonPath("data.interview.job.jobNameKorean").value("백엔드"))
         .andExpect(jsonPath("data.interview.job.jobDescription").value("백엔드 직무입니다."))
         .andExpect(
-            jsonPath("data.questionText")
+            jsonPath("data.currentQuestionText")
                 .value("스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요."))
         .andExpect(jsonPath("data.nextQuestionId").value(2L))
         .andExpect(jsonPath("data.hasNext").value(true));
@@ -347,12 +357,18 @@ public class QuestionControllerTest {
                         fieldWithPath("data.interview.job.jobDescription")
                             .type(JsonFieldType.STRING)
                             .description("직무 설명"),
-                        fieldWithPath("data.questionText")
+                        fieldWithPath("data.currentQuestionId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("현재 질문 식별자"),
+                        fieldWithPath("data.currentQuestionText")
                             .type(JsonFieldType.STRING)
-                            .description("질문 내용"),
+                            .description("현재 질문 내용"),
                         fieldWithPath("data.nextQuestionId")
                             .type(JsonFieldType.NUMBER)
                             .description("다음 질문 식별자"),
+                        fieldWithPath("data.nextQuestionText")
+                            .type(JsonFieldType.STRING)
+                            .description("다음 질문 내용"),
                         fieldWithPath("data.hasNext")
                             .type(JsonFieldType.BOOLEAN)
                             .description("다음 질문 존재 여부"))
@@ -366,7 +382,7 @@ public class QuestionControllerTest {
     AnswerPreviousRequestDto answerPreviousRequestDto =
         new AnswerPreviousRequestDto("답변입니다.", "", "");
     QuestionNextRequestDto questionNextRequestDto =
-        new QuestionNextRequestDto(1L, 2L, answerPreviousRequestDto);
+        new QuestionNextRequestDto(1L, 1L, 2L, answerPreviousRequestDto);
     String content = objectMapper.writeValueAsString(questionNextRequestDto);
 
     when(questionService.getNextQuestion(any()))
@@ -385,8 +401,10 @@ public class QuestionControllerTest {
                         .jobNameKorean("백엔드")
                         .jobDescription("백엔드 직무입니다.")
                         .build()),
+                1L,
                 "리액트와 스프링 간의 연동 경험을 설명해 주세요.",
-                3L,
+                2L,
+                "협업 과정에서 가장 힘들었던 일이 있다면 무엇이었나요?",
                 true));
 
     // when
@@ -411,8 +429,8 @@ public class QuestionControllerTest {
         .andExpect(jsonPath("data.interview.job.jobName").value("BACK_END"))
         .andExpect(jsonPath("data.interview.job.jobNameKorean").value("백엔드"))
         .andExpect(jsonPath("data.interview.job.jobDescription").value("백엔드 직무입니다."))
-        .andExpect(jsonPath("data.questionText").value("리액트와 스프링 간의 연동 경험을 설명해 주세요."))
-        .andExpect(jsonPath("data.nextQuestionId").value(3L))
+        .andExpect(jsonPath("data.currentQuestionText").value("리액트와 스프링 간의 연동 경험을 설명해 주세요."))
+        .andExpect(jsonPath("data.nextQuestionId").value(2L))
         .andExpect(jsonPath("data.hasNext").value(true));
 
     // restdocs
@@ -429,9 +447,6 @@ public class QuestionControllerTest {
                         fieldWithPath("interviewId")
                             .type(JsonFieldType.NUMBER)
                             .description("면접 식별자"),
-                        fieldWithPath("questionId")
-                            .type(JsonFieldType.NUMBER)
-                            .description("요청 질문 식별자"),
                         fieldWithPath("answer.s3AudioUrl")
                             .type(JsonFieldType.STRING)
                             .description("답변 오디오 s3 저장 url"),
@@ -440,7 +455,13 @@ public class QuestionControllerTest {
                             .description("답변 비디오 s3 저장 url"),
                         fieldWithPath("answer.answerText")
                             .type(JsonFieldType.STRING)
-                            .description("이전 질문에 대한 답변"))
+                            .description("이전 질문에 대한 답변"),
+                        fieldWithPath("answerQuestionId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("전달되는 답변에 대한 질문 식별자"),
+                        fieldWithPath("nextQuestionId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("반환해줘야 하는 다음 질문 식별자"))
                     .responseFields(
                         fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
@@ -474,12 +495,18 @@ public class QuestionControllerTest {
                         fieldWithPath("data.interview.job.jobDescription")
                             .type(JsonFieldType.STRING)
                             .description("직무 설명"),
-                        fieldWithPath("data.questionText")
+                        fieldWithPath("data.currentQuestionId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("현재 질문 식별자"),
+                        fieldWithPath("data.currentQuestionText")
                             .type(JsonFieldType.STRING)
-                            .description("질문 내용"),
+                            .description("현재 질문 내용"),
                         fieldWithPath("data.nextQuestionId")
                             .type(JsonFieldType.NUMBER)
                             .description("다음 질문 식별자"),
+                        fieldWithPath("data.nextQuestionText")
+                            .type(JsonFieldType.STRING)
+                            .description("다음 질문 내용"),
                         fieldWithPath("data.hasNext")
                             .type(JsonFieldType.BOOLEAN)
                             .description("다음 질문 존재 여부"))
