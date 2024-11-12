@@ -31,7 +31,6 @@ import org.richardstallman.dvback.domain.evaluation.domain.external.response.Eva
 import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationResponseDto;
-import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationUserInfoListResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.response.EvaluationCriteriaResponseDto;
 import org.richardstallman.dvback.domain.evaluation.repository.answer.AnswerEvaluationRepository;
 import org.richardstallman.dvback.domain.evaluation.repository.answer.score.AnswerEvaluationScoreRepository;
@@ -40,7 +39,6 @@ import org.richardstallman.dvback.domain.evaluation.repository.overall.OverallEv
 import org.richardstallman.dvback.domain.file.converter.CoverLetterConverter;
 import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
-import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
 import org.richardstallman.dvback.domain.interview.service.InterviewService;
 import org.richardstallman.dvback.domain.question.converter.QuestionConverter;
 import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
@@ -97,16 +95,6 @@ public class EvaluationServiceImpl implements EvaluationService {
   }
 
   @Override
-  public OverallEvaluationUserInfoListResponseDto getOverallEvaluationListByUserId(Long userId) {
-    List<InterviewEvaluationResponseDto> interviewEvaluationResponseDtos =
-        interviewService.getInterviewsByUserId(userId);
-    return new OverallEvaluationUserInfoListResponseDto(
-        interviewEvaluationResponseDtos.stream()
-            .map(overallEvaluationConverter::toUserInfoResponseDto)
-            .toList());
-  }
-
-  @Override
   public OverallEvaluationResponseDto getOverallEvaluationByInterviewId(Long interviewId) {
     InterviewDomain interviewDomain = interviewService.getInterviewById(interviewId);
 
@@ -131,7 +119,7 @@ public class EvaluationServiceImpl implements EvaluationService {
         questions.stream()
             .map(questionConverter::fromDomainToEvaluationExternalRequestDto)
             .toList();
-    System.out.println("BB");
+
     List<EvaluationExternalAnswerRequestDto> answerTexts =
         questions.stream()
             .map(

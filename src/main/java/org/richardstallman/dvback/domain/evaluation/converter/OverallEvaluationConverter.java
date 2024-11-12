@@ -1,7 +1,6 @@
 package org.richardstallman.dvback.domain.evaluation.converter;
 
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.response.AnswerEvaluationResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationResponseDto;
@@ -12,13 +11,17 @@ import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class OverallEvaluationConverter {
 
   private final InterviewConverter interviewConverter;
+
+  public OverallEvaluationConverter(@Lazy InterviewConverter interviewConverter) {
+    this.interviewConverter = interviewConverter;
+  }
 
   public OverallEvaluationEntity fromDomainToEntity(
       OverallEvaluationDomain overallEvaluationDomain) {

@@ -1,3 +1,6 @@
 package org.richardstallman.dvback.domain.interview.domain.response;
 
-public record InterviewEvaluationResponseDto(Long interviewId, String interviewTitle) {}
+import jakarta.validation.constraints.NotNull;
+
+public record InterviewEvaluationResponseDto(
+    @NotNull Long interviewId, @NotNull String interviewTitle) {}

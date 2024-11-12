@@ -10,4 +10,6 @@ public interface InterviewRepository {
   InterviewDomain findById(Long interviewId);
 
   List<InterviewDomain> findInterviewsByUserId(Long userId);
+
+  List<InterviewDomain> findInterviewsByUserIdWithEvaluation(Long userId);
 }

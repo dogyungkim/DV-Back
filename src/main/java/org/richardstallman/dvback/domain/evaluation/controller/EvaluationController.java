@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationResponseDto;
-import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationUserInfoListResponseDto;
 import org.richardstallman.dvback.domain.evaluation.service.EvaluationService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,14 +31,6 @@ public class EvaluationController {
     final OverallEvaluationResponseDto overallEvaluationResponseDto =
         evaluationService.getOverallEvaluation(overallEvaluationRequestDto);
     return ResponseEntity.ok(DvApiResponse.of(overallEvaluationResponseDto));
-  }
-
-  @GetMapping
-  public ResponseEntity<DvApiResponse<OverallEvaluationUserInfoListResponseDto>>
-      getOverallEvaluation(@AuthenticationPrincipal final Long userId) {
-    final OverallEvaluationUserInfoListResponseDto overallEvaluationUserInfoListResponseDto =
-        evaluationService.getOverallEvaluationListByUserId(userId);
-    return ResponseEntity.ok(DvApiResponse.of(overallEvaluationUserInfoListResponseDto));
   }
 
   @GetMapping("/{interviewId}")

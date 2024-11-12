@@ -5,6 +5,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -29,6 +30,9 @@ import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
 import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationListResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewListResponseDto;
 import org.richardstallman.dvback.domain.interview.service.InterviewService;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.global.advice.exceptions.ApiException;
@@ -417,6 +421,248 @@ public class InterviewControllerTest {
                         fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
                         fieldWithPath("data").type(JsonFieldType.STRING).description("에러 메시지"))
+                    .build())));
+  }
+
+  @Test
+  @DisplayName("마이페이지 - 면접 내역 조회 - 성공")
+  void getMyPageInterviews() throws Exception {
+    // given
+    Long userId = 1L;
+    String timestamp = String.valueOf(System.currentTimeMillis());
+    List<FileResponseDto> files =
+        List.of(
+            new FileResponseDto(
+                1L,
+                FileType.COVER_LETTER,
+                "coverLetterName",
+                "COVER_LETTER/1/" + timestamp + "/coverLetterName"));
+    List<FileResponseDto> files2 =
+        List.of(
+            new FileResponseDto(
+                2L,
+                FileType.COVER_LETTER,
+                "coverLetterName2",
+                "COVER_LETTER/1/" + timestamp + "/coverLetterName2"));
+    List<FileResponseDto> files3 =
+        List.of(
+            new FileResponseDto(
+                3L,
+                FileType.COVER_LETTER,
+                "coverLetterName3",
+                "COVER_LETTER/1/" + timestamp + "/coverLetterName3"));
+
+    InterviewCreateResponseDto interview1 =
+        new InterviewCreateResponseDto(
+            1L,
+            "면접 제목",
+            InterviewStatus.READY,
+            InterviewType.TECHNICAL,
+            InterviewMethod.VIDEO,
+            InterviewMode.REAL,
+            JobDomain.builder()
+                .jobId(2L)
+                .jobName("BACK_END")
+                .jobNameKorean("백엔드")
+                .jobDescription("백엔드 직무입니다.")
+                .build(),
+            files);
+
+    InterviewCreateResponseDto interview2 =
+        new InterviewCreateResponseDto(
+            2L,
+            "면접 제목 2",
+            InterviewStatus.READY,
+            InterviewType.PERSONAL,
+            InterviewMethod.VOICE,
+            InterviewMode.REAL,
+            JobDomain.builder()
+                .jobId(3L)
+                .jobName("FRONT_END")
+                .jobNameKorean("프론트엔드")
+                .jobDescription("프론트엔드 직무입니다.")
+                .build(),
+            files2);
+
+    InterviewCreateResponseDto interview3 =
+        new InterviewCreateResponseDto(
+            3L,
+            "면접 제목 3",
+            InterviewStatus.READY,
+            InterviewType.TECHNICAL,
+            InterviewMethod.CHAT,
+            InterviewMode.REAL,
+            JobDomain.builder()
+                .jobId(4L)
+                .jobName("INFRA")
+                .jobNameKorean("인프라")
+                .jobDescription("인프라 직무입니다.")
+                .build(),
+            files3);
+
+    InterviewCreateResponseDto interview4 =
+        new InterviewCreateResponseDto(
+            4L,
+            "면접 제목 4",
+            InterviewStatus.READY,
+            InterviewType.TECHNICAL,
+            InterviewMethod.CHAT,
+            InterviewMode.GENERAL,
+            JobDomain.builder()
+                .jobId(5L)
+                .jobName("AI")
+                .jobNameKorean("인공지능")
+                .jobDescription("인공지능 직무입니다.")
+                .build(),
+            new ArrayList<>());
+
+    List<InterviewCreateResponseDto> interviewList =
+        List.of(interview1, interview2, interview3, interview4);
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    when(interviewService.getInterviewsByUserId(userId))
+        .thenReturn(new InterviewListResponseDto(interviewList));
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/interview").cookie(authCookie).contentType(MediaType.APPLICATION_JSON));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("code").value(200))
+        .andExpect(jsonPath("message").value("SUCCESS"))
+        .andExpect(jsonPath("data.interviews[0].interviewId").value(1))
+        .andExpect(jsonPath("data.interviews[0].interviewTitle").value("면접 제목"))
+        .andExpect(jsonPath("data.interviews[0].interviewStatus").value("READY"))
+        .andExpect(jsonPath("data.interviews[0].interviewType").value("TECHNICAL"))
+        .andExpect(jsonPath("data.interviews[0].interviewMethod").value("VIDEO"))
+        .andExpect(jsonPath("data.interviews[0].interviewMode").value("REAL"))
+        .andExpect(jsonPath("data.interviews[0].job.jobId").value(2))
+        .andExpect(jsonPath("data.interviews[0].job.jobName").value("BACK_END"))
+        .andExpect(jsonPath("data.interviews[1].interviewId").value(2))
+        .andExpect(jsonPath("data.interviews[1].interviewTitle").value("면접 제목 2"))
+        .andExpect(jsonPath("data.interviews[1].interviewType").value("PERSONAL"))
+        .andExpect(jsonPath("data.interviews[1].job.jobNameKorean").value("프론트엔드"))
+        .andExpect(jsonPath("data.interviews[2].interviewId").value(3))
+        .andExpect(jsonPath("data.interviews[2].interviewTitle").value("면접 제목 3"))
+        .andExpect(jsonPath("data.interviews[3].interviewTitle").value("면접 제목 4"));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "마이페이지 - 면접 내역 조회 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Interview API")
+                    .summary("면접 내역 조회 API")
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.interviews[].interviewId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("data.interviews[].interviewTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 제목"),
+                        fieldWithPath("data.interviews[].interviewStatus")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 상태"),
+                        fieldWithPath("data.interviews[].interviewType")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 유형"),
+                        fieldWithPath("data.interviews[].interviewMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 방식"),
+                        fieldWithPath("data.interviews[].interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 모드"),
+                        fieldWithPath("data.interviews[].job.jobId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("직무 식별자"),
+                        fieldWithPath("data.interviews[].job.jobName")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 이름"),
+                        fieldWithPath("data.interviews[].job.jobNameKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 이름 (한글)"),
+                        fieldWithPath("data.interviews[].job.jobDescription")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 설명"),
+                        fieldWithPath("data.interviews[].files[]")
+                            .type(JsonFieldType.ARRAY)
+                            .description("파일 목록"),
+                        fieldWithPath("data.interviews[].files[].fileId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("파일 식별자"),
+                        fieldWithPath("data.interviews[].files[].type")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 유형"),
+                        fieldWithPath("data.interviews[].files[].fileName")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 이름"),
+                        fieldWithPath("data.interviews[].files[].s3FileUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 경로"))
+                    .build())));
+  }
+
+  @Test
+  @DisplayName("마이페이지 - 면접 평가 조회 위한 면접 정보 목록(면접 식별자, 면접 제목) 조회 - 성공")
+  void getMyPageInterviewInfoListForInterviewEvaluation() throws Exception {
+    // given
+    Long userId = 1L;
+    List<InterviewEvaluationResponseDto> interviewEvaluationResponseDtos = new ArrayList<>();
+    interviewEvaluationResponseDtos.add(new InterviewEvaluationResponseDto(1L, "241101_백엔드_모의"));
+    interviewEvaluationResponseDtos.add(new InterviewEvaluationResponseDto(2L, "241103_프론트엔드_실전"));
+    interviewEvaluationResponseDtos.add(new InterviewEvaluationResponseDto(4L, "241105_클라우드_실전"));
+    interviewEvaluationResponseDtos.add(new InterviewEvaluationResponseDto(7L, "241105_인공지능_모의"));
+
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    when(interviewService.getInterviewsByUserIdForEvaluation(userId))
+        .thenReturn(new InterviewEvaluationListResponseDto(interviewEvaluationResponseDtos));
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/interview/evaluation")
+                .cookie(authCookie)
+                .contentType(MediaType.APPLICATION_JSON));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("code").value(200))
+        .andExpect(jsonPath("message").value("SUCCESS"))
+        .andExpect(jsonPath("data.interviews[0].interviewTitle").value("241101_백엔드_모의"))
+        .andExpect(jsonPath("data.interviews[0].interviewId").value(1))
+        .andExpect(jsonPath("data.interviews[1].interviewTitle").value("241103_프론트엔드_실전"))
+        .andExpect(jsonPath("data.interviews[1].interviewId").value(2))
+        .andExpect(jsonPath("data.interviews[3].interviewTitle").value("241105_인공지능_모의"))
+        .andExpect(jsonPath("data.interviews[3].interviewId").value(7))
+        .andExpect(jsonPath("data.interviews[2].interviewTitle").value("241105_클라우드_실전"))
+        .andExpect(jsonPath("data.interviews[2].interviewId").value(4));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "마이페이지 - 면접 평가 조회 위한 면접 정보 목록(면접 식별자, 면접 제목) 조회 - 성공",
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Evaluation API")
+                    .summary("평가 API")
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data.interviews[0].interviewTitle").description("면접 제목"),
+                        fieldWithPath("data.interviews[0].interviewId").description("면접 식별자"))
                     .build())));
   }
 }
