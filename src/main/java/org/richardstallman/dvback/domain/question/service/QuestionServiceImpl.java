@@ -123,8 +123,15 @@ public class QuestionServiceImpl implements QuestionService {
         questionRepository.findQuestionsByInterviewId(questionNextRequestDto.interviewId());
 
     QuestionDomain previousQuestion =
-        findQuestionById(questions, questionNextRequestDto.questionId());
-    QuestionDomain nextQuestion = findNextQuestion(questions, previousQuestion);
+        findQuestionById(questions, questionNextRequestDto.answerQuestionId());
+    QuestionDomain currentQuestion =
+        questionNextRequestDto.nextQuestionId() == null
+            ? null
+            : findQuestionById(questions, questionNextRequestDto.nextQuestionId());
+    QuestionDomain nextQuestion =
+        questionNextRequestDto.nextQuestionId() == null
+            ? null
+            : findNextQuestion(questions, currentQuestion);
     boolean hasNext = nextQuestion != null;
 
     answerRepository.save(
@@ -132,7 +139,7 @@ public class QuestionServiceImpl implements QuestionService {
             questionNextRequestDto.answer(), previousQuestion));
 
     return questionConverter.fromQuestionExternalDomainToQuestionResponseDto(
-        previousQuestion,
+        currentQuestion,
         interviewConverter.fromDomainToQuestionResponseDto(previousQuestion.getInterviewDomain()),
         nextQuestion,
         hasNext);
@@ -157,6 +164,10 @@ public class QuestionServiceImpl implements QuestionService {
         .findFirst()
         .orElseThrow(
             () -> new ApiException(HttpStatus.BAD_REQUEST, questionId + " does not exist"));
+  }
+
+  private QuestionDomain findNextQuestionById(Long questionId) {
+    return questionRepository.findById(questionId).orElse(null);
   }
 
   private QuestionDomain findNextQuestion(

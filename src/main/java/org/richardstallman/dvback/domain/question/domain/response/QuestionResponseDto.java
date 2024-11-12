@@ -5,6 +5,8 @@ import org.richardstallman.dvback.domain.interview.domain.response.InterviewQues
 
 public record QuestionResponseDto(
     @NotNull InterviewQuestionResponseDto interview,
-    @NotNull String questionText,
+    @NotNull Long currentQuestionId,
+    @NotNull String currentQuestionText,
     Long nextQuestionId,
+    String nextQuestionText,
     @NotNull Boolean hasNext) {}

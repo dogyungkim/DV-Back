@@ -77,8 +77,10 @@ public class QuestionConverter {
       Boolean hasNext) {
     return new QuestionResponseDto(
         interviewQuestionResponseDto,
-        firstQuestionDomain.getQuestionText(),
+        firstQuestionDomain == null ? null : firstQuestionDomain.getQuestionId(),
+        firstQuestionDomain == null ? null : firstQuestionDomain.getQuestionText(),
         secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionId(),
+        secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionText(),
         hasNext);
   }
 

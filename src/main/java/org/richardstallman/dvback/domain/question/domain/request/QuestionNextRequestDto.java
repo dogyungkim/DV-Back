@@ -5,5 +5,6 @@ import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousReq
 
 public record QuestionNextRequestDto(
     @NotNull Long interviewId,
-    @NotNull Long questionId,
+    @NotNull Long answerQuestionId,
+    Long nextQuestionId,
     @NotNull AnswerPreviousRequestDto answer) {}
