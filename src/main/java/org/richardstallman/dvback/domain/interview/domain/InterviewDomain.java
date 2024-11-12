@@ -6,6 +6,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMetho
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.user.domain.UserDomain;
@@ -23,6 +24,7 @@ public class InterviewDomain {
   private InterviewMode interviewMode;
   private JobDomain job;
   private CoverLetterDomain coverLetter;
+  private OverallEvaluationDomain overallEvaluationDomain;
 
   //  private Long resumeId;
   //  private Long portfolioId;

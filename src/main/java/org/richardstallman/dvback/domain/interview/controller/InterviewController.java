@@ -6,11 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationListResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewListResponseDto;
 import org.richardstallman.dvback.domain.interview.service.InterviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,5 +39,21 @@ public class InterviewController {
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(DvApiResponse.of(interviewCreateResponseDto));
+  }
+
+  @GetMapping("/evaluation")
+  public ResponseEntity<DvApiResponse<InterviewEvaluationListResponseDto>>
+      getInterviewsForEvaluation(@AuthenticationPrincipal final Long userId) {
+    final InterviewEvaluationListResponseDto interviewEvaluationListResponseDto =
+        interviewService.getInterviewsByUserIdForEvaluation(userId);
+    return ResponseEntity.ok(DvApiResponse.of(interviewEvaluationListResponseDto));
+  }
+
+  @GetMapping
+  public ResponseEntity<DvApiResponse<InterviewListResponseDto>> getInterviews(
+      @AuthenticationPrincipal final Long userId) {
+    final InterviewListResponseDto interviewListResponseDto =
+        interviewService.getInterviewsByUserId(userId);
+    return ResponseEntity.ok(DvApiResponse.of(interviewListResponseDto));
   }
 }

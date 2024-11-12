@@ -25,8 +25,6 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatu
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.response.AnswerEvaluationResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationResponseDto;
-import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationUserInfoListResponseDto;
-import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationUserInfoResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.response.AnswerEvaluationScoreResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.response.EvaluationCriteriaResponseDto;
 import org.richardstallman.dvback.domain.evaluation.service.EvaluationService;
@@ -53,66 +51,6 @@ public class EvaluationControllerTest {
   @Autowired JwtUtil jwtUtil;
 
   @MockBean private EvaluationService evaluationService;
-
-  @Test
-  @DisplayName("마이페이지 - 면접 평가 조회 위한 면접 정보 목록(면접 식별자, 면접 제목) 조회 - 성공")
-  void getMyPageInterviewInfoListForInterviewEvaluation() throws Exception {
-    // given
-    Long userId = 1L;
-    List<OverallEvaluationUserInfoResponseDto> overallEvaluationUserInfoResponseDtos =
-        new ArrayList<>();
-    overallEvaluationUserInfoResponseDtos.add(
-        new OverallEvaluationUserInfoResponseDto("241101_백엔드_모의", 1L));
-    overallEvaluationUserInfoResponseDtos.add(
-        new OverallEvaluationUserInfoResponseDto("241103_프론트엔드_실전", 3L));
-    overallEvaluationUserInfoResponseDtos.add(
-        new OverallEvaluationUserInfoResponseDto("241105_클라우드_실전", 5L));
-    overallEvaluationUserInfoResponseDtos.add(
-        new OverallEvaluationUserInfoResponseDto("241105_인공지능_모의", 6L));
-
-    String accessToken = jwtUtil.generateAccessToken(userId);
-    MockCookie authCookie = new MockCookie("access_token", accessToken);
-
-    when(evaluationService.getOverallEvaluationListByUserId(userId))
-        .thenReturn(
-            new OverallEvaluationUserInfoListResponseDto(overallEvaluationUserInfoResponseDtos));
-
-    // when
-    ResultActions resultActions =
-        mockMvc.perform(
-            get("/evaluation").cookie(authCookie).contentType(MediaType.APPLICATION_JSON));
-
-    // then
-    resultActions
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("code").value(200))
-        .andExpect(jsonPath("message").value("SUCCESS"))
-        .andExpect(jsonPath("data.evaluationInfos[0].interviewTitle").value("241101_백엔드_모의"))
-        .andExpect(jsonPath("data.evaluationInfos[0].interviewId").value(1))
-        .andExpect(jsonPath("data.evaluationInfos[1].interviewTitle").value("241103_프론트엔드_실전"))
-        .andExpect(jsonPath("data.evaluationInfos[1].interviewId").value(3))
-        .andExpect(jsonPath("data.evaluationInfos[3].interviewTitle").value("241105_인공지능_모의"))
-        .andExpect(jsonPath("data.evaluationInfos[3].interviewId").value(6))
-        .andExpect(jsonPath("data.evaluationInfos[2].interviewTitle").value("241105_클라우드_실전"))
-        .andExpect(jsonPath("data.evaluationInfos[2].interviewId").value(5));
-
-    // restdocs
-    resultActions.andDo(
-        document(
-            "마이페이지 - 면접 평가 조회 위한 면접 정보 목록(면접 식별자, 면접 제목) 조회 - 성공",
-            preprocessResponse(prettyPrint()),
-            resource(
-                ResourceSnippetParameters.builder()
-                    .tag("Evaluation API")
-                    .summary("평가 API")
-                    .responseFields(
-                        fieldWithPath("code").description("응답 코드"),
-                        fieldWithPath("message").description("응답 메시지"),
-                        fieldWithPath("data.evaluationInfos[0].interviewTitle")
-                            .description("면접 제목"),
-                        fieldWithPath("data.evaluationInfos[0].interviewId").description("면접 식별자"))
-                    .build())));
-  }
 
   @Test
   @DisplayName("마이페이지 - 면접 평가 조회 - 성공")

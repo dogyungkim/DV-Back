@@ -49,4 +49,11 @@ public class FakeInterviewRepository implements InterviewRepository {
         .filter(item -> Objects.equals(item.getUserDomain().getId(), userId))
         .toList();
   }
+
+  @Override
+  public List<InterviewDomain> findInterviewsByUserIdWithEvaluation(Long userId) {
+    return data.stream()
+        .filter(item -> Objects.nonNull(item.getOverallEvaluationDomain()))
+        .toList();
+  }
 }

@@ -20,7 +20,8 @@ import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
-import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationListResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewListResponseDto;
 import org.richardstallman.dvback.domain.interview.repository.InterviewRepository;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.job.service.JobService;
@@ -71,15 +72,42 @@ public class InterviewServiceImpl implements InterviewService {
   }
 
   @Override
-  public List<InterviewEvaluationResponseDto> getInterviewsByUserId(Long userId) {
-    return interviewRepository.findInterviewsByUserId(userId).stream()
-        .map(interviewConverter::fromDomainToEvaluationResponseDto)
-        .toList();
+  public InterviewListResponseDto getInterviewsByUserId(Long userId) {
+    //    List<FileResponseDto> fileResponseDtos = new ArrayList<>();
+    //    if(interview)
+    List<InterviewCreateResponseDto> interviewCreateResponseDtos =
+        interviewRepository.findInterviewsByUserId(userId).stream()
+            .map(
+                (e) ->
+                    interviewConverter.fromDomainToDto(
+                        e, e.getInterviewMode() == InterviewMode.REAL ? getFiles(e) : null))
+            .toList();
+    return new InterviewListResponseDto(interviewCreateResponseDtos);
+  }
+
+  //  private InterviewCreateResponseDto fromInterviewDomainToCreateResponseDto
+  private List<FileResponseDto> getFiles(InterviewDomain interviewDomain) {
+    List<FileResponseDto> fileResponseDtos = new ArrayList<>();
+    if (interviewDomain.getInterviewMode() == InterviewMode.REAL) {
+      fileResponseDtos.add(
+          coverLetterConverter.fromDomainToResponseDto(interviewDomain.getCoverLetter()));
+    }
+    return fileResponseDtos;
   }
 
   @Override
   public InterviewDomain getInterviewById(Long interviewId) {
     return interviewRepository.findById(interviewId);
+  }
+
+  @Override
+  public InterviewEvaluationListResponseDto getInterviewsByUserIdForEvaluation(Long userId) {
+    List<InterviewDomain> interviewDomains =
+        interviewRepository.findInterviewsByUserIdWithEvaluation(userId);
+    return new InterviewEvaluationListResponseDto(
+        interviewDomains.stream()
+            .map(interviewConverter::fromDomainToEvaluationResponseDto)
+            .toList());
   }
 
   private InterviewDomain initializeInterviewDomain(
