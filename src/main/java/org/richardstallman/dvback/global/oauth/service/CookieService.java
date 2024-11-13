@@ -42,11 +42,13 @@ public class CookieService {
   public void deleteCookie(HttpServletResponse httpServletResponse, String cookieName) {
     ResponseCookie deleteCookie =
         ResponseCookie.from(cookieName, "")
+            .domain(mainDomain)
             .path("/")
+            .secure(true)
             .httpOnly(true)
             .maxAge(0)
             .sameSite(sameSite)
-            .secure(true)
+            .maxAge(0)
             .build();
 
     httpServletResponse.addHeader(SET_COOKIE, deleteCookie.toString());
