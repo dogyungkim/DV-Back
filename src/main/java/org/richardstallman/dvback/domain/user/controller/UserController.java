@@ -45,7 +45,7 @@ public class UserController {
 
     String refreshToken =
         tokenService.getTokenFromCookies(request.getCookies(), JwtUtil.REFRESH_TOKEN);
-
+    log.info("refreshToken: {}", refreshToken);
     userService.logout(response, refreshToken);
 
     return ResponseEntity.ok("Logged out successfully");

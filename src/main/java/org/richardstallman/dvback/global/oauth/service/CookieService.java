@@ -50,7 +50,7 @@ public class CookieService {
             .sameSite(sameSite)
             .maxAge(0)
             .build();
-
+    log.info("deleteCookie : {}", deleteCookie);
     httpServletResponse.addHeader(SET_COOKIE, deleteCookie.toString());
   }
 }
