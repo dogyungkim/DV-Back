@@ -44,10 +44,10 @@ public class CookieService {
         ResponseCookie.from(cookieName, "")
             .domain(mainDomain)
             .path("/")
-            .secure(true)
+            .secure(false)
             .httpOnly(true)
             .maxAge(0)
-            .sameSite(sameSite)
+            .sameSite("Lax")
             .maxAge(0)
             .build();
     log.info("deleteCookie : {}", deleteCookie);
