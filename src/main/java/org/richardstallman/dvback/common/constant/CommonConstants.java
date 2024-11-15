@@ -88,6 +88,36 @@ public class CommonConstants {
 
   @Getter
   @AllArgsConstructor
+  public enum TicketTransactionMethod {
+    COUPON("쿠폰"),
+    EVENT("이벤트"),
+    CHAT("채팅 면접"),
+    VOICE("음성 면접");
+
+    private final String koreanName;
+  }
+
+  @Getter
+  @AllArgsConstructor
+  public enum TicketTransactionType {
+    CHARGE("충전"), // 충전
+    USE("사용"); // 사용
+
+    private final String koreanName;
+  }
+
+  @Getter
+  @AllArgsConstructor
+  public enum CouponType {
+    CHAT("채팅"), // 채팅 면접
+    VOICE("음성"), // 음성 면접
+    VIDEO("영상"); // 영상 면접
+
+    private final String koreanName;
+  }
+
+  @Getter
+  @AllArgsConstructor
   public enum Gender {
     WOMAN, // 여성
     MAN // 남성

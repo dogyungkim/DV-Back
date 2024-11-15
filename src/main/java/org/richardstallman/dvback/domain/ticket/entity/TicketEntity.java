@@ -1,4 +1,4 @@
-package org.richardstallman.dvback.domain.coupon.entity;
+package org.richardstallman.dvback.domain.ticket.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,11 +9,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.richardstallman.dvback.common.constant.CommonConstants.CouponType;
 import org.richardstallman.dvback.domain.user.entity.UserEntity;
 import org.richardstallman.dvback.global.entity.BaseEntity;
 
@@ -21,22 +19,17 @@ import org.richardstallman.dvback.global.entity.BaseEntity;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "coupons")
-public class CouponEntity extends BaseEntity {
+@Table(name = "tickets")
+public class TicketEntity extends BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "coupon_seq")
-  @SequenceGenerator(name = "coupon_seq", sequenceName = "coupon_id_seq", allocationSize = 1)
-  private Long couponId;
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ticket_seq")
+  @SequenceGenerator(name = "ticket_seq", sequenceName = "ticket_id_seq", allocationSize = 1)
+  private Long ticketId;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "id", nullable = false)
   private UserEntity user;
 
-  private int chargeAmount;
-  private String couponName;
-  private CouponType couponType;
-  private boolean isUsed;
-  private LocalDateTime generatedAt;
-  private LocalDateTime usedAt;
+  private int balance;
 }

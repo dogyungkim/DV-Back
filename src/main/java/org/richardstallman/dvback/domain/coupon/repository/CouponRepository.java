@@ -5,4 +5,6 @@ import org.richardstallman.dvback.domain.coupon.domain.CouponDomain;
 public interface CouponRepository {
 
   CouponDomain save(CouponDomain couponDomain);
+
+  CouponDomain findById(Long couponId);
 }
