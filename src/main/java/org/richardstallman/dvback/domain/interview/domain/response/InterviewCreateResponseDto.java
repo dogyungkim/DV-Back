@@ -8,6 +8,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatu
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
+import org.richardstallman.dvback.domain.ticket.domain.response.TicketResponseDto;
 
 public record InterviewCreateResponseDto(
     @NotNull Long interviewId,
@@ -17,4 +18,5 @@ public record InterviewCreateResponseDto(
     @NotNull InterviewMethod interviewMethod,
     @NotNull InterviewMode interviewMode,
     @NotNull JobDomain job,
-    List<FileResponseDto> files) {}
+    List<FileResponseDto> files,
+    TicketResponseDto ticket) {}

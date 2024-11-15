@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
+import org.richardstallman.dvback.common.constant.CommonConstants.TicketType;
 import org.richardstallman.dvback.domain.user.entity.UserEntity;
 import org.richardstallman.dvback.global.entity.BaseEntity;
 
@@ -46,6 +47,9 @@ public class TicketTransactionEntity extends BaseEntity {
 
   @Enumerated(EnumType.STRING)
   private TicketTransactionMethod ticketTransactionMethod;
+
+  @Enumerated(EnumType.STRING)
+  private TicketType ticketType;
 
   private String description;
   private LocalDateTime generatedAt;

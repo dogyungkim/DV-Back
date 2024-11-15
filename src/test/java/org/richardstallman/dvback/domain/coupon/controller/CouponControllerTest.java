@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.richardstallman.dvback.common.constant.CommonConstants.CouponType;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
+import org.richardstallman.dvback.common.constant.CommonConstants.TicketType;
 import org.richardstallman.dvback.domain.coupon.domain.request.CouponCreateRequestDto;
 import org.richardstallman.dvback.domain.coupon.domain.request.CouponUseRequestDto;
 import org.richardstallman.dvback.domain.coupon.domain.response.CouponInfoResponseDto;
@@ -155,7 +156,7 @@ public class CouponControllerTest {
 
   @Test
   @WithMockUser
-  @DisplayName("쿠폰 사용 & 이용권 충전 테스트")
+  @DisplayName("쿠폰 사용 & 채팅 이용권 충전 테스트 - 성공")
   void use_coupon_and_charge_ticket() throws Exception {
     // given
     Long userId = 1L;
@@ -163,11 +164,14 @@ public class CouponControllerTest {
     int chargeAmount = 1;
     String couponName = "웰컴 쿠폰";
     CouponType couponType = CouponType.CHAT;
-    int currentBalance = 2;
+    int currentBalance = 5;
+    int currentChatBalance = 2;
+    int currentVoiceBalance = 3;
     Long ticketTransactionId = 1L;
     int amount = 1;
     TicketTransactionType ticketTransactionType = TicketTransactionType.CHARGE;
     TicketTransactionMethod ticketTransactionMethod = TicketTransactionMethod.COUPON;
+    TicketType ticketType = TicketType.CHAT;
     String descripton =
         ticketTransactionType.getKoreanName() + " " + ticketTransactionMethod.getKoreanName();
     LocalDateTime createdAt = LocalDateTime.now();
@@ -197,11 +201,17 @@ public class CouponControllerTest {
             ticketTransactionType.getKoreanName(),
             ticketTransactionMethod,
             ticketTransactionMethod.getKoreanName(),
+            ticketType,
+            ticketType.getKoreanName(),
             descripton,
             occurredAt);
 
     TicketTransactionResponseDto ticketTransactionResponseDto =
-        new TicketTransactionResponseDto(currentBalance, ticketTransactionDetailResponseDto);
+        new TicketTransactionResponseDto(
+            currentBalance,
+            currentChatBalance,
+            currentVoiceBalance,
+            ticketTransactionDetailResponseDto);
 
     CouponUseResponseDto couponUseResponseDto =
         new CouponUseResponseDto(couponInfoResponseDto, ticketTransactionResponseDto);
@@ -306,6 +316,12 @@ public class CouponControllerTest {
                         fieldWithPath("data.chargedTicketTransactionInfo.currentBalance")
                             .type(JsonFieldType.NUMBER)
                             .description("회원이 현재 보유한 이용권 장 수"),
+                        fieldWithPath("data.chargedTicketTransactionInfo.currentChatBalance")
+                            .type(JsonFieldType.NUMBER)
+                            .description("회원이 현재 보유한 채팅 이용권 장 수"),
+                        fieldWithPath("data.chargedTicketTransactionInfo.currentVoiceBalance")
+                            .type(JsonFieldType.NUMBER)
+                            .description("회원이 현재 보유한 음성 이용권 장 수"),
                         fieldWithPath(
                                 "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketTransactionId")
                             .type(JsonFieldType.NUMBER)
@@ -330,6 +346,14 @@ public class CouponControllerTest {
                                 "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketTransactionMethodKorean")
                             .type(JsonFieldType.STRING)
                             .description("이용권 충전 방법 한글"),
+                        fieldWithPath(
+                                "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketType")
+                            .type(JsonFieldType.STRING)
+                            .description("이용권 유형: CHAT(채팅), VOICE(음성)"),
+                        fieldWithPath(
+                                "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketTypeKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("이용권 유형 한글"),
                         fieldWithPath(
                                 "data.chargedTicketTransactionInfo.ticketTransactionDetail.description")
                             .type(JsonFieldType.STRING)

@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.domain.ticket.converter;
 
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.common.constant.CommonConstants.TicketType;
 import org.richardstallman.dvback.domain.ticket.domain.TicketDomain;
 import org.richardstallman.dvback.domain.ticket.entity.TicketEntity;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
@@ -16,7 +17,8 @@ public class TicketConverter {
     return TicketDomain.builder()
         .ticketId(ticketEntity.getTicketId())
         .userDomain(userConverter.fromEntityToDomain(ticketEntity.getUser()))
-        .balance(ticketEntity.getBalance())
+        .chatBalance(ticketEntity.getChatBalance())
+        .voiceBalance(ticketEntity.getVoiceBalance())
         .build();
   }
 
@@ -24,14 +26,22 @@ public class TicketConverter {
     return new TicketEntity(
         ticketDomain.getTicketId(),
         userConverter.fromDomainToEntity(ticketDomain.getUserDomain()),
-        ticketDomain.getBalance());
+        ticketDomain.getChatBalance(),
+        ticketDomain.getVoiceBalance());
   }
 
-  public TicketDomain updateBalance(TicketDomain ticketDomain, int amount) {
+  public TicketDomain updateBalance(TicketDomain ticketDomain, int amount, TicketType ticketType) {
     return TicketDomain.builder()
         .ticketId(ticketDomain.getTicketId())
         .userDomain(ticketDomain.getUserDomain())
-        .balance(ticketDomain.getBalance() + amount)
+        .chatBalance(
+            ticketType == TicketType.CHAT
+                ? ticketDomain.getChatBalance() + amount
+                : ticketDomain.getChatBalance())
+        .voiceBalance(
+            ticketType == TicketType.VOICE
+                ? ticketDomain.getVoiceBalance() + amount
+                : ticketDomain.getVoiceBalance())
         .build();
   }
 }

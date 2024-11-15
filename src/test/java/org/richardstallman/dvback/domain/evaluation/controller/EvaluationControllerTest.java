@@ -28,7 +28,7 @@ import org.richardstallman.dvback.domain.evaluation.domain.overall.response.Over
 import org.richardstallman.dvback.domain.evaluation.domain.response.AnswerEvaluationScoreResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.response.EvaluationCriteriaResponseDto;
 import org.richardstallman.dvback.domain.evaluation.service.EvaluationService;
-import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewResponseDto;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,8 +81,8 @@ public class EvaluationControllerTest {
     String feedbackText = "피드백입니다.";
     int score = 1;
 
-    InterviewCreateResponseDto interviewCreateResponseDto =
-        new InterviewCreateResponseDto(
+    InterviewResponseDto interviewCreateResponseDto =
+        new InterviewResponseDto(
             interviewId,
             interviewTitle,
             interviewStatus,

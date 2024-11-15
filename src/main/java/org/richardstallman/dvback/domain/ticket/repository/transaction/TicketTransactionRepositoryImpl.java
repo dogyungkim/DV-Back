@@ -1,5 +1,6 @@
 package org.richardstallman.dvback.domain.ticket.repository.transaction;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.ticket.converter.TicketTransactionConverter;
 import org.richardstallman.dvback.domain.ticket.domain.TicketTransactionDomain;
@@ -17,5 +18,10 @@ public class TicketTransactionRepositoryImpl implements TicketTransactionReposit
     return ticketTransactionConverter.fromEntityToDomain(
         ticketTransactionJpaRepository.save(
             ticketTransactionConverter.fromDomainToEntity(transaction)));
+  }
+
+  @Override
+  public List<TicketTransactionDomain> findTicketsByUserId(Long userId) {
+    return List.of();
   }
 }

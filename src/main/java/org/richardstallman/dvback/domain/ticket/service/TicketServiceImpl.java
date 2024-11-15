@@ -1,17 +1,22 @@
 package org.richardstallman.dvback.domain.ticket.service;
 
 import static org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType.CHARGE;
+import static org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType.USE;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
 import org.richardstallman.dvback.domain.ticket.converter.TicketConverter;
 import org.richardstallman.dvback.domain.ticket.converter.TicketTransactionConverter;
 import org.richardstallman.dvback.domain.ticket.domain.TicketDomain;
 import org.richardstallman.dvback.domain.ticket.domain.TicketTransactionDomain;
+import org.richardstallman.dvback.domain.ticket.domain.TicketUserInfoDto;
 import org.richardstallman.dvback.domain.ticket.domain.request.TicketTransactionRequestDto;
+import org.richardstallman.dvback.domain.ticket.domain.response.TicketResponseDto;
+import org.richardstallman.dvback.domain.ticket.domain.response.TicketTransactionDetailResponseDto;
 import org.richardstallman.dvback.domain.ticket.domain.response.TicketTransactionResponseDto;
 import org.richardstallman.dvback.domain.ticket.repository.TicketRepository;
 import org.richardstallman.dvback.domain.ticket.repository.transaction.TicketTransactionRepository;
@@ -37,11 +42,7 @@ public class TicketServiceImpl implements TicketService {
       TicketTransactionRequestDto ticketTransactionRequestDto, Long userId) {
     validateTransactionType(ticketTransactionRequestDto.ticketTransactionType(), CHARGE);
 
-    UserDomain userDomain =
-        userRepository
-            .findById(userId)
-            .orElseThrow(
-                () -> new ApiException(HttpStatus.NOT_FOUND, "(" + userId + "): User Not Found"));
+    UserDomain userDomain = getUser(userId);
 
     TicketTransactionDomain ticketTransactionDomain =
         ticketTransactionRepository.save(
@@ -54,16 +55,84 @@ public class TicketServiceImpl implements TicketService {
     TicketDomain ticketDomain =
         ticketRepository.save(
             ticketConverter.updateBalance(
-                getUserTicket(userDomain), ticketTransactionRequestDto.amount()));
+                getUserTicket(userDomain),
+                ticketTransactionRequestDto.amount(),
+                ticketTransactionRequestDto.ticketType()));
     return ticketTransactionConverter.fromDomainToResponseDto(
         ticketTransactionDomain, ticketDomain);
+  }
+
+  @Override
+  @Transactional
+  public TicketResponseDto useTicket(
+      TicketTransactionRequestDto ticketTransactionRequestDto, Long userId) {
+    validateTransactionType(ticketTransactionRequestDto.ticketTransactionType(), USE);
+
+    UserDomain userDomain = getUser(userId);
+    TicketDomain ticketDomain = getUserTicket(userDomain);
+
+    TicketTransactionDomain ticketTransactionDomain =
+        ticketTransactionRepository.save(
+            ticketTransactionConverter.fromRequestDtoToDomain(
+                ticketTransactionRequestDto,
+                userDomain,
+                generateDescription(ticketTransactionRequestDto),
+                getCurrentDateTime()));
+
+    ticketDomain =
+        ticketRepository.save(
+            ticketConverter.updateBalance(
+                ticketDomain,
+                ticketTransactionRequestDto.amount(),
+                ticketTransactionRequestDto.ticketType()));
+    return new TicketResponseDto(
+        ticketDomain.getChatBalance() + ticketDomain.getVoiceBalance(),
+        ticketDomain.getChatBalance(),
+        ticketDomain.getVoiceBalance(),
+        ticketTransactionConverter.fromDomainToDetailResponseDto(ticketTransactionDomain));
+  }
+
+  @Override
+  public TicketUserInfoDto getUserTicketInfo(Long userId) {
+    UserDomain userDomain = getUser(userId);
+    TicketDomain ticketDomain = getUserTicket(userDomain);
+    int currentBalance = ticketDomain.getChatBalance() + ticketDomain.getVoiceBalance();
+    List<TicketTransactionDetailResponseDto> ticketTransactionDetailResponseDtos =
+        ticketTransactionRepository.findTicketsByUserId(userId).stream()
+            .map(ticketTransactionConverter::fromDomainToDetailResponseDto)
+            .toList();
+    return new TicketUserInfoDto(
+        currentBalance,
+        ticketDomain.getChatBalance(),
+        ticketDomain.getVoiceBalance(),
+        ticketTransactionDetailResponseDtos);
+  }
+
+  @Override
+  public int getUserChatTicketCount(Long userId) {
+    UserDomain userDomain = getUser(userId);
+    return getUserTicket(userDomain).getChatBalance();
+  }
+
+  @Override
+  public int getUserVoiceTicketCount(Long userId) {
+    UserDomain userDomain = getUser(userId);
+    return getUserTicket(userDomain).getVoiceBalance();
+  }
+
+  private UserDomain getUser(Long userId) {
+    return userRepository
+        .findById(userId)
+        .orElseThrow(
+            () -> new ApiException(HttpStatus.NOT_FOUND, "(" + userId + "): User Not Found"));
   }
 
   private TicketDomain getUserTicket(UserDomain userDomain) {
     TicketDomain ticketDomain = ticketRepository.findByUserId(userDomain.getId());
     if (ticketDomain == null) {
       ticketDomain =
-          ticketRepository.save(TicketDomain.builder().userDomain(userDomain).balance(0).build());
+          ticketRepository.save(
+              TicketDomain.builder().userDomain(userDomain).chatBalance(0).voiceBalance(0).build());
     }
     return ticketDomain;
   }

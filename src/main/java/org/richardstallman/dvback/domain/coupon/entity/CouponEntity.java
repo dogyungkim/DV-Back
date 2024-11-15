@@ -1,6 +1,8 @@
 package org.richardstallman.dvback.domain.coupon.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,7 +37,10 @@ public class CouponEntity extends BaseEntity {
 
   private int chargeAmount;
   private String couponName;
+
+  @Enumerated(EnumType.STRING)
   private CouponType couponType;
+
   private boolean isUsed;
   private LocalDateTime generatedAt;
   private LocalDateTime usedAt;

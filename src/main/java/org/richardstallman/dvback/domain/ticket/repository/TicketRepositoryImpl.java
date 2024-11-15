@@ -1,11 +1,9 @@
-package org.richardstallman.dvback.domain.ticket.repository.transaction;
+package org.richardstallman.dvback.domain.ticket.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.ticket.converter.TicketConverter;
 import org.richardstallman.dvback.domain.ticket.domain.TicketDomain;
 import org.richardstallman.dvback.domain.ticket.entity.TicketEntity;
-import org.richardstallman.dvback.domain.ticket.repository.TicketJpaRepository;
-import org.richardstallman.dvback.domain.ticket.repository.TicketRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository

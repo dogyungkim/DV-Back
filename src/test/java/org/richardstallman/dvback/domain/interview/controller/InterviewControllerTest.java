@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,9 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMetho
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
+import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
+import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
+import org.richardstallman.dvback.common.constant.CommonConstants.TicketType;
 import org.richardstallman.dvback.domain.file.domain.request.CoverLetterRequestDto;
 import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
 import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
@@ -33,8 +37,12 @@ import org.richardstallman.dvback.domain.interview.domain.response.InterviewCrea
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationListResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewListResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewResponseDto;
 import org.richardstallman.dvback.domain.interview.service.InterviewService;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
+import org.richardstallman.dvback.domain.ticket.domain.TicketUserInfoDto;
+import org.richardstallman.dvback.domain.ticket.domain.response.TicketResponseDto;
+import org.richardstallman.dvback.domain.ticket.domain.response.TicketTransactionDetailResponseDto;
 import org.richardstallman.dvback.global.advice.exceptions.ApiException;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +83,26 @@ public class InterviewControllerTest {
     List<FileRequestDto> files = new ArrayList<>();
     String timestamp = String.valueOf(System.currentTimeMillis());
     String accessToken = jwtUtil.generateAccessToken(1L);
+    List<TicketTransactionDetailResponseDto> ticketTransactionDetailResponseDtos =
+        new ArrayList<>();
+    TicketTransactionDetailResponseDto ticketTransactionDetailResponseDto1 =
+        new TicketTransactionDetailResponseDto(
+            1L,
+            1,
+            TicketTransactionType.USE,
+            TicketTransactionType.USE.getKoreanName(),
+            TicketTransactionMethod.CHAT,
+            TicketTransactionMethod.CHAT.getKoreanName(),
+            TicketType.CHAT,
+            TicketType.CHAT.getKoreanName(),
+            "채팅 면접 사용",
+            LocalDateTime.now());
+
+    TicketResponseDto ticketResponseDto =
+        new TicketResponseDto(3, 2, 1, ticketTransactionDetailResponseDto1);
+
+    TicketUserInfoDto ticketUserInfoDto =
+        new TicketUserInfoDto(3, 2, 1, ticketTransactionDetailResponseDtos);
 
     files.add(
         new CoverLetterRequestDto(
@@ -111,7 +139,8 @@ public class InterviewControllerTest {
                     .jobNameKorean("백엔드")
                     .jobDescription("백엔드 직무입니다.")
                     .build(),
-                fileResponseDtos));
+                fileResponseDtos,
+                ticketResponseDto));
     ResultActions resultActions =
         mockMvc.perform(
             post("/interview")
@@ -210,7 +239,48 @@ public class InterviewControllerTest {
                             .description("파일 이름"),
                         fieldWithPath("data.files[0].s3FileUrl")
                             .type(JsonFieldType.STRING)
-                            .description("파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}"))
+                            .description("파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}"),
+                        fieldWithPath("data.ticket.currentBalance")
+                            .type(JsonFieldType.NUMBER)
+                            .description("(실전 면접 시) 이용권 사용 후 잔여 이용권 수"),
+                        fieldWithPath("data.ticket.currentChatBalance")
+                            .type(JsonFieldType.NUMBER)
+                            .description("(실전 면접 시) 이용권 사용 후 잔여 채팅 이용권 수"),
+                        fieldWithPath("data.ticket.currentVoiceBalance")
+                            .type(JsonFieldType.NUMBER)
+                            .description("(실전 면접 시) 이용권 사용 후 잔여 음성 이용권 수"),
+                        fieldWithPath("data.ticket.ticketTransactionDetail.ticketTransactionId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("(실전 면접 시) 이용권 사용 내역 식별자"),
+                        fieldWithPath("data.ticket.ticketTransactionDetail.amount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("(실전 면접 시) 이용권 사용 내역 사용 수량"),
+                        fieldWithPath("data.ticket.ticketTransactionDetail.ticketTransactionType")
+                            .type(JsonFieldType.STRING)
+                            .description("(실전 면접 시) 이용권 사용 내역 타입: USE(사용), CHARGE(충전)"),
+                        fieldWithPath(
+                                "data.ticket.ticketTransactionDetail.ticketTransactionTypeKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("(실전 면접 시) 이용권 사용 내역 타입 한글"),
+                        fieldWithPath("data.ticket.ticketTransactionDetail.ticketTransactionMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("(실전 면접 시) 이용권 사용 내역 방식: CHAT(채팅), VOICE(음성)"),
+                        fieldWithPath(
+                                "data.ticket.ticketTransactionDetail.ticketTransactionMethodKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("(실전 면접 시) 이용권 사용 내역 방식 한글"),
+                        fieldWithPath("data.ticket.ticketTransactionDetail.ticketType")
+                            .type(JsonFieldType.STRING)
+                            .description("(실전 면접 시) 이용권 사용 내역 타입: CHAT(채팅), VOICE(음성)"),
+                        fieldWithPath("data.ticket.ticketTransactionDetail.ticketTypeKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("(실전 면접 시) 이용권 사용 내역 타입 한글"),
+                        fieldWithPath("data.ticket.ticketTransactionDetail.description")
+                            .type(JsonFieldType.STRING)
+                            .description("(실전 면접 시) 이용권 사용 내역 설명"),
+                        fieldWithPath("data.ticket.ticketTransactionDetail.generatedAt")
+                            .type(JsonFieldType.STRING)
+                            .description("(실전 면접 시) 이용권 사용 내역 생성 일시"))
                     .build())));
   }
 
@@ -452,8 +522,8 @@ public class InterviewControllerTest {
                 "coverLetterName3",
                 "COVER_LETTER/1/" + timestamp + "/coverLetterName3"));
 
-    InterviewCreateResponseDto interview1 =
-        new InterviewCreateResponseDto(
+    InterviewResponseDto interview1 =
+        new InterviewResponseDto(
             1L,
             "면접 제목",
             InterviewStatus.READY,
@@ -468,8 +538,8 @@ public class InterviewControllerTest {
                 .build(),
             files);
 
-    InterviewCreateResponseDto interview2 =
-        new InterviewCreateResponseDto(
+    InterviewResponseDto interview2 =
+        new InterviewResponseDto(
             2L,
             "면접 제목 2",
             InterviewStatus.READY,
@@ -484,8 +554,8 @@ public class InterviewControllerTest {
                 .build(),
             files2);
 
-    InterviewCreateResponseDto interview3 =
-        new InterviewCreateResponseDto(
+    InterviewResponseDto interview3 =
+        new InterviewResponseDto(
             3L,
             "면접 제목 3",
             InterviewStatus.READY,
@@ -500,8 +570,8 @@ public class InterviewControllerTest {
                 .build(),
             files3);
 
-    InterviewCreateResponseDto interview4 =
-        new InterviewCreateResponseDto(
+    InterviewResponseDto interview4 =
+        new InterviewResponseDto(
             4L,
             "면접 제목 4",
             InterviewStatus.READY,
@@ -516,7 +586,7 @@ public class InterviewControllerTest {
                 .build(),
             new ArrayList<>());
 
-    List<InterviewCreateResponseDto> interviewList =
+    List<InterviewResponseDto> interviewList =
         List.of(interview1, interview2, interview3, interview4);
     String accessToken = jwtUtil.generateAccessToken(userId);
     MockCookie authCookie = new MockCookie("access_token", accessToken);

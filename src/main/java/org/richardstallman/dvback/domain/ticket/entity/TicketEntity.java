@@ -31,5 +31,6 @@ public class TicketEntity extends BaseEntity {
   @JoinColumn(name = "id", nullable = false)
   private UserEntity user;
 
-  private int balance;
+  private int chatBalance;
+  private int voiceBalance;
 }
