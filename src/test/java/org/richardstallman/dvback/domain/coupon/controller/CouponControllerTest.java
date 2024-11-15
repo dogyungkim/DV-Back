@@ -300,7 +300,7 @@ public class CouponControllerTest {
                             .description("사용된 쿠폰 이름"),
                         fieldWithPath("data.usedCouponInfo.couponType")
                             .type(JsonFieldType.STRING)
-                            .description("사용된 쿠폰 유형"),
+                            .description("사용된 쿠폰 유형: CHAT(채팅), VOICE(음성)"),
                         fieldWithPath("data.usedCouponInfo.couponTypeKorean")
                             .type(JsonFieldType.STRING)
                             .description("사용된 쿠폰 유형 한글"),
@@ -333,7 +333,7 @@ public class CouponControllerTest {
                         fieldWithPath(
                                 "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketTransactionType")
                             .type(JsonFieldType.STRING)
-                            .description("이용권 내역 유형"),
+                            .description("이용권 내역 유형: CHARGE(충전), USE(사용)"),
                         fieldWithPath(
                                 "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketTransactionTypeKorean")
                             .type(JsonFieldType.STRING)
@@ -341,7 +341,7 @@ public class CouponControllerTest {
                         fieldWithPath(
                                 "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketTransactionMethod")
                             .type(JsonFieldType.STRING)
-                            .description("이용권 충전 방법"),
+                            .description("이용권 충전 방법: COUPON(쿠폰), EVENT(이벤트)"),
                         fieldWithPath(
                                 "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketTransactionMethodKorean")
                             .type(JsonFieldType.STRING)
