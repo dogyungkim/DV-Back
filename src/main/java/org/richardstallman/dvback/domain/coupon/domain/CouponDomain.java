@@ -3,7 +3,7 @@ package org.richardstallman.dvback.domain.coupon.domain;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
-import org.richardstallman.dvback.common.constant.CommonConstants.CouponType;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
 import org.richardstallman.dvback.domain.user.domain.UserDomain;
 
 @Builder
@@ -14,7 +14,7 @@ public class CouponDomain {
   private final UserDomain userDomain;
   private final int chargeAmount;
   private final String couponName;
-  private CouponType couponType;
+  private InterviewAssetType interviewAssetType;
   private boolean isUsed;
   private LocalDateTime generatedAt;
   private LocalDateTime usedAt;

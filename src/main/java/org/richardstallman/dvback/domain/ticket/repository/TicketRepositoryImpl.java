@@ -25,6 +25,6 @@ public class TicketRepositoryImpl implements TicketRepository {
     if (ticketEntity == null) {
       return null;
     }
-    return ticketConverter.fromEntityToDomain(ticketJpaRepository.findByUserId(userId));
+    return ticketConverter.fromEntityToDomain(ticketEntity);
   }
 }

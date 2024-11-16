@@ -1,7 +1,7 @@
 package org.richardstallman.dvback.domain.ticket.converter;
 
 import lombok.RequiredArgsConstructor;
-import org.richardstallman.dvback.common.constant.CommonConstants.TicketType;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
 import org.richardstallman.dvback.domain.ticket.domain.TicketDomain;
 import org.richardstallman.dvback.domain.ticket.entity.TicketEntity;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
@@ -30,16 +30,17 @@ public class TicketConverter {
         ticketDomain.getVoiceBalance());
   }
 
-  public TicketDomain updateBalance(TicketDomain ticketDomain, int amount, TicketType ticketType) {
+  public TicketDomain updateBalance(
+      TicketDomain ticketDomain, int amount, InterviewAssetType interviewAssetType) {
     return TicketDomain.builder()
         .ticketId(ticketDomain.getTicketId())
         .userDomain(ticketDomain.getUserDomain())
         .chatBalance(
-            ticketType == TicketType.CHAT
+            interviewAssetType == InterviewAssetType.CHAT
                 ? ticketDomain.getChatBalance() + amount
                 : ticketDomain.getChatBalance())
         .voiceBalance(
-            ticketType == TicketType.VOICE
+            interviewAssetType == InterviewAssetType.VOICE
                 ? ticketDomain.getVoiceBalance() + amount
                 : ticketDomain.getVoiceBalance())
         .build();

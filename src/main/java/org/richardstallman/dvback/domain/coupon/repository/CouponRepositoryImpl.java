@@ -24,7 +24,6 @@ public class CouponRepositoryImpl implements CouponRepository {
 
   @Override
   public CouponDomain findById(Long couponId) {
-    CouponEntity couponEntity = couponJpaRepository.findById(couponId).orElse(null);
     return couponConverter.fromEntityToDomain(
         Objects.requireNonNull(couponJpaRepository.findById(couponId).orElse(null)));
   }

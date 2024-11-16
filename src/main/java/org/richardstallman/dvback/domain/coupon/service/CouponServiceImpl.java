@@ -3,10 +3,8 @@ package org.richardstallman.dvback.domain.coupon.service;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import org.richardstallman.dvback.common.constant.CommonConstants.CouponType;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
-import org.richardstallman.dvback.common.constant.CommonConstants.TicketType;
 import org.richardstallman.dvback.domain.coupon.converter.CouponConverter;
 import org.richardstallman.dvback.domain.coupon.domain.CouponDomain;
 import org.richardstallman.dvback.domain.coupon.domain.request.CouponCreateRequestDto;
@@ -20,8 +18,6 @@ import org.richardstallman.dvback.domain.ticket.service.TicketService;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.richardstallman.dvback.domain.user.domain.UserDomain;
 import org.richardstallman.dvback.domain.user.service.UserService;
-import org.richardstallman.dvback.global.advice.exceptions.ApiException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -61,7 +57,7 @@ public class CouponServiceImpl implements CouponService {
             couponDomain.getChargeAmount(),
             TicketTransactionType.CHARGE,
             TicketTransactionMethod.COUPON,
-            fromCouponTypeToTicketType(couponDomain.getCouponType()),
+            couponDomain.getInterviewAssetType(),
             "");
 
     CouponDomain usedCoupon = couponRepository.save(couponDomain);
@@ -72,16 +68,6 @@ public class CouponServiceImpl implements CouponService {
 
     return couponConverter.generateUseResponseDto(
         couponConverter.fromDomainToInfoResponseDto(usedCoupon), ticketTransactionResponseDto);
-  }
-
-  private TicketType fromCouponTypeToTicketType(CouponType couponType) {
-    if (couponType == CouponType.CHAT) {
-      return TicketType.CHAT;
-    } else if (couponType == CouponType.VOICE) {
-      return TicketType.VOICE;
-    }
-    throw new ApiException(
-        HttpStatus.BAD_REQUEST, "There is no such coupon type: (" + couponType + ")");
   }
 
   private LocalDateTime getCurrentDateTime() {

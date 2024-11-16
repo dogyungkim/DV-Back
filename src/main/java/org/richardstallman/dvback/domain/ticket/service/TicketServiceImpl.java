@@ -57,7 +57,7 @@ public class TicketServiceImpl implements TicketService {
             ticketConverter.updateBalance(
                 getUserTicket(userDomain),
                 ticketTransactionRequestDto.amount(),
-                ticketTransactionRequestDto.ticketType()));
+                ticketTransactionRequestDto.interviewAssetType()));
     return ticketTransactionConverter.fromDomainToResponseDto(
         ticketTransactionDomain, ticketDomain);
   }
@@ -84,7 +84,7 @@ public class TicketServiceImpl implements TicketService {
             ticketConverter.updateBalance(
                 ticketDomain,
                 ticketTransactionRequestDto.amount(),
-                ticketTransactionRequestDto.ticketType()));
+                ticketTransactionRequestDto.interviewAssetType()));
     return new TicketResponseDto(
         ticketDomain.getChatBalance() + ticketDomain.getVoiceBalance(),
         ticketDomain.getChatBalance(),

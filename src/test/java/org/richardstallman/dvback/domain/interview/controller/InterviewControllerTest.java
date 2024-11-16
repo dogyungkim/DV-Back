@@ -22,13 +22,13 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
-import org.richardstallman.dvback.common.constant.CommonConstants.TicketType;
 import org.richardstallman.dvback.domain.file.domain.request.CoverLetterRequestDto;
 import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
 import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
@@ -93,8 +93,8 @@ public class InterviewControllerTest {
             TicketTransactionType.USE.getKoreanName(),
             TicketTransactionMethod.CHAT,
             TicketTransactionMethod.CHAT.getKoreanName(),
-            TicketType.CHAT,
-            TicketType.CHAT.getKoreanName(),
+            InterviewAssetType.CHAT,
+            InterviewAssetType.CHAT.getKoreanName(),
             "채팅 면접 사용",
             LocalDateTime.now());
 
@@ -269,10 +269,11 @@ public class InterviewControllerTest {
                                 "data.ticket.ticketTransactionDetail.ticketTransactionMethodKorean")
                             .type(JsonFieldType.STRING)
                             .description("(실전 면접 시) 이용권 사용 내역 방식 한글"),
-                        fieldWithPath("data.ticket.ticketTransactionDetail.ticketType")
+                        fieldWithPath("data.ticket.ticketTransactionDetail.interviewAssetType")
                             .type(JsonFieldType.STRING)
                             .description("(실전 면접 시) 이용권 사용 내역 타입: CHAT(채팅), VOICE(음성)"),
-                        fieldWithPath("data.ticket.ticketTransactionDetail.ticketTypeKorean")
+                        fieldWithPath(
+                                "data.ticket.ticketTransactionDetail.interviewAssetTypeKorean")
                             .type(JsonFieldType.STRING)
                             .description("(실전 면접 시) 이용권 사용 내역 타입 한글"),
                         fieldWithPath("data.ticket.ticketTransactionDetail.description")

@@ -18,10 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.richardstallman.dvback.common.constant.CommonConstants.CouponType;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
-import org.richardstallman.dvback.common.constant.CommonConstants.TicketType;
 import org.richardstallman.dvback.domain.coupon.domain.request.CouponCreateRequestDto;
 import org.richardstallman.dvback.domain.coupon.domain.request.CouponUseRequestDto;
 import org.richardstallman.dvback.domain.coupon.domain.response.CouponInfoResponseDto;
@@ -65,11 +64,11 @@ public class CouponControllerTest {
     Long userId = 1L;
     int chargeAmount = 1;
     String couponName = "웰컴 쿠폰";
-    CouponType couponType = CouponType.CHAT;
+    InterviewAssetType interviewAssetType = InterviewAssetType.CHAT;
     boolean isUsed = false;
     LocalDateTime createdAt = LocalDateTime.now();
     CouponCreateRequestDto couponCreateRequestDto =
-        new CouponCreateRequestDto(userId, chargeAmount, couponName, couponType);
+        new CouponCreateRequestDto(userId, chargeAmount, couponName, interviewAssetType);
 
     Long couponId = 1L;
     CouponInfoResponseDto couponInfoResponseDto =
@@ -78,8 +77,8 @@ public class CouponControllerTest {
             userId,
             chargeAmount,
             couponName,
-            couponType,
-            couponType.getKoreanName(),
+            interviewAssetType,
+            interviewAssetType.getKoreanName(),
             isUsed,
             createdAt,
             null);
@@ -100,7 +99,7 @@ public class CouponControllerTest {
         .andExpect(jsonPath("data.userId").value(userId))
         .andExpect(jsonPath("data.chargeAmount").value(chargeAmount))
         .andExpect(jsonPath("data.couponName").value(couponName))
-        .andExpect(jsonPath("data.couponType").value(couponType.name()));
+        .andExpect(jsonPath("data.interviewAssetType").value(interviewAssetType.name()));
 
     // restdocs
     resultActions.andDo(
@@ -120,7 +119,9 @@ public class CouponControllerTest {
                             .type(JsonFieldType.NUMBER)
                             .description("쿠폰으로 충전 가능한 이용권 장 수"),
                         fieldWithPath("couponName").type(JsonFieldType.STRING).description("쿠폰 이름"),
-                        fieldWithPath("couponType").type(JsonFieldType.STRING).description("쿠폰 유형"))
+                        fieldWithPath("interviewAssetType")
+                            .type(JsonFieldType.STRING)
+                            .description("쿠폰 유형"))
                     .responseFields(
                         fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
@@ -136,10 +137,10 @@ public class CouponControllerTest {
                         fieldWithPath("data.couponName")
                             .type(JsonFieldType.STRING)
                             .description("쿠폰 이름"),
-                        fieldWithPath("data.couponType")
+                        fieldWithPath("data.interviewAssetType")
                             .type(JsonFieldType.STRING)
                             .description("쿠폰 유형"),
-                        fieldWithPath("data.couponTypeKorean")
+                        fieldWithPath("data.interviewAssetTypeKorean")
                             .type(JsonFieldType.STRING)
                             .description("쿠폰 유형 한글"),
                         fieldWithPath("data.isUsed")
@@ -163,7 +164,7 @@ public class CouponControllerTest {
     Long couponId = 1L;
     int chargeAmount = 1;
     String couponName = "웰컴 쿠폰";
-    CouponType couponType = CouponType.CHAT;
+    InterviewAssetType interviewAssetType = InterviewAssetType.CHAT;
     int currentBalance = 5;
     int currentChatBalance = 2;
     int currentVoiceBalance = 3;
@@ -171,7 +172,7 @@ public class CouponControllerTest {
     int amount = 1;
     TicketTransactionType ticketTransactionType = TicketTransactionType.CHARGE;
     TicketTransactionMethod ticketTransactionMethod = TicketTransactionMethod.COUPON;
-    TicketType ticketType = TicketType.CHAT;
+    InterviewAssetType interviewAssetType2 = InterviewAssetType.CHAT;
     String descripton =
         ticketTransactionType.getKoreanName() + " " + ticketTransactionMethod.getKoreanName();
     LocalDateTime createdAt = LocalDateTime.now();
@@ -187,8 +188,8 @@ public class CouponControllerTest {
             userId,
             chargeAmount,
             couponName,
-            couponType,
-            couponType.getKoreanName(),
+            interviewAssetType,
+            interviewAssetType.getKoreanName(),
             true,
             createdAt,
             usedAt);
@@ -201,8 +202,8 @@ public class CouponControllerTest {
             ticketTransactionType.getKoreanName(),
             ticketTransactionMethod,
             ticketTransactionMethod.getKoreanName(),
-            ticketType,
-            ticketType.getKoreanName(),
+            interviewAssetType2,
+            interviewAssetType2.getKoreanName(),
             descripton,
             occurredAt);
 
@@ -237,9 +238,11 @@ public class CouponControllerTest {
         .andExpect(jsonPath("data.usedCouponInfo.userId").value(userId))
         .andExpect(jsonPath("data.usedCouponInfo.chargeAmount").value(couponId))
         .andExpect(jsonPath("data.usedCouponInfo.couponName").value(couponName))
-        .andExpect(jsonPath("data.usedCouponInfo.couponType").value(couponType.name()))
         .andExpect(
-            jsonPath("data.usedCouponInfo.couponTypeKorean").value(couponType.getKoreanName()))
+            jsonPath("data.usedCouponInfo.interviewAssetType").value(interviewAssetType.name()))
+        .andExpect(
+            jsonPath("data.usedCouponInfo.interviewAssetTypeKorean")
+                .value(interviewAssetType.getKoreanName()))
         .andExpect(
             jsonPath("data.chargedTicketTransactionInfo.currentBalance").value(currentBalance))
         .andExpect(
@@ -298,10 +301,10 @@ public class CouponControllerTest {
                         fieldWithPath("data.usedCouponInfo.couponName")
                             .type(JsonFieldType.STRING)
                             .description("사용된 쿠폰 이름"),
-                        fieldWithPath("data.usedCouponInfo.couponType")
+                        fieldWithPath("data.usedCouponInfo.interviewAssetType")
                             .type(JsonFieldType.STRING)
                             .description("사용된 쿠폰 유형: CHAT(채팅), VOICE(음성)"),
-                        fieldWithPath("data.usedCouponInfo.couponTypeKorean")
+                        fieldWithPath("data.usedCouponInfo.interviewAssetTypeKorean")
                             .type(JsonFieldType.STRING)
                             .description("사용된 쿠폰 유형 한글"),
                         fieldWithPath("data.usedCouponInfo.isUsed")
@@ -347,11 +350,11 @@ public class CouponControllerTest {
                             .type(JsonFieldType.STRING)
                             .description("이용권 충전 방법 한글"),
                         fieldWithPath(
-                                "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketType")
+                                "data.chargedTicketTransactionInfo.ticketTransactionDetail.interviewAssetType")
                             .type(JsonFieldType.STRING)
                             .description("이용권 유형: CHAT(채팅), VOICE(음성)"),
                         fieldWithPath(
-                                "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketTypeKorean")
+                                "data.chargedTicketTransactionInfo.ticketTransactionDetail.interviewAssetTypeKorean")
                             .type(JsonFieldType.STRING)
                             .description("이용권 유형 한글"),
                         fieldWithPath(

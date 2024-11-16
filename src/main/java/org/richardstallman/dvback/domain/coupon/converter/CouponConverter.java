@@ -24,7 +24,7 @@ public class CouponConverter {
         .chargeAmount(couponEntity.getChargeAmount())
         .userDomain(userConverter.fromEntityToDomain(couponEntity.getUser()))
         .couponName(couponEntity.getCouponName())
-        .couponType(couponEntity.getCouponType())
+        .interviewAssetType(couponEntity.getInterviewAssetType())
         .isUsed(couponEntity.isUsed())
         .generatedAt(couponEntity.getGeneratedAt())
         .usedAt(couponEntity.isUsed() ? couponEntity.getUsedAt() : null)
@@ -37,7 +37,7 @@ public class CouponConverter {
         userConverter.fromDomainToEntity(couponDomain.getUserDomain()),
         couponDomain.getChargeAmount(),
         couponDomain.getCouponName(),
-        couponDomain.getCouponType(),
+        couponDomain.getInterviewAssetType(),
         couponDomain.isUsed(),
         couponDomain.getGeneratedAt(),
         couponDomain.isUsed() ? couponDomain.getUsedAt() : null);
@@ -51,7 +51,7 @@ public class CouponConverter {
         .userDomain(userDomain)
         .chargeAmount(couponCreateRequestDto.chargeAmount())
         .couponName(couponCreateRequestDto.couponName())
-        .couponType(couponCreateRequestDto.couponType())
+        .interviewAssetType(couponCreateRequestDto.interviewAssetType())
         .isUsed(false)
         .generatedAt(generatedAt)
         .build();
@@ -63,8 +63,8 @@ public class CouponConverter {
         couponDomain.getUserDomain().getId(),
         couponDomain.getChargeAmount(),
         couponDomain.getCouponName(),
-        couponDomain.getCouponType(),
-        couponDomain.getCouponType().getKoreanName(),
+        couponDomain.getInterviewAssetType(),
+        couponDomain.getInterviewAssetType().getKoreanName(),
         couponDomain.isUsed(),
         couponDomain.getGeneratedAt(),
         couponDomain.isUsed() ? couponDomain.getUsedAt() : null);
@@ -82,7 +82,7 @@ public class CouponConverter {
         .userDomain(couponDomain.getUserDomain())
         .chargeAmount(couponDomain.getChargeAmount())
         .couponName(couponDomain.getCouponName())
-        .couponType(couponDomain.getCouponType())
+        .interviewAssetType(couponDomain.getInterviewAssetType())
         .isUsed(true)
         .generatedAt(couponDomain.getGeneratedAt())
         .usedAt(usedAt)

@@ -5,14 +5,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
-import org.richardstallman.dvback.common.constant.CommonConstants.TicketType;
 import org.richardstallman.dvback.domain.file.converter.CoverLetterConverter;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 import org.richardstallman.dvback.domain.file.domain.request.CoverLetterRequestDto;
@@ -93,7 +95,7 @@ public class InterviewServiceImpl implements InterviewService {
               TicketTransactionType.USE,
               fromInterviewMethodToTicketTransactionMethod(
                   interviewCreateRequestDto.interviewMethod()),
-              fromInterviewMethodToTicketType(interviewCreateRequestDto.interviewMethod()),
+              fromInterviewMethodToInterviewAssetType(interviewCreateRequestDto.interviewMethod()),
               "");
       return ticketService.useTicket(ticketTransactionRequestDto, userId);
     }
@@ -111,11 +113,12 @@ public class InterviewServiceImpl implements InterviewService {
         HttpStatus.BAD_REQUEST, "There is no such interview method: (" + interviewMethod + ")");
   }
 
-  private TicketType fromInterviewMethodToTicketType(InterviewMethod interviewMethod) {
+  private InterviewAssetType fromInterviewMethodToInterviewAssetType(
+      InterviewMethod interviewMethod) {
     if (interviewMethod == InterviewMethod.CHAT) {
-      return TicketType.CHAT;
+      return InterviewAssetType.CHAT;
     } else if (interviewMethod == InterviewMethod.VOICE) {
-      return TicketType.VOICE;
+      return InterviewAssetType.VOICE;
     }
     throw new ApiException(
         HttpStatus.BAD_REQUEST, "There is no such interview method: (" + interviewMethod + ")");
@@ -123,22 +126,27 @@ public class InterviewServiceImpl implements InterviewService {
 
   private void validateUserTicket(
       InterviewCreateRequestDto interviewCreateRequestDto, Long userId) {
-    if (interviewCreateRequestDto.interviewMethod() == InterviewMethod.CHAT) {
-      int chatBalance = ticketService.getUserChatTicketCount(userId);
-      if (chatBalance <= 0) {
-        throw new ApiException(HttpStatus.BAD_REQUEST, userId + " user doesn't have chat balance");
-      }
-    } else if (interviewCreateRequestDto.interviewMethod() == InterviewMethod.VOICE) {
-      int voiceBalance = ticketService.getUserVoiceTicketCount(userId);
-      if (voiceBalance <= 0) {
-        throw new ApiException(HttpStatus.BAD_REQUEST, userId + " user doesn't have voice balance");
-      }
-    } else {
+    Map<InterviewMethod, Function<Long, Integer>> ticketCheckMap =
+        Map.of(
+            InterviewMethod.CHAT, ticketService::getUserChatTicketCount,
+            InterviewMethod.VOICE, ticketService::getUserVoiceTicketCount);
+
+    Function<Long, Integer> ticketChecker =
+        ticketCheckMap.get(interviewCreateRequestDto.interviewMethod());
+    if (ticketChecker == null) {
       throw new ApiException(
           HttpStatus.BAD_REQUEST,
-          "there is no such interview method : ("
-              + interviewCreateRequestDto.interviewMethod()
-              + ")");
+          "There is no such interview method: " + interviewCreateRequestDto.interviewMethod());
+    }
+
+    int balance = ticketChecker.apply(userId);
+    if (balance <= 0) {
+      throw new ApiException(
+          HttpStatus.BAD_REQUEST,
+          userId
+              + " user doesn't have "
+              + interviewCreateRequestDto.interviewMethod().name().toLowerCase()
+              + " balance");
     }
   }
 

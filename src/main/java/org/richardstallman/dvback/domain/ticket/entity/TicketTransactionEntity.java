@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
-import org.richardstallman.dvback.common.constant.CommonConstants.TicketType;
 import org.richardstallman.dvback.domain.user.entity.UserEntity;
 import org.richardstallman.dvback.global.entity.BaseEntity;
 
@@ -49,7 +49,7 @@ public class TicketTransactionEntity extends BaseEntity {
   private TicketTransactionMethod ticketTransactionMethod;
 
   @Enumerated(EnumType.STRING)
-  private TicketType ticketType;
+  private InterviewAssetType interviewAssetType;
 
   private String description;
   private LocalDateTime generatedAt;

@@ -26,7 +26,7 @@ public class TicketTransactionConverter {
         .userDomain(userConverter.fromEntityToDomain(ticketTransactionEntity.getUser()))
         .ticketTransactionType(ticketTransactionEntity.getTicketTransactionType())
         .ticketTransactionMethod(ticketTransactionEntity.getTicketTransactionMethod())
-        .ticketType(ticketTransactionEntity.getTicketType())
+        .interviewAssetType(ticketTransactionEntity.getInterviewAssetType())
         .description(ticketTransactionEntity.getDescription())
         .generatedAt(ticketTransactionEntity.getGeneratedAt())
         .build();
@@ -40,7 +40,7 @@ public class TicketTransactionConverter {
         ticketTransactionDomain.getAmount(),
         ticketTransactionDomain.getTicketTransactionType(),
         ticketTransactionDomain.getTicketTransactionMethod(),
-        ticketTransactionDomain.getTicketType(),
+        ticketTransactionDomain.getInterviewAssetType(),
         ticketTransactionDomain.getDescription(),
         ticketTransactionDomain.getGeneratedAt());
   }
@@ -55,7 +55,7 @@ public class TicketTransactionConverter {
         .amount(ticketTransactionRequestDto.amount())
         .ticketTransactionType(ticketTransactionRequestDto.ticketTransactionType())
         .ticketTransactionMethod(ticketTransactionRequestDto.ticketTransactionMethod())
-        .ticketType(ticketTransactionRequestDto.ticketType())
+        .interviewAssetType(ticketTransactionRequestDto.interviewAssetType())
         .description(ticketTransactionDescription)
         .generatedAt(generatedAt)
         .build();
@@ -74,8 +74,8 @@ public class TicketTransactionConverter {
             ticketTransactionDomain.getTicketTransactionType().getKoreanName(),
             ticketTransactionDomain.getTicketTransactionMethod(),
             ticketTransactionDomain.getTicketTransactionMethod().getKoreanName(),
-            ticketTransactionDomain.getTicketType(),
-            ticketTransactionDomain.getTicketType().getKoreanName(),
+            ticketTransactionDomain.getInterviewAssetType(),
+            ticketTransactionDomain.getInterviewAssetType().getKoreanName(),
             ticketTransactionDomain.getDescription(),
             ticketTransactionDomain.getGeneratedAt()));
   }
@@ -89,8 +89,8 @@ public class TicketTransactionConverter {
         ticketTransactionDomain.getTicketTransactionType().getKoreanName(),
         ticketTransactionDomain.getTicketTransactionMethod(),
         ticketTransactionDomain.getTicketTransactionMethod().getKoreanName(),
-        ticketTransactionDomain.getTicketType(),
-        ticketTransactionDomain.getTicketType().getKoreanName(),
+        ticketTransactionDomain.getInterviewAssetType(),
+        ticketTransactionDomain.getInterviewAssetType().getKoreanName(),
         ticketTransactionDomain.getDescription(),
         ticketTransactionDomain.getGeneratedAt());
   }

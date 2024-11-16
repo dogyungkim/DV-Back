@@ -108,17 +108,7 @@ public class CommonConstants {
 
   @Getter
   @AllArgsConstructor
-  public enum TicketType {
-    CHAT("채팅"), // 채팅 면접
-    VOICE("음성"), // 음성 면접
-    VIDEO("영상"); // 영상 면접
-
-    private final String koreanName;
-  }
-
-  @Getter
-  @AllArgsConstructor
-  public enum CouponType {
+  public enum InterviewAssetType {
     CHAT("채팅"), // 채팅 면접
     VOICE("음성"), // 음성 면접
     VIDEO("영상"); // 영상 면접
