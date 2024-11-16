@@ -61,7 +61,6 @@ public class UserController {
   public ResponseEntity<DvApiResponse<UserLoginResponseDto>> login(
       @AuthenticationPrincipal Long userId) {
     final UserResponseDto userResponseDto = userService.getUserInfo(userId);
-    System.out.println(userResponseDto.gender());
     if (userResponseDto.gender() == null) {
       return ResponseEntity.ok(
           DvApiResponse.of(userConverter.forSignUp(userResponseDto, "signup")));

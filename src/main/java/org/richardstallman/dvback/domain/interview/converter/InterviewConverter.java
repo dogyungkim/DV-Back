@@ -12,10 +12,12 @@ import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreat
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewQuestionResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewResponseDto;
 import org.richardstallman.dvback.domain.interview.entity.InterviewEntity;
 import org.richardstallman.dvback.domain.job.converter.JobConverter;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
+import org.richardstallman.dvback.domain.ticket.domain.response.TicketResponseDto;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.richardstallman.dvback.domain.user.domain.UserDomain;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
@@ -107,9 +109,25 @@ public class InterviewConverter {
         .build();
   }
 
-  public InterviewCreateResponseDto fromDomainToDto(
-      InterviewDomain interviewDomain, List<FileResponseDto> fileResponseDtos) {
+  public InterviewCreateResponseDto fromDomainToCreateResponseDto(
+      InterviewDomain interviewDomain,
+      List<FileResponseDto> fileResponseDtos,
+      TicketResponseDto ticketResponseDto) {
     return new InterviewCreateResponseDto(
+        interviewDomain.getInterviewId(),
+        interviewDomain.getInterviewTitle(),
+        interviewDomain.getInterviewStatus(),
+        interviewDomain.getInterviewType(),
+        interviewDomain.getInterviewMethod(),
+        interviewDomain.getInterviewMode(),
+        interviewDomain.getJob(),
+        fileResponseDtos,
+        ticketResponseDto);
+  }
+
+  public InterviewResponseDto fromDomainToResponseDto(
+      InterviewDomain interviewDomain, List<FileResponseDto> fileResponseDtos) {
+    return new InterviewResponseDto(
         interviewDomain.getInterviewId(),
         interviewDomain.getInterviewTitle(),
         interviewDomain.getInterviewStatus(),

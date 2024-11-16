@@ -40,7 +40,7 @@ import org.richardstallman.dvback.domain.file.converter.CoverLetterConverter;
 import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
-import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewResponseDto;
 import org.richardstallman.dvback.domain.interview.service.InterviewService;
 import org.richardstallman.dvback.domain.question.converter.QuestionConverter;
 import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
@@ -272,10 +272,10 @@ public class EvaluationServiceImpl implements EvaluationService {
           coverLetterConverter.fromDomainToResponseDto(interviewDomain.getCoverLetter()));
     }
 
-    InterviewCreateResponseDto interviewCreateResponseDto =
-        interviewConverter.fromDomainToDto(interviewDomain, fileResponseDtos);
+    InterviewResponseDto interviewResponseDto =
+        interviewConverter.fromDomainToResponseDto(interviewDomain, fileResponseDtos);
 
     return overallEvaluationConverter.toResponseDto(
-        interviewCreateResponseDto, criteriaResponseDtos, answerEvaluationResponseDtos);
+        interviewResponseDto, criteriaResponseDtos, answerEvaluationResponseDtos);
   }
 }

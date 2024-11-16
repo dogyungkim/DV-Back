@@ -25,9 +25,9 @@ public class CookieService {
     return ResponseCookie.from(cookieName, cookieValue)
         .domain(mainDomain)
         .path("/")
-        .secure(false)
+        .secure(true)
         .httpOnly(true)
-        .sameSite("Lax")
+        .sameSite(sameSite)
         .build();
   }
 

@@ -8,8 +8,8 @@ import org.richardstallman.dvback.domain.evaluation.domain.overall.response.Over
 import org.richardstallman.dvback.domain.evaluation.domain.response.EvaluationCriteriaResponseDto;
 import org.richardstallman.dvback.domain.evaluation.entity.overall.OverallEvaluationEntity;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
-import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewResponseDto;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -39,11 +39,11 @@ public class OverallEvaluationConverter {
   }
 
   public OverallEvaluationResponseDto toResponseDto(
-      InterviewCreateResponseDto interviewCreateResponseDto,
+      InterviewResponseDto interviewResponseDto,
       List<EvaluationCriteriaResponseDto> evaluationCriteriaResponseDtos,
       List<AnswerEvaluationResponseDto> answerEvaluationResponseDtos) {
     return new OverallEvaluationResponseDto(
-        interviewCreateResponseDto, evaluationCriteriaResponseDtos, answerEvaluationResponseDtos);
+        interviewResponseDto, evaluationCriteriaResponseDtos, answerEvaluationResponseDtos);
   }
 
   public OverallEvaluationUserInfoResponseDto toUserInfoResponseDto(
