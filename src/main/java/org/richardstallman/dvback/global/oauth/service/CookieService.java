@@ -2,7 +2,6 @@ package org.richardstallman.dvback.global.oauth.service;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
