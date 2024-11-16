@@ -5,10 +5,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
+import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
+import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
 import org.richardstallman.dvback.domain.file.converter.CoverLetterConverter;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 import org.richardstallman.dvback.domain.file.domain.request.CoverLetterRequestDto;
@@ -22,9 +28,13 @@ import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreat
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationListResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewListResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewResponseDto;
 import org.richardstallman.dvback.domain.interview.repository.InterviewRepository;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.job.service.JobService;
+import org.richardstallman.dvback.domain.ticket.domain.request.TicketTransactionRequestDto;
+import org.richardstallman.dvback.domain.ticket.domain.response.TicketResponseDto;
+import org.richardstallman.dvback.domain.ticket.service.TicketService;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.richardstallman.dvback.domain.user.service.UserService;
 import org.richardstallman.dvback.global.advice.exceptions.ApiException;
@@ -43,6 +53,7 @@ public class InterviewServiceImpl implements InterviewService {
   private final CoverLetterConverter coverLetterConverter;
   private final CoverLetterService coverLetterService;
   private final UserService userService;
+  private final TicketService ticketService;
 
   public static final String ERROR_INTERVIEW_ID_NOT_NULL =
       "Interview ID should be null for new interviews";
@@ -54,6 +65,8 @@ public class InterviewServiceImpl implements InterviewService {
       InterviewCreateRequestDto interviewCreateRequestDto, Long userId) {
 
     JobDomain jobDomain = jobService.findJobById(interviewCreateRequestDto.jobId());
+
+    TicketResponseDto ticketResponseDto = confirmInterviewMode(interviewCreateRequestDto, userId);
 
     InterviewDomain interviewDomain =
         initializeInterviewDomain(interviewCreateRequestDto, jobDomain, userId);
@@ -68,19 +81,85 @@ public class InterviewServiceImpl implements InterviewService {
           coverLetterConverter.fromDomainToResponseDto(createdInterviewDomain.getCoverLetter()));
     }
 
-    return interviewConverter.fromDomainToDto(createdInterviewDomain, fileResponseDtos);
+    return interviewConverter.fromDomainToCreateResponseDto(
+        createdInterviewDomain, fileResponseDtos, ticketResponseDto);
+  }
+
+  private TicketResponseDto confirmInterviewMode(
+      InterviewCreateRequestDto interviewCreateRequestDto, Long userId) {
+    if (interviewCreateRequestDto.interviewMode() == InterviewMode.REAL) {
+      validateUserTicket(interviewCreateRequestDto, userId);
+      TicketTransactionRequestDto ticketTransactionRequestDto =
+          new TicketTransactionRequestDto(
+              -1,
+              TicketTransactionType.USE,
+              fromInterviewMethodToTicketTransactionMethod(
+                  interviewCreateRequestDto.interviewMethod()),
+              fromInterviewMethodToInterviewAssetType(interviewCreateRequestDto.interviewMethod()),
+              "");
+      return ticketService.useTicket(ticketTransactionRequestDto, userId);
+    }
+    return null;
+  }
+
+  private TicketTransactionMethod fromInterviewMethodToTicketTransactionMethod(
+      InterviewMethod interviewMethod) {
+    if (interviewMethod == InterviewMethod.CHAT) {
+      return TicketTransactionMethod.CHAT;
+    } else if (interviewMethod == InterviewMethod.VOICE) {
+      return TicketTransactionMethod.VOICE;
+    }
+    throw new ApiException(
+        HttpStatus.BAD_REQUEST, "There is no such interview method: (" + interviewMethod + ")");
+  }
+
+  private InterviewAssetType fromInterviewMethodToInterviewAssetType(
+      InterviewMethod interviewMethod) {
+    if (interviewMethod == InterviewMethod.CHAT) {
+      return InterviewAssetType.CHAT;
+    } else if (interviewMethod == InterviewMethod.VOICE) {
+      return InterviewAssetType.VOICE;
+    }
+    throw new ApiException(
+        HttpStatus.BAD_REQUEST, "There is no such interview method: (" + interviewMethod + ")");
+  }
+
+  private void validateUserTicket(
+      InterviewCreateRequestDto interviewCreateRequestDto, Long userId) {
+    Map<InterviewMethod, Function<Long, Integer>> ticketCheckMap =
+        Map.of(
+            InterviewMethod.CHAT, ticketService::getUserChatTicketCount,
+            InterviewMethod.VOICE, ticketService::getUserVoiceTicketCount);
+
+    Function<Long, Integer> ticketChecker =
+        ticketCheckMap.get(interviewCreateRequestDto.interviewMethod());
+    if (ticketChecker == null) {
+      throw new ApiException(
+          HttpStatus.BAD_REQUEST,
+          "There is no such interview method: " + interviewCreateRequestDto.interviewMethod());
+    }
+
+    int balance = ticketChecker.apply(userId);
+    if (balance <= 0) {
+      throw new ApiException(
+          HttpStatus.BAD_REQUEST,
+          userId
+              + " user doesn't have "
+              + interviewCreateRequestDto.interviewMethod().name().toLowerCase()
+              + " balance");
+    }
   }
 
   @Override
   public InterviewListResponseDto getInterviewsByUserId(Long userId) {
-    List<InterviewCreateResponseDto> interviewCreateResponseDtos =
+    List<InterviewResponseDto> interviewResponseDtos =
         interviewRepository.findInterviewsByUserId(userId).stream()
             .map(
                 (e) ->
-                    interviewConverter.fromDomainToDto(
+                    interviewConverter.fromDomainToResponseDto(
                         e, e.getInterviewMode() == InterviewMode.REAL ? getFiles(e) : null))
             .toList();
-    return new InterviewListResponseDto(interviewCreateResponseDtos);
+    return new InterviewListResponseDto(interviewResponseDtos);
   }
 
   private List<FileResponseDto> getFiles(InterviewDomain interviewDomain) {
@@ -150,8 +229,7 @@ public class InterviewServiceImpl implements InterviewService {
   private InterviewDomain validateInterviewTitle(InterviewDomain interviewDomain) {
     if (interviewDomain.getInterviewTitle() == null
         || interviewDomain.getInterviewTitle().isEmpty()) {
-      return interviewDomain
-          .builder()
+      return InterviewDomain.builder()
           .interviewId(interviewDomain.getInterviewId())
           .userDomain(interviewDomain.getUserDomain())
           .interviewTitle(

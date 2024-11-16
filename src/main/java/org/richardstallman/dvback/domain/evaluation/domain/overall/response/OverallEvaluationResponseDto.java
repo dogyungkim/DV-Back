@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.response.AnswerEvaluationResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.response.EvaluationCriteriaResponseDto;
-import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewResponseDto;
 
 public record OverallEvaluationResponseDto(
-    @NotNull InterviewCreateResponseDto interview,
+    @NotNull InterviewResponseDto interview,
     @NotNull List<EvaluationCriteriaResponseDto> evaluationCriteria,
     @NotNull List<AnswerEvaluationResponseDto> answerEvaluations) {}
