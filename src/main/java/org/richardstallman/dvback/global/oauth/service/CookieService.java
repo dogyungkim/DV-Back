@@ -31,23 +31,15 @@ public class CookieService {
         .build();
   }
 
-  public void createExpiredCookie(HttpServletResponse response, String cookieName) {
-    Cookie cookie = new Cookie(cookieName, null);
-    cookie.setPath("/");
-    cookie.setHttpOnly(true);
-    cookie.setMaxAge(0); // 즉시 만료
-    response.addCookie(cookie);
-  }
-
   public void deleteCookie(HttpServletResponse httpServletResponse, String cookieName) {
     ResponseCookie deleteCookie =
         ResponseCookie.from(cookieName, "")
             .domain(mainDomain)
             .path("/")
-            .secure(false)
+            .secure(true)
             .httpOnly(true)
             .maxAge(0)
-            .sameSite("Lax")
+            .sameSite(sameSite)
             .maxAge(0)
             .build();
     log.info("deleteCookie : {}", deleteCookie);
