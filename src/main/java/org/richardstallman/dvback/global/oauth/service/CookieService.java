@@ -2,7 +2,6 @@ package org.richardstallman.dvback.global.oauth.service;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,24 +30,18 @@ public class CookieService {
         .build();
   }
 
-  public void createExpiredCookie(HttpServletResponse response, String cookieName) {
-    Cookie cookie = new Cookie(cookieName, null);
-    cookie.setPath("/");
-    cookie.setHttpOnly(true);
-    cookie.setMaxAge(0); // 즉시 만료
-    response.addCookie(cookie);
-  }
-
   public void deleteCookie(HttpServletResponse httpServletResponse, String cookieName) {
     ResponseCookie deleteCookie =
         ResponseCookie.from(cookieName, "")
+            .domain(mainDomain)
             .path("/")
+            .secure(true)
             .httpOnly(true)
             .maxAge(0)
             .sameSite(sameSite)
-            .secure(true)
+            .maxAge(0)
             .build();
-
+    log.info("deleteCookie : {}", deleteCookie);
     httpServletResponse.addHeader(SET_COOKIE, deleteCookie.toString());
   }
 }

@@ -34,14 +34,10 @@ public class UserController {
 
   @PostMapping("/logout")
   public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-    cookieService.createExpiredCookie(response, JwtUtil.ACCESS_TOKEN);
-    cookieService.createExpiredCookie(response, JwtUtil.REFRESH_TOKEN);
-
     String refreshToken =
         tokenService.getTokenFromCookies(request.getCookies(), JwtUtil.REFRESH_TOKEN);
-    if (refreshToken != null) {
-      refreshTokenRepository.deleteById(refreshToken);
-    }
+    log.info("refreshToken: {}", refreshToken);
+    userService.logout(response, refreshToken);
 
     return ResponseEntity.ok("Logged out successfully");
   }
