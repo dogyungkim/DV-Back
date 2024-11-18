@@ -7,5 +7,9 @@ WORKDIR /app
 ARG JAR_FILE=build/libs/DV-Back-0.0.1-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
 
+#서버 환경 설정
+ARG ENVIRONMENT=dev
+ENV ENVIRONMENT=${ENVIRONMENT}
+
 # 애플리케이션 실행
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=${ENVIRONMENT}"]

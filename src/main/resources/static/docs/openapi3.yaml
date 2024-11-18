@@ -52,7 +52,7 @@ paths:
                         "interviewAssetType" : "CHAT",
                         "interviewAssetTypeKorean" : "채팅",
                         "isUsed" : false,
-                        "generatedAt" : "2024-11-18T16:03:43.082745",
+                        "generatedAt" : "2024-11-18T16:58:41.062638",
                         "usedAt" : null
                       }
                     }
@@ -96,8 +96,8 @@ paths:
                           "interviewAssetType" : "CHAT",
                           "interviewAssetTypeKorean" : "채팅",
                           "isUsed" : true,
-                          "generatedAt" : "2024-11-18T16:03:42.629893",
-                          "usedAt" : "2024-11-18T16:03:42.629902"
+                          "generatedAt" : "2024-11-18T16:58:40.619947",
+                          "usedAt" : "2024-11-18T16:58:40.619957"
                         },
                         "chargedTicketTransactionInfo" : {
                           "currentBalance" : 5,
@@ -113,7 +113,7 @@ paths:
                             "interviewAssetType" : "CHAT",
                             "interviewAssetTypeKorean" : "채팅",
                             "description" : "충전 쿠폰",
-                            "generatedAt" : "2024-11-18T16:03:42.629904"
+                            "generatedAt" : "2024-11-18T16:58:40.61996"
                           }
                         }
                       }
@@ -414,7 +414,7 @@ paths:
                             "fileId" : 1,
                             "type" : "COVER_LETTER",
                             "fileName" : "coverLetterName",
-                            "s3FileUrl" : "COVER_LETTER/1/1731913430246/coverLetterName"
+                            "s3FileUrl" : "COVER_LETTER/1/1731916728698/coverLetterName"
                           } ]
                         }, {
                           "interviewId" : 2,
@@ -433,7 +433,7 @@ paths:
                             "fileId" : 2,
                             "type" : "COVER_LETTER",
                             "fileName" : "coverLetterName2",
-                            "s3FileUrl" : "COVER_LETTER/1/1731913430246/coverLetterName2"
+                            "s3FileUrl" : "COVER_LETTER/1/1731916728698/coverLetterName2"
                           } ]
                         }, {
                           "interviewId" : 3,
@@ -452,7 +452,7 @@ paths:
                             "fileId" : 3,
                             "type" : "COVER_LETTER",
                             "fileName" : "coverLetterName3",
-                            "s3FileUrl" : "COVER_LETTER/1/1731913430246/coverLetterName3"
+                            "s3FileUrl" : "COVER_LETTER/1/1731916728698/coverLetterName3"
                           } ]
                         }, {
                           "interviewId" : 4,
@@ -501,7 +501,7 @@ paths:
                     "jobId" : 2,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1731913430291/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1731916728750/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 존재하지 않는 직무 ID(500 Internal Server Error):
@@ -514,7 +514,7 @@ paths:
                     "jobId" : 999,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1731913430233/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1731916728683/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 필수 필드 누락(400 Bad Request):
@@ -527,7 +527,7 @@ paths:
                     "jobId" : 2,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1731913430262/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1731916728716/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 면접 저장 성공:
@@ -540,7 +540,7 @@ paths:
                     "jobId" : 2,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1731913430181/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1731916728629/coverLetterName"
                     } ]
                   }
       responses:
@@ -622,7 +622,7 @@ paths:
                           "fileId" : 1,
                           "type" : "COVER_LETTER",
                           "fileName" : "coverLetterName",
-                          "s3FileUrl" : "COVER_LETTER/1/1731913430181/coverLetterName"
+                          "s3FileUrl" : "COVER_LETTER/1/1731916728629/coverLetterName"
                         } ],
                         "ticket" : {
                           "currentBalance" : 3,
@@ -638,7 +638,7 @@ paths:
                             "interviewAssetType" : "CHAT",
                             "interviewAssetTypeKorean" : "채팅",
                             "description" : "채팅 면접 사용",
-                            "generatedAt" : "2024-11-18T16:03:50.181306"
+                            "generatedAt" : "2024-11-18T16:58:48.629406"
                           }
                         }
                       }
@@ -885,7 +885,7 @@ paths:
                         "s3ProfileImageUrl" : "https://example.com/image.jpg",
                         "leave" : false,
                         "gender" : "WOMAN",
-                        "birthdate" : "2024-11-18T07:03:57.842+00:00"
+                        "birthdate" : "2024-11-18T07:58:57.984+00:00"
                       }
                     }
     put:
@@ -904,7 +904,7 @@ paths:
                 value: |-
                   {
                     "nickname" : "왕감자",
-                    "birthdate" : "2024-11-18T07:03:57.822+00:00",
+                    "birthdate" : "2024-11-18T07:58:57.960+00:00",
                     "gender" : "WOMAN"
                   }
       responses:
@@ -929,7 +929,7 @@ paths:
                         "s3ProfileImageUrl" : "https://example.com/image.jpg",
                         "leave" : false,
                         "gender" : "WOMAN",
-                        "birthdate" : "2024-11-18T07:03:57.824+00:00"
+                        "birthdate" : "2024-11-18T07:58:57.963+00:00"
                       }
                     }
   /user/logout:
@@ -1470,6 +1470,35 @@ components:
         message:
           type: string
           description: "응답 상태: BAD_REQUEST"
+    interview587482769:
+      type: object
+      properties:
+        jobId:
+          type: number
+          description: 직무 식별자
+        interviewType:
+          type: string
+          description: "면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"
+        interviewTitle:
+          type: string
+          description: 면접 제목
+        interviewMethod:
+          type: string
+          description: "면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"
+        files:
+          type: array
+          items:
+            type: object
+            properties:
+              filePath:
+                type: string
+                description: "파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}"
+              type:
+                type: string
+                description: "파일 유형: COVER_LETTER, RESUME, PORTFOLIO"
+        interviewMode:
+          type: string
+          description: "면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"
     user-info810078269:
       type: object
       properties:
@@ -1509,35 +1538,6 @@ components:
         message:
           type: string
           description: 응답 메시지
-    interview587482769:
-      type: object
-      properties:
-        jobId:
-          type: number
-          description: 직무 식별자
-        interviewType:
-          type: string
-          description: "면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"
-        interviewTitle:
-          type: string
-          description: 면접 제목
-        interviewMethod:
-          type: string
-          description: "면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"
-        files:
-          type: array
-          items:
-            type: object
-            properties:
-              filePath:
-                type: string
-                description: "파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}"
-              type:
-                type: string
-                description: "파일 유형: COVER_LETTER, RESUME, PORTFOLIO"
-        interviewMode:
-          type: string
-          description: "면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"
     interview-351943182:
       type: object
       properties:
