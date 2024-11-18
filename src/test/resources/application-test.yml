@@ -4,6 +4,11 @@ spring:
     username: ${POSTGRESQL_USERNAME}
     password: ${POSTGRESQL_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10   # Pool에서 동시에 사용할 수 있는 최대 Connection 수
+      minimum-idle: 2        # 최소 유지할 Connection 수
+      idle-timeout: 10000    # 사용하지 않는 Connection 반환 시간 (밀리초)
+      max-lifetime: 30000
   jpa:
     hibernate:
       ddl-auto: create
@@ -66,6 +71,7 @@ app:
   properties:
     mainDomain: localhost
     frontendDomain: http://localhost:3000
+    secure: true
     cookie:
       sameSite: "None"
 cors:

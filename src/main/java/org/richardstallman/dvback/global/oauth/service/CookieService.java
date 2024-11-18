@@ -20,11 +20,14 @@ public class CookieService {
   @Value("${app.properties.cookie.sameSite}")
   private String sameSite;
 
+  @Value("${app.properties.secure}")
+  private Boolean secure;
+
   public ResponseCookie createCookie(String cookieName, String cookieValue) {
     return ResponseCookie.from(cookieName, cookieValue)
         .domain(mainDomain)
         .path("/")
-        .secure(true)
+        .secure(secure)
         .httpOnly(true)
         .sameSite(sameSite)
         .build();
@@ -35,7 +38,7 @@ public class CookieService {
         ResponseCookie.from(cookieName, "")
             .domain(mainDomain)
             .path("/")
-            .secure(true)
+            .secure(secure)
             .httpOnly(true)
             .maxAge(0)
             .sameSite(sameSite)

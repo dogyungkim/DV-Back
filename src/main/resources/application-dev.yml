@@ -65,9 +65,10 @@ app:
     refresh-expiration: 604800000
   properties:
     mainDomain: ${MAIN_DOMAIN}
-    frontendDomain: ${FRONT_DOMAIN}
+    frontendDomain: ${FRONT_DOMAIN}|
+    secure: false
     cookie:
-      sameSite: "None"
+      sameSite: "Lax"
 cors:
   allowed-origins:
     list:

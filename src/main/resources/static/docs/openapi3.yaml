@@ -4,44 +4,118 @@ info:
   description: RestDocs With Swagger
   version: 0.0.1
 servers:
-- url: http://devterview.com
+- url: http://devterview.com:8080
 - url: http://localhost:8080
+- url: http://dev-api.devterview.com:8080
+- url: http://dev-api.devterview.com
 tags: []
 paths:
-  /evaluation:
-    get:
+  /coupon:
+    post:
       tags:
-      - Evaluation API
-      summary: 평가 API
-      description: 평가 API
-      operationId: "마이페이지 - 면접 평가 조회 위한 면접 정보 목록(면접 식별자, 면접 제목) 조회 - 성공"
+      - Coupon API
+      summary: 쿠폰 API
+      description: 쿠폰 API
+      operationId: 쿠폰 발급 - 성공
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/coupon672802941'
+            examples:
+              쿠폰 발급 - 성공:
+                value: |-
+                  {
+                    "userId" : 1,
+                    "chargeAmount" : 1,
+                    "couponName" : "웰컴 쿠폰",
+                    "interviewAssetType" : "CHAT"
+                  }
+      responses:
+        "201":
+          description: "201"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/coupon-991135476'
+              examples:
+                쿠폰 발급 - 성공:
+                  value: |-
+                    {
+                      "code" : 200,
+                      "message" : "SUCCESS",
+                      "data" : {
+                        "couponId" : 1,
+                        "userId" : 1,
+                        "chargeAmount" : 1,
+                        "couponName" : "웰컴 쿠폰",
+                        "interviewAssetType" : "CHAT",
+                        "interviewAssetTypeKorean" : "채팅",
+                        "isUsed" : false,
+                        "generatedAt" : "2024-11-18T16:03:43.082745",
+                        "usedAt" : null
+                      }
+                    }
+  /coupon/use:
+    post:
+      tags:
+      - Coupon API
+      summary: 쿠폰 API
+      description: 쿠폰 API
+      operationId: 쿠폰 사용 & 이용권 충전 성공
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/coupon-use-1170702413'
+            examples:
+              쿠폰 사용 & 이용권 충전 성공:
+                value: |-
+                  {
+                    "couponId" : 1
+                  }
       responses:
         "200":
           description: "200"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/evaluation-1379632300'
+                $ref: '#/components/schemas/coupon-use205801317'
               examples:
-                마이페이지 - 면접 평가 조회 위한 면접 정보 목록(면접 식별자, 면접 제목) 조회 - 성공:
+                쿠폰 사용 & 이용권 충전 성공:
                   value: |-
                     {
                       "code" : 200,
                       "message" : "SUCCESS",
                       "data" : {
-                        "evaluationInfos" : [ {
-                          "interviewTitle" : "241101_백엔드_모의",
-                          "interviewId" : 1
-                        }, {
-                          "interviewTitle" : "241103_프론트엔드_실전",
-                          "interviewId" : 3
-                        }, {
-                          "interviewTitle" : "241105_클라우드_실전",
-                          "interviewId" : 5
-                        }, {
-                          "interviewTitle" : "241105_인공지능_모의",
-                          "interviewId" : 6
-                        } ]
+                        "usedCouponInfo" : {
+                          "couponId" : 1,
+                          "userId" : 1,
+                          "chargeAmount" : 1,
+                          "couponName" : "웰컴 쿠폰",
+                          "interviewAssetType" : "CHAT",
+                          "interviewAssetTypeKorean" : "채팅",
+                          "isUsed" : true,
+                          "generatedAt" : "2024-11-18T16:03:42.629893",
+                          "usedAt" : "2024-11-18T16:03:42.629902"
+                        },
+                        "chargedTicketTransactionInfo" : {
+                          "currentBalance" : 5,
+                          "currentChatBalance" : 2,
+                          "currentVoiceBalance" : 3,
+                          "ticketTransactionDetail" : {
+                            "ticketTransactionId" : 1,
+                            "amount" : 1,
+                            "ticketTransactionType" : "CHARGE",
+                            "ticketTransactionTypeKorean" : "충전",
+                            "ticketTransactionMethod" : "COUPON",
+                            "ticketTransactionMethodKorean" : "쿠폰",
+                            "interviewAssetType" : "CHAT",
+                            "interviewAssetTypeKorean" : "채팅",
+                            "description" : "충전 쿠폰",
+                            "generatedAt" : "2024-11-18T16:03:42.629904"
+                          }
+                        }
                       }
                     }
   /evaluation/{interviewId}:
@@ -303,6 +377,100 @@ paths:
                       }
                     }
   /interview:
+    get:
+      tags:
+      - Interview API
+      summary: 면접 내역 조회 API
+      description: 면접 내역 조회 API
+      operationId: 마이페이지 - 면접 내역 조회 성공
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interview-351943182'
+              examples:
+                마이페이지 - 면접 내역 조회 성공:
+                  value: |-
+                    {
+                      "code" : 200,
+                      "message" : "SUCCESS",
+                      "data" : {
+                        "interviews" : [ {
+                          "interviewId" : 1,
+                          "interviewTitle" : "면접 제목",
+                          "interviewStatus" : "READY",
+                          "interviewType" : "TECHNICAL",
+                          "interviewMethod" : "VIDEO",
+                          "interviewMode" : "REAL",
+                          "job" : {
+                            "jobId" : 2,
+                            "jobName" : "BACK_END",
+                            "jobNameKorean" : "백엔드",
+                            "jobDescription" : "백엔드 직무입니다."
+                          },
+                          "files" : [ {
+                            "fileId" : 1,
+                            "type" : "COVER_LETTER",
+                            "fileName" : "coverLetterName",
+                            "s3FileUrl" : "COVER_LETTER/1/1731913430246/coverLetterName"
+                          } ]
+                        }, {
+                          "interviewId" : 2,
+                          "interviewTitle" : "면접 제목 2",
+                          "interviewStatus" : "READY",
+                          "interviewType" : "PERSONAL",
+                          "interviewMethod" : "VOICE",
+                          "interviewMode" : "REAL",
+                          "job" : {
+                            "jobId" : 3,
+                            "jobName" : "FRONT_END",
+                            "jobNameKorean" : "프론트엔드",
+                            "jobDescription" : "프론트엔드 직무입니다."
+                          },
+                          "files" : [ {
+                            "fileId" : 2,
+                            "type" : "COVER_LETTER",
+                            "fileName" : "coverLetterName2",
+                            "s3FileUrl" : "COVER_LETTER/1/1731913430246/coverLetterName2"
+                          } ]
+                        }, {
+                          "interviewId" : 3,
+                          "interviewTitle" : "면접 제목 3",
+                          "interviewStatus" : "READY",
+                          "interviewType" : "TECHNICAL",
+                          "interviewMethod" : "CHAT",
+                          "interviewMode" : "REAL",
+                          "job" : {
+                            "jobId" : 4,
+                            "jobName" : "INFRA",
+                            "jobNameKorean" : "인프라",
+                            "jobDescription" : "인프라 직무입니다."
+                          },
+                          "files" : [ {
+                            "fileId" : 3,
+                            "type" : "COVER_LETTER",
+                            "fileName" : "coverLetterName3",
+                            "s3FileUrl" : "COVER_LETTER/1/1731913430246/coverLetterName3"
+                          } ]
+                        }, {
+                          "interviewId" : 4,
+                          "interviewTitle" : "면접 제목 4",
+                          "interviewStatus" : "READY",
+                          "interviewType" : "TECHNICAL",
+                          "interviewMethod" : "CHAT",
+                          "interviewMode" : "GENERAL",
+                          "job" : {
+                            "jobId" : 5,
+                            "jobName" : "AI",
+                            "jobNameKorean" : "인공지능",
+                            "jobDescription" : "인공지능 직무입니다."
+                          },
+                          "files" : [ ]
+                        } ]
+                      }
+                    }
     post:
       tags:
       - Interview API
@@ -333,7 +501,7 @@ paths:
                     "jobId" : 2,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1731045583297/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1731913430291/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 존재하지 않는 직무 ID(500 Internal Server Error):
@@ -346,7 +514,7 @@ paths:
                     "jobId" : 999,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1731045583258/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1731913430233/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 필수 필드 누락(400 Bad Request):
@@ -359,7 +527,7 @@ paths:
                     "jobId" : 2,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1731045583272/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1731913430262/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 면접 저장 성공:
@@ -372,7 +540,7 @@ paths:
                     "jobId" : 2,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1731045583206/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1731913430181/coverLetterName"
                     } ]
                   }
       responses:
@@ -430,7 +598,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/interview-1432781006'
+                $ref: '#/components/schemas/interview-2137559556'
               examples:
                 면접 정보 입력 - 면접 저장 성공:
                   value: |-
@@ -454,7 +622,60 @@ paths:
                           "fileId" : 1,
                           "type" : "COVER_LETTER",
                           "fileName" : "coverLetterName",
-                          "s3FileUrl" : "COVER_LETTER/1/1731045583206/coverLetterName"
+                          "s3FileUrl" : "COVER_LETTER/1/1731913430181/coverLetterName"
+                        } ],
+                        "ticket" : {
+                          "currentBalance" : 3,
+                          "currentChatBalance" : 2,
+                          "currentVoiceBalance" : 1,
+                          "ticketTransactionDetail" : {
+                            "ticketTransactionId" : 1,
+                            "amount" : 1,
+                            "ticketTransactionType" : "USE",
+                            "ticketTransactionTypeKorean" : "사용",
+                            "ticketTransactionMethod" : "CHAT",
+                            "ticketTransactionMethodKorean" : "채팅 면접",
+                            "interviewAssetType" : "CHAT",
+                            "interviewAssetTypeKorean" : "채팅",
+                            "description" : "채팅 면접 사용",
+                            "generatedAt" : "2024-11-18T16:03:50.181306"
+                          }
+                        }
+                      }
+                    }
+  /interview/evaluation:
+    get:
+      tags:
+      - Evaluation API
+      summary: 평가 API
+      description: 평가 API
+      operationId: "마이페이지 - 면접 평가 조회 위한 면접 정보 목록(면접 식별자, 면접 제목) 조회 - 성공"
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/interview-evaluation-343645941'
+              examples:
+                마이페이지 - 면접 평가 조회 위한 면접 정보 목록(면접 식별자, 면접 제목) 조회 - 성공:
+                  value: |-
+                    {
+                      "code" : 200,
+                      "message" : "SUCCESS",
+                      "data" : {
+                        "interviews" : [ {
+                          "interviewId" : 1,
+                          "interviewTitle" : "241101_백엔드_모의"
+                        }, {
+                          "interviewId" : 2,
+                          "interviewTitle" : "241103_프론트엔드_실전"
+                        }, {
+                          "interviewId" : 4,
+                          "interviewTitle" : "241105_클라우드_실전"
+                        }, {
+                          "interviewId" : 7,
+                          "interviewTitle" : "241105_인공지능_모의"
                         } ]
                       }
                     }
@@ -495,7 +716,7 @@ paths:
                     "interviewType" : "TECHNICAL",
                     "interviewMethod" : "CHAT",
                     "interviewMode" : "GENERAL",
-                    "files" : null,
+                    "files" : [ ],
                     "jobId" : 1
                   }
               질문 생성 - 최초 요청(실전 면접 성공):
@@ -519,7 +740,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/question-next-question844569142'
+                $ref: '#/components/schemas/question-initial-question913453835'
               examples:
                 질문 생성 - 최초 요청(모의 면접 성공):
                   value: |-
@@ -541,8 +762,10 @@ paths:
                             "jobDescription" : "백엔드 직무입니다."
                           }
                         },
-                        "questionText" : "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
+                        "currentQuestionId" : 1,
+                        "currentQuestionText" : "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
                         "nextQuestionId" : 2,
+                        "nextQuestionText" : "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요2.",
                         "hasNext" : true
                       }
                     }
@@ -566,8 +789,10 @@ paths:
                             "jobDescription" : "백엔드 직무입니다."
                           }
                         },
-                        "questionText" : "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
+                        "currentQuestionId" : 1,
+                        "currentQuestionText" : "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
                         "nextQuestionId" : 2,
+                        "nextQuestionText" : "다음 질문입니다.",
                         "hasNext" : true
                       }
                     }
@@ -582,13 +807,14 @@ paths:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: '#/components/schemas/question-next-question-993795295'
+              $ref: '#/components/schemas/question-next-question-985830319'
             examples:
               다음 질문 요청(텍스트 성공):
                 value: |-
                   {
                     "interviewId" : 1,
-                    "questionId" : 2,
+                    "answerQuestionId" : 1,
+                    "nextQuestionId" : 2,
                     "answer" : {
                       "answerText" : "답변입니다.",
                       "s3AudioUrl" : "",
@@ -601,7 +827,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/question-next-question844569142'
+                $ref: '#/components/schemas/question-initial-question913453835'
               examples:
                 다음 질문 요청(텍스트 성공):
                   value: |-
@@ -623,8 +849,10 @@ paths:
                             "jobDescription" : "백엔드 직무입니다."
                           }
                         },
-                        "questionText" : "리액트와 스프링 간의 연동 경험을 설명해 주세요.",
-                        "nextQuestionId" : 3,
+                        "currentQuestionId" : 1,
+                        "currentQuestionText" : "리액트와 스프링 간의 연동 경험을 설명해 주세요.",
+                        "nextQuestionId" : 2,
+                        "nextQuestionText" : "협업 과정에서 가장 힘들었던 일이 있다면 무엇이었나요?",
                         "hasNext" : true
                       }
                     }
@@ -657,7 +885,7 @@ paths:
                         "s3ProfileImageUrl" : "https://example.com/image.jpg",
                         "leave" : false,
                         "gender" : "WOMAN",
-                        "birthdate" : "2024-11-08T05:59:49.717+00:00"
+                        "birthdate" : "2024-11-18T07:03:57.842+00:00"
                       }
                     }
     put:
@@ -676,7 +904,7 @@ paths:
                 value: |-
                   {
                     "nickname" : "왕감자",
-                    "birthdate" : "2024-11-08T05:59:49.693+00:00",
+                    "birthdate" : "2024-11-18T07:03:57.822+00:00",
                     "gender" : "WOMAN"
                   }
       responses:
@@ -701,7 +929,7 @@ paths:
                         "s3ProfileImageUrl" : "https://example.com/image.jpg",
                         "leave" : false,
                         "gender" : "WOMAN",
-                        "birthdate" : "2024-11-08T05:59:49.696+00:00"
+                        "birthdate" : "2024-11-18T07:03:57.824+00:00"
                       }
                     }
   /user/logout:
@@ -721,7 +949,7 @@ paths:
                   value: Logged out successfully
 components:
   schemas:
-    question-next-question844569142:
+    coupon-991135476:
       type: object
       properties:
         code:
@@ -730,51 +958,117 @@ components:
         data:
           type: object
           properties:
-            hasNext:
-              type: boolean
-              description: 다음 질문 존재 여부
-            nextQuestionId:
+            interviewAssetType:
+              type: string
+              description: 쿠폰 유형
+            couponName:
+              type: string
+              description: 쿠폰 이름
+            interviewAssetTypeKorean:
+              type: string
+              description: 쿠폰 유형 한글
+            generatedAt:
+              type: string
+              description: 쿠폰 생성 일시
+            chargeAmount:
               type: number
-              description: 다음 질문 식별자
-            interview:
+              description: 쿠폰으로 충전 가능한 이용권 장 수
+            couponId:
+              type: number
+              description: 쿠폰 식별자
+            userId:
+              type: number
+              description: 쿠폰 발급 받은 회원 식별자
+            isUsed:
+              type: boolean
+              description: "쿠폰 사용 여부: 사용(true), 미사용(false)"
+        message:
+          type: string
+          description: 응답 메시지
+    coupon-use205801317:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 응답 코드
+        data:
+          type: object
+          properties:
+            usedCouponInfo:
               type: object
               properties:
-                interviewStatus:
+                interviewAssetType:
                   type: string
-                  description: 면접 상태
-                interviewId:
+                  description: "사용된 쿠폰 유형: CHAT(채팅), VOICE(음성)"
+                couponName:
+                  type: string
+                  description: 사용된 쿠폰 이름
+                interviewAssetTypeKorean:
+                  type: string
+                  description: 사용된 쿠폰 유형 한글
+                generatedAt:
+                  type: string
+                  description: 쿠폰 생성 일시
+                usedAt:
+                  type: string
+                  description: 쿠폰 사용 일시
+                chargeAmount:
                   type: number
-                  description: 면접 식별자
-                interviewType:
-                  type: string
-                  description: 면접 유형
-                interviewTitle:
-                  type: string
-                  description: 면접 제목
-                interviewMethod:
-                  type: string
-                  description: 면접 방식
-                job:
+                  description: 쿠폰으로 충전된 이용권 장 수
+                couponId:
+                  type: number
+                  description: 사용된 쿠폰 식별자
+                userId:
+                  type: number
+                  description: 쿠폰을 사용한 회원 식별자
+                isUsed:
+                  type: boolean
+                  description: "쿠폰 사용 여부: 사용(true), 미사용(false)"
+            chargedTicketTransactionInfo:
+              type: object
+              properties:
+                currentChatBalance:
+                  type: number
+                  description: 회원이 현재 보유한 채팅 이용권 장 수
+                ticketTransactionDetail:
                   type: object
                   properties:
-                    jobName:
+                    ticketTransactionMethod:
                       type: string
-                      description: 직무 이름
-                    jobId:
+                      description: "이용권 충전 방법: COUPON(쿠폰), EVENT(이벤트)"
+                    interviewAssetType:
+                      type: string
+                      description: "이용권 유형: CHAT(채팅), VOICE(음성)"
+                    amount:
                       type: number
-                      description: 직무 식별자
-                    jobNameKorean:
+                      description: 충전된 이용권 장 수
+                    ticketTransactionId:
+                      type: number
+                      description: 이용권 내역 식별자
+                    interviewAssetTypeKorean:
                       type: string
-                      description: 직무 한글 이름
-                    jobDescription:
+                      description: 이용권 유형 한글
+                    ticketTransactionMethodKorean:
                       type: string
-                      description: 직무 설명
-                interviewMode:
-                  type: string
-                  description: 면접 모드
-            questionText:
-              type: string
-              description: 질문 내용
+                      description: 이용권 충전 방법 한글
+                    generatedAt:
+                      type: string
+                      description: 이용권 내역 발생 일시
+                    description:
+                      type: string
+                      description: 이용권 상세 설명
+                    ticketTransactionType:
+                      type: string
+                      description: "이용권 내역 유형: CHARGE(충전), USE(사용)"
+                    ticketTransactionTypeKorean:
+                      type: string
+                      description: 이용권 내역 유형 한글
+                currentBalance:
+                  type: number
+                  description: 회원이 현재 보유한 이용권 장 수
+                currentVoiceBalance:
+                  type: number
+                  description: 회원이 현재 보유한 음성 이용권 장 수
         message:
           type: string
           description: 응답 메시지
@@ -793,27 +1087,6 @@ components:
         message:
           type: string
           description: 응답 메시지
-    question-next-question-993795295:
-      type: object
-      properties:
-        interviewId:
-          type: number
-          description: 면접 식별자
-        questionId:
-          type: number
-          description: 요청 질문 식별자
-        answer:
-          type: object
-          properties:
-            answerText:
-              type: string
-              description: 이전 질문에 대한 답변
-            s3AudioUrl:
-              type: string
-              description: 답변 오디오 s3 저장 url
-            s3VideoUrl:
-              type: string
-              description: 답변 비디오 s3 저장 url
     evaluation-interviewId1337416304:
       type: object
       properties:
@@ -928,18 +1201,21 @@ components:
         message:
           type: string
           description: 응답 메시지
-    interview1164644930:
+    coupon672802941:
       type: object
       properties:
-        code:
+        interviewAssetType:
+          type: string
+          description: 쿠폰 유형
+        couponName:
+          type: string
+          description: 쿠폰 이름
+        chargeAmount:
           type: number
-          description: 응답 코드
-        data:
-          type: string
-          description: 오류 메시지
-        message:
-          type: string
-          description: 응답 메시지
+          description: 쿠폰으로 충전 가능한 이용권 장 수
+        userId:
+          type: number
+          description: 쿠폰 발급 받을 회원 식별자
     question-initial-question-1591903500:
       type: object
       properties:
@@ -977,7 +1253,25 @@ components:
         interviewMode:
           type: string
           description: 면접 모드
-    interview-1432781006:
+    interview1164644930:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 응답 코드
+        data:
+          type: string
+          description: 오류 메시지
+        message:
+          type: string
+          description: 응답 메시지
+    coupon-use-1170702413:
+      type: object
+      properties:
+        couponId:
+          type: number
+          description: 사용하고자 하는 쿠폰 식별자
+    interview-2137559556:
       type: object
       properties:
         code:
@@ -995,6 +1289,51 @@ components:
             interviewId:
               type: number
               description: 면접 식별자
+            ticket:
+              type: object
+              properties:
+                currentChatBalance:
+                  type: number
+                  description: (실전 면접 시) 이용권 사용 후 잔여 채팅 이용권 수
+                ticketTransactionDetail:
+                  type: object
+                  properties:
+                    ticketTransactionMethod:
+                      type: string
+                      description: "(실전 면접 시) 이용권 사용 내역 방식: CHAT(채팅), VOICE(음성)"
+                    interviewAssetType:
+                      type: string
+                      description: "(실전 면접 시) 이용권 사용 내역 타입: CHAT(채팅), VOICE(음성)"
+                    amount:
+                      type: number
+                      description: (실전 면접 시) 이용권 사용 내역 사용 수량
+                    ticketTransactionId:
+                      type: number
+                      description: (실전 면접 시) 이용권 사용 내역 식별자
+                    interviewAssetTypeKorean:
+                      type: string
+                      description: (실전 면접 시) 이용권 사용 내역 타입 한글
+                    ticketTransactionMethodKorean:
+                      type: string
+                      description: (실전 면접 시) 이용권 사용 내역 방식 한글
+                    generatedAt:
+                      type: string
+                      description: (실전 면접 시) 이용권 사용 내역 생성 일시
+                    description:
+                      type: string
+                      description: (실전 면접 시) 이용권 사용 내역 설명
+                    ticketTransactionType:
+                      type: string
+                      description: "(실전 면접 시) 이용권 사용 내역 타입: USE(사용), CHARGE(충전)"
+                    ticketTransactionTypeKorean:
+                      type: string
+                      description: (실전 면접 시) 이용권 사용 내역 타입 한글
+                currentBalance:
+                  type: number
+                  description: (실전 면접 시) 이용권 사용 후 잔여 이용권 수
+                currentVoiceBalance:
+                  type: number
+                  description: (실전 면접 시) 이용권 사용 후 잔여 음성 이용권 수
             interviewType:
               type: string
               description: "면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"
@@ -1072,7 +1411,31 @@ components:
         message:
           type: string
           description: 응답 메시지
-    evaluation-1379632300:
+    question-next-question-985830319:
+      type: object
+      properties:
+        interviewId:
+          type: number
+          description: 면접 식별자
+        answer:
+          type: object
+          properties:
+            answerText:
+              type: string
+              description: 이전 질문에 대한 답변
+            s3AudioUrl:
+              type: string
+              description: 답변 오디오 s3 저장 url
+            s3VideoUrl:
+              type: string
+              description: 답변 비디오 s3 저장 url
+        answerQuestionId:
+          type: number
+          description: 전달되는 답변에 대한 질문 식별자
+        nextQuestionId:
+          type: number
+          description: 반환해줘야 하는 다음 질문 식별자
+    interview-evaluation-343645941:
       type: object
       properties:
         code:
@@ -1081,7 +1444,7 @@ components:
         data:
           type: object
           properties:
-            evaluationInfos:
+            interviews:
               type: array
               items:
                 type: object
@@ -1107,35 +1470,6 @@ components:
         message:
           type: string
           description: "응답 상태: BAD_REQUEST"
-    interview587482769:
-      type: object
-      properties:
-        jobId:
-          type: number
-          description: 직무 식별자
-        interviewType:
-          type: string
-          description: "면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"
-        interviewTitle:
-          type: string
-          description: 면접 제목
-        interviewMethod:
-          type: string
-          description: "면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"
-        files:
-          type: array
-          items:
-            type: object
-            properties:
-              filePath:
-                type: string
-                description: "파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}"
-              type:
-                type: string
-                description: "파일 유형: COVER_LETTER, RESUME, PORTFOLIO"
-        interviewMode:
-          type: string
-          description: "면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"
     user-info810078269:
       type: object
       properties:
@@ -1172,6 +1506,166 @@ components:
             email:
               type: string
               description: 이메일
+        message:
+          type: string
+          description: 응답 메시지
+    interview587482769:
+      type: object
+      properties:
+        jobId:
+          type: number
+          description: 직무 식별자
+        interviewType:
+          type: string
+          description: "면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"
+        interviewTitle:
+          type: string
+          description: 면접 제목
+        interviewMethod:
+          type: string
+          description: "면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"
+        files:
+          type: array
+          items:
+            type: object
+            properties:
+              filePath:
+                type: string
+                description: "파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}"
+              type:
+                type: string
+                description: "파일 유형: COVER_LETTER, RESUME, PORTFOLIO"
+        interviewMode:
+          type: string
+          description: "면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"
+    interview-351943182:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 응답 코드
+        data:
+          type: object
+          properties:
+            interviews:
+              type: array
+              items:
+                type: object
+                properties:
+                  interviewStatus:
+                    type: string
+                    description: 면접 상태
+                  interviewId:
+                    type: number
+                    description: 면접 식별자
+                  interviewType:
+                    type: string
+                    description: 면접 유형
+                  interviewTitle:
+                    type: string
+                    description: 면접 제목
+                  interviewMethod:
+                    type: string
+                    description: 면접 방식
+                  files:
+                    type: array
+                    description: 파일 목록
+                    items:
+                      type: object
+                      properties:
+                        fileName:
+                          type: string
+                          description: 파일 이름
+                        s3FileUrl:
+                          type: string
+                          description: 파일 경로
+                        type:
+                          type: string
+                          description: 파일 유형
+                        fileId:
+                          type: number
+                          description: 파일 식별자
+                  job:
+                    type: object
+                    properties:
+                      jobName:
+                        type: string
+                        description: 직무 이름
+                      jobId:
+                        type: number
+                        description: 직무 식별자
+                      jobNameKorean:
+                        type: string
+                        description: 직무 이름 (한글)
+                      jobDescription:
+                        type: string
+                        description: 직무 설명
+                  interviewMode:
+                    type: string
+                    description: 면접 모드
+        message:
+          type: string
+          description: 응답 메시지
+    question-initial-question913453835:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 응답 코드
+        data:
+          type: object
+          properties:
+            currentQuestionText:
+              type: string
+              description: 현재 질문 내용
+            hasNext:
+              type: boolean
+              description: 다음 질문 존재 여부
+            nextQuestionText:
+              type: string
+              description: 다음 질문 내용
+            currentQuestionId:
+              type: number
+              description: 현재 질문 식별자
+            nextQuestionId:
+              type: number
+              description: 다음 질문 식별자
+            interview:
+              type: object
+              properties:
+                interviewStatus:
+                  type: string
+                  description: 면접 상태
+                interviewId:
+                  type: number
+                  description: 면접 식별자
+                interviewType:
+                  type: string
+                  description: 면접 유형
+                interviewTitle:
+                  type: string
+                  description: 면접 제목
+                interviewMethod:
+                  type: string
+                  description: 면접 방식
+                job:
+                  type: object
+                  properties:
+                    jobName:
+                      type: string
+                      description: 직무 이름
+                    jobId:
+                      type: number
+                      description: 직무 식별자
+                    jobNameKorean:
+                      type: string
+                      description: 직무 한글 이름
+                    jobDescription:
+                      type: string
+                      description: 직무 설명
+                interviewMode:
+                  type: string
+                  description: 면접 모드
         message:
           type: string
           description: 응답 메시지
