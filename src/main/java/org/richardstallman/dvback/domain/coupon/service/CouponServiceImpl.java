@@ -2,6 +2,7 @@ package org.richardstallman.dvback.domain.coupon.service;
 
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
@@ -35,10 +36,16 @@ public class CouponServiceImpl implements CouponService {
     UserDomain userDomain =
         userConverter.fromResponseDtoToDomain(
             userService.getUserInfo(couponCreateRequestDto.userId()));
+    LocalDateTime now = getCurrentDateTime();
+    LocalDateTime expireAt = generateExpirationDateTime(now);
     CouponDomain couponDomain =
         couponConverter.fromCreateRequestDtoToDomain(
-            couponCreateRequestDto, userDomain, getCurrentDateTime());
+            couponCreateRequestDto, userDomain, now, expireAt);
     return couponConverter.fromDomainToInfoResponseDto(couponRepository.save(couponDomain));
+  }
+
+  private LocalDateTime generateExpirationDateTime(LocalDateTime now) {
+    return now.plusMonths(1).with(LocalTime.MAX);
   }
 
   @Override
@@ -46,9 +53,7 @@ public class CouponServiceImpl implements CouponService {
   public CouponUseResponseDto useCoupon(CouponUseRequestDto couponUseRequestDto, Long userId) {
     CouponDomain couponDomain = couponRepository.findById(couponUseRequestDto.couponId());
 
-    if (couponDomain.isUsed()) {
-      throw new IllegalStateException("Coupon already used");
-    }
+    validateCoupon(couponDomain);
 
     couponDomain = couponConverter.fromUnUsedToUsed(couponDomain, getCurrentDateTime());
 
@@ -61,13 +66,29 @@ public class CouponServiceImpl implements CouponService {
             "");
 
     CouponDomain usedCoupon = couponRepository.save(couponDomain);
-    usedCoupon = couponRepository.findById(usedCoupon.getCouponId());
 
     TicketTransactionResponseDto ticketTransactionResponseDto =
         ticketService.chargeTicket(ticketTransactionRequestDto, userId);
 
     return couponConverter.generateUseResponseDto(
         couponConverter.fromDomainToInfoResponseDto(usedCoupon), ticketTransactionResponseDto);
+  }
+
+  private void validateCoupon(CouponDomain couponDomain) {
+    if (couponDomain.getExpireAt().isBefore(LocalDateTime.now())) {
+      couponDomain = couponRepository.save(couponConverter.fromUnExpiredToExpired(couponDomain));
+    }
+    if (couponDomain.isUsed()) {
+      throw new IllegalStateException("Coupon (" + couponDomain.getCouponId() + ") already used");
+    }
+    if (couponDomain.isExpired()) {
+      throw new IllegalStateException(
+          "Coupon ("
+              + couponDomain.getCouponId()
+              + ") expired at ("
+              + couponDomain.getExpireAt()
+              + ")");
+    }
   }
 
   private LocalDateTime getCurrentDateTime() {

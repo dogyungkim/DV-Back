@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.user.entity.UserEntity;
 import org.richardstallman.dvback.global.entity.BaseEntity;
 
@@ -39,9 +40,14 @@ public class CouponEntity extends BaseEntity {
   private String couponName;
 
   @Enumerated(EnumType.STRING)
+  private InterviewMode interviewMode;
+
+  @Enumerated(EnumType.STRING)
   private InterviewAssetType interviewAssetType;
 
   private boolean isUsed;
+  private boolean isExpired;
   private LocalDateTime generatedAt;
   private LocalDateTime usedAt;
+  private LocalDateTime expireAt;
 }

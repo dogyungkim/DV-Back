@@ -16,9 +16,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
 import org.richardstallman.dvback.domain.coupon.domain.request.CouponCreateRequestDto;
@@ -65,10 +67,14 @@ public class CouponControllerTest {
     int chargeAmount = 1;
     String couponName = "웰컴 쿠폰";
     InterviewAssetType interviewAssetType = InterviewAssetType.CHAT;
+    InterviewMode interviewMode = InterviewMode.REAL;
     boolean isUsed = false;
+    boolean isExpired = false;
     LocalDateTime createdAt = LocalDateTime.now();
+    LocalDateTime expiredAt = createdAt.plusMonths(1).with(LocalTime.MAX);
     CouponCreateRequestDto couponCreateRequestDto =
-        new CouponCreateRequestDto(userId, chargeAmount, couponName, interviewAssetType);
+        new CouponCreateRequestDto(
+            userId, chargeAmount, couponName, interviewMode, interviewAssetType);
 
     Long couponId = 1L;
     CouponInfoResponseDto couponInfoResponseDto =
@@ -77,11 +83,15 @@ public class CouponControllerTest {
             userId,
             chargeAmount,
             couponName,
+            interviewMode,
+            interviewMode.getKoreanName(),
             interviewAssetType,
             interviewAssetType.getKoreanName(),
             isUsed,
+            isExpired,
             createdAt,
-            null);
+            null,
+            expiredAt);
 
     when(couponService.createCoupon(any())).thenReturn(couponInfoResponseDto);
 
@@ -119,6 +129,9 @@ public class CouponControllerTest {
                             .type(JsonFieldType.NUMBER)
                             .description("쿠폰으로 충전 가능한 이용권 장 수"),
                         fieldWithPath("couponName").type(JsonFieldType.STRING).description("쿠폰 이름"),
+                        fieldWithPath("interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("쿠폰 면접 유형: REAL(실전), GENERAL(모의)"),
                         fieldWithPath("interviewAssetType")
                             .type(JsonFieldType.STRING)
                             .description("쿠폰 유형"))
@@ -137,6 +150,12 @@ public class CouponControllerTest {
                         fieldWithPath("data.couponName")
                             .type(JsonFieldType.STRING)
                             .description("쿠폰 이름"),
+                        fieldWithPath("data.interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("쿠폰 면접 유형: REAL(실전), GENERAL(모의)"),
+                        fieldWithPath("data.interviewModeKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("쿠폰 면접 유형 한글"),
                         fieldWithPath("data.interviewAssetType")
                             .type(JsonFieldType.STRING)
                             .description("쿠폰 유형"),
@@ -146,12 +165,18 @@ public class CouponControllerTest {
                         fieldWithPath("data.isUsed")
                             .type(JsonFieldType.BOOLEAN)
                             .description("쿠폰 사용 여부: 사용(true), 미사용(false)"),
+                        fieldWithPath("data.isExpired")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("쿠폰 만료 여부: 만료(true), 만료 전(false)"),
                         fieldWithPath("data.generatedAt")
                             .type(JsonFieldType.STRING)
                             .description("쿠폰 생성 일시"),
                         fieldWithPath("data.usedAt")
                             .type(JsonFieldType.NULL)
-                            .description("쿠폰 사용 일시"))
+                            .description("쿠폰 사용 일시"),
+                        fieldWithPath("data.expireAt")
+                            .type(JsonFieldType.STRING)
+                            .description("쿠폰 만료 일시"))
                     .build())));
   }
 
@@ -165,6 +190,9 @@ public class CouponControllerTest {
     int chargeAmount = 1;
     String couponName = "웰컴 쿠폰";
     InterviewAssetType interviewAssetType = InterviewAssetType.CHAT;
+    InterviewMode interviewMode = InterviewMode.REAL;
+    boolean isExpired = false;
+    LocalDateTime expiredAt = LocalDateTime.now().plusMonths(1).with(LocalTime.MAX);
     int currentBalance = 5;
     int currentChatBalance = 2;
     int currentVoiceBalance = 3;
@@ -188,11 +216,15 @@ public class CouponControllerTest {
             userId,
             chargeAmount,
             couponName,
+            interviewMode,
+            interviewMode.getKoreanName(),
             interviewAssetType,
             interviewAssetType.getKoreanName(),
             true,
+            isExpired,
             createdAt,
-            usedAt);
+            usedAt,
+            expiredAt);
 
     TicketTransactionDetailResponseDto ticketTransactionDetailResponseDto =
         new TicketTransactionDetailResponseDto(
@@ -301,6 +333,12 @@ public class CouponControllerTest {
                         fieldWithPath("data.usedCouponInfo.couponName")
                             .type(JsonFieldType.STRING)
                             .description("사용된 쿠폰 이름"),
+                        fieldWithPath("data.usedCouponInfo.interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("사용된 쿠폰 면접 모드: REAL(실전), GENERAL(모의)"),
+                        fieldWithPath("data.usedCouponInfo.interviewModeKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("사용된 쿠폰 면접 모드 한글"),
                         fieldWithPath("data.usedCouponInfo.interviewAssetType")
                             .type(JsonFieldType.STRING)
                             .description("사용된 쿠폰 유형: CHAT(채팅), VOICE(음성)"),
@@ -310,12 +348,18 @@ public class CouponControllerTest {
                         fieldWithPath("data.usedCouponInfo.isUsed")
                             .type(JsonFieldType.BOOLEAN)
                             .description("쿠폰 사용 여부: 사용(true), 미사용(false)"),
+                        fieldWithPath("data.usedCouponInfo.isExpired")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("쿠폰 만료 여부: 만료(true), 만료 전(false)"),
                         fieldWithPath("data.usedCouponInfo.generatedAt")
                             .type(JsonFieldType.STRING)
                             .description("쿠폰 생성 일시"),
                         fieldWithPath("data.usedCouponInfo.usedAt")
                             .type(JsonFieldType.STRING)
                             .description("쿠폰 사용 일시"),
+                        fieldWithPath("data.usedCouponInfo.expireAt")
+                            .type(JsonFieldType.STRING)
+                            .description("쿠폰 만료 일시"),
                         fieldWithPath("data.chargedTicketTransactionInfo.currentBalance")
                             .type(JsonFieldType.NUMBER)
                             .description("회원이 현재 보유한 이용권 장 수"),

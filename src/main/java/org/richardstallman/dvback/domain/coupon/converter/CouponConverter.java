@@ -24,10 +24,13 @@ public class CouponConverter {
         .chargeAmount(couponEntity.getChargeAmount())
         .userDomain(userConverter.fromEntityToDomain(couponEntity.getUser()))
         .couponName(couponEntity.getCouponName())
+        .interviewMode(couponEntity.getInterviewMode())
         .interviewAssetType(couponEntity.getInterviewAssetType())
         .isUsed(couponEntity.isUsed())
+        .isExpired(couponEntity.isExpired())
         .generatedAt(couponEntity.getGeneratedAt())
         .usedAt(couponEntity.isUsed() ? couponEntity.getUsedAt() : null)
+        .expireAt(couponEntity.isExpired() ? couponEntity.getExpireAt() : null)
         .build();
   }
 
@@ -37,23 +40,30 @@ public class CouponConverter {
         userConverter.fromDomainToEntity(couponDomain.getUserDomain()),
         couponDomain.getChargeAmount(),
         couponDomain.getCouponName(),
+        couponDomain.getInterviewMode(),
         couponDomain.getInterviewAssetType(),
         couponDomain.isUsed(),
+        couponDomain.isExpired(),
         couponDomain.getGeneratedAt(),
-        couponDomain.isUsed() ? couponDomain.getUsedAt() : null);
+        couponDomain.isUsed() ? couponDomain.getUsedAt() : null,
+        couponDomain.isExpired() ? couponDomain.getExpireAt() : null);
   }
 
   public CouponDomain fromCreateRequestDtoToDomain(
       CouponCreateRequestDto couponCreateRequestDto,
       UserDomain userDomain,
-      LocalDateTime generatedAt) {
+      LocalDateTime generatedAt,
+      LocalDateTime expireAt) {
     return CouponDomain.builder()
         .userDomain(userDomain)
         .chargeAmount(couponCreateRequestDto.chargeAmount())
         .couponName(couponCreateRequestDto.couponName())
+        .interviewMode(couponCreateRequestDto.interviewMode())
         .interviewAssetType(couponCreateRequestDto.interviewAssetType())
         .isUsed(false)
+        .isExpired(false)
         .generatedAt(generatedAt)
+        .expireAt(expireAt)
         .build();
   }
 
@@ -63,11 +73,15 @@ public class CouponConverter {
         couponDomain.getUserDomain().getId(),
         couponDomain.getChargeAmount(),
         couponDomain.getCouponName(),
+        couponDomain.getInterviewMode(),
+        couponDomain.getInterviewMode().getKoreanName(),
         couponDomain.getInterviewAssetType(),
         couponDomain.getInterviewAssetType().getKoreanName(),
         couponDomain.isUsed(),
+        couponDomain.isExpired(),
         couponDomain.getGeneratedAt(),
-        couponDomain.isUsed() ? couponDomain.getUsedAt() : null);
+        couponDomain.isUsed() ? couponDomain.getUsedAt() : null,
+        couponDomain.getExpireAt());
   }
 
   public CouponUseResponseDto generateUseResponseDto(
@@ -76,16 +90,35 @@ public class CouponConverter {
     return new CouponUseResponseDto(couponInfoResponseDto, ticketTransactionResponseDto);
   }
 
+  public CouponDomain fromUnExpiredToExpired(CouponDomain couponDomain) {
+    return CouponDomain.builder()
+        .couponId(couponDomain.getCouponId())
+        .userDomain(couponDomain.getUserDomain())
+        .chargeAmount(couponDomain.getChargeAmount())
+        .couponName(couponDomain.getCouponName())
+        .interviewMode(couponDomain.getInterviewMode())
+        .interviewAssetType(couponDomain.getInterviewAssetType())
+        .isUsed(couponDomain.isUsed())
+        .isExpired(true)
+        .generatedAt(couponDomain.getGeneratedAt())
+        .usedAt(couponDomain.getUsedAt())
+        .expireAt(couponDomain.getExpireAt())
+        .build();
+  }
+
   public CouponDomain fromUnUsedToUsed(CouponDomain couponDomain, LocalDateTime usedAt) {
     return CouponDomain.builder()
         .couponId(couponDomain.getCouponId())
         .userDomain(couponDomain.getUserDomain())
         .chargeAmount(couponDomain.getChargeAmount())
         .couponName(couponDomain.getCouponName())
+        .interviewMode(couponDomain.getInterviewMode())
         .interviewAssetType(couponDomain.getInterviewAssetType())
         .isUsed(true)
+        .isExpired(couponDomain.isExpired())
         .generatedAt(couponDomain.getGeneratedAt())
         .usedAt(usedAt)
+        .expireAt(couponDomain.getExpireAt())
         .build();
   }
 }
