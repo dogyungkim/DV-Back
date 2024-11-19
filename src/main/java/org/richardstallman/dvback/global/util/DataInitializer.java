@@ -1,4 +1,4 @@
-package org.richardstallman.dvback.global.data;
+package org.richardstallman.dvback.global.util;
 
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.job.repository.JobRepository;

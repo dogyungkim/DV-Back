@@ -2,6 +2,8 @@ package org.richardstallman.dvback.domain.coupon.converter;
 
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.coupon.domain.CouponDomain;
 import org.richardstallman.dvback.domain.coupon.domain.request.CouponCreateRequestDto;
 import org.richardstallman.dvback.domain.coupon.domain.response.CouponDetailSimpleResponseDto;
@@ -12,6 +14,7 @@ import org.richardstallman.dvback.domain.coupon.entity.CouponEntity;
 import org.richardstallman.dvback.domain.ticket.domain.response.TicketTransactionResponseDto;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.richardstallman.dvback.domain.user.domain.UserDomain;
+import org.richardstallman.dvback.global.config.coupons.CouponsConfig.WelcomeCoupons;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -143,5 +146,23 @@ public class CouponConverter {
         couponDomain.getInterviewMode().getKoreanName(),
         couponDomain.getInterviewAssetType().getKoreanName(),
         couponDomain.getUsedAt());
+  }
+
+  public CouponDomain fromWelcomeCouponToDomain(
+      WelcomeCoupons welcomeCoupons,
+      UserDomain userDomain,
+      LocalDateTime generatedAt,
+      LocalDateTime expireAt) {
+    return CouponDomain.builder()
+        .userDomain(userDomain)
+        .chargeAmount(welcomeCoupons.getChargeAmount())
+        .couponName(welcomeCoupons.getCouponName())
+        .interviewMode(InterviewMode.valueOf(welcomeCoupons.getInterviewMode()))
+        .interviewAssetType(InterviewAssetType.valueOf(welcomeCoupons.getInterviewAssetType()))
+        .isUsed(false)
+        .isExpired(false)
+        .generatedAt(generatedAt)
+        .expireAt(expireAt)
+        .build();
   }
 }

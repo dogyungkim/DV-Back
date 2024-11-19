@@ -1,8 +1,10 @@
 package org.richardstallman.dvback.domain.coupon.service;
 
+import static org.richardstallman.dvback.global.util.TimeUtil.generateExpirationDateTime;
+import static org.richardstallman.dvback.global.util.TimeUtil.getCurrentDateTime;
+
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
@@ -48,10 +50,6 @@ public class CouponServiceImpl implements CouponService {
         couponConverter.fromCreateRequestDtoToDomain(
             couponCreateRequestDto, userDomain, now, expireAt);
     return couponConverter.fromDomainToInfoResponseDto(couponRepository.save(couponDomain));
-  }
-
-  private LocalDateTime generateExpirationDateTime(LocalDateTime now) {
-    return now.plusMonths(1).with(LocalTime.MAX);
   }
 
   @Override
@@ -135,9 +133,5 @@ public class CouponServiceImpl implements CouponService {
         couponRepository.save(couponConverter.fromUnExpiredToExpired(couponDomain));
       }
     }
-  }
-
-  private LocalDateTime getCurrentDateTime() {
-    return LocalDateTime.now();
   }
 }
