@@ -15,5 +15,6 @@ public record QuestionInitialRequestDto(
     @NotNull InterviewType interviewType,
     @NotNull InterviewMethod interviewMethod,
     @NotNull InterviewMode interviewMode,
+    int questionCount,
     List<FileRequestDto> files,
     @NotNull Long jobId) {}

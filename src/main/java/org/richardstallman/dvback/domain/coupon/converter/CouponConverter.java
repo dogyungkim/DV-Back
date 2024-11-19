@@ -30,7 +30,7 @@ public class CouponConverter {
         .isExpired(couponEntity.isExpired())
         .generatedAt(couponEntity.getGeneratedAt())
         .usedAt(couponEntity.isUsed() ? couponEntity.getUsedAt() : null)
-        .expireAt(couponEntity.isExpired() ? couponEntity.getExpireAt() : null)
+        .expireAt(couponEntity.getExpireAt())
         .build();
   }
 
@@ -46,7 +46,7 @@ public class CouponConverter {
         couponDomain.isExpired(),
         couponDomain.getGeneratedAt(),
         couponDomain.isUsed() ? couponDomain.getUsedAt() : null,
-        couponDomain.isExpired() ? couponDomain.getExpireAt() : null);
+        couponDomain.getExpireAt());
   }
 
   public CouponDomain fromCreateRequestDtoToDomain(

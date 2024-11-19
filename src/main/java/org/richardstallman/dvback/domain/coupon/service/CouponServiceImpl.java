@@ -62,6 +62,7 @@ public class CouponServiceImpl implements CouponService {
             couponDomain.getChargeAmount(),
             TicketTransactionType.CHARGE,
             TicketTransactionMethod.COUPON,
+            couponDomain.getInterviewMode(),
             couponDomain.getInterviewAssetType(),
             "");
 

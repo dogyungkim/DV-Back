@@ -14,7 +14,11 @@ public interface TicketService {
 
   TicketUserInfoDto getUserTicketInfo(Long userId);
 
-  int getUserChatTicketCount(Long userId);
+  int getUserRealChatTicketCount(Long userId);
 
-  int getUserVoiceTicketCount(Long userId);
+  int getUserRealVoiceTicketCount(Long userId);
+
+  int getUserGeneralChatTicketCount(Long userId);
+
+  int getUserGeneralVoiceTicketCount(Long userId);
 }

@@ -57,7 +57,9 @@ public class TicketServiceImpl implements TicketService {
             ticketConverter.updateBalance(
                 getUserTicket(userDomain),
                 ticketTransactionRequestDto.amount(),
-                ticketTransactionRequestDto.interviewAssetType()));
+                ticketTransactionRequestDto.interviewAssetType(),
+                ticketTransactionRequestDto.interviewMode()));
+
     return ticketTransactionConverter.fromDomainToResponseDto(
         ticketTransactionDomain, ticketDomain);
   }
@@ -84,11 +86,17 @@ public class TicketServiceImpl implements TicketService {
             ticketConverter.updateBalance(
                 ticketDomain,
                 ticketTransactionRequestDto.amount(),
-                ticketTransactionRequestDto.interviewAssetType()));
+                ticketTransactionRequestDto.interviewAssetType(),
+                ticketTransactionRequestDto.interviewMode()));
     return new TicketResponseDto(
-        ticketDomain.getChatBalance() + ticketDomain.getVoiceBalance(),
-        ticketDomain.getChatBalance(),
-        ticketDomain.getVoiceBalance(),
+        ticketDomain.getRealChatBalance()
+            + ticketDomain.getRealVoiceBalance()
+            + ticketDomain.getGeneralChatBalance()
+            + ticketDomain.getGeneralVoiceBalance(),
+        ticketDomain.getRealChatBalance(),
+        ticketDomain.getRealVoiceBalance(),
+        ticketDomain.getGeneralChatBalance(),
+        ticketDomain.getGeneralVoiceBalance(),
         ticketTransactionConverter.fromDomainToDetailResponseDto(ticketTransactionDomain));
   }
 
@@ -96,28 +104,46 @@ public class TicketServiceImpl implements TicketService {
   public TicketUserInfoDto getUserTicketInfo(Long userId) {
     UserDomain userDomain = getUser(userId);
     TicketDomain ticketDomain = getUserTicket(userDomain);
-    int currentBalance = ticketDomain.getChatBalance() + ticketDomain.getVoiceBalance();
+    int currentBalance =
+        ticketDomain.getRealChatBalance()
+            + ticketDomain.getRealVoiceBalance()
+            + ticketDomain.getGeneralChatBalance()
+            + ticketDomain.getGeneralVoiceBalance();
     List<TicketTransactionDetailResponseDto> ticketTransactionDetailResponseDtos =
         ticketTransactionRepository.findTicketsByUserId(userId).stream()
             .map(ticketTransactionConverter::fromDomainToDetailResponseDto)
             .toList();
     return new TicketUserInfoDto(
         currentBalance,
-        ticketDomain.getChatBalance(),
-        ticketDomain.getVoiceBalance(),
+        ticketDomain.getRealChatBalance(),
+        ticketDomain.getRealVoiceBalance(),
+        ticketDomain.getGeneralChatBalance(),
+        ticketDomain.getGeneralVoiceBalance(),
         ticketTransactionDetailResponseDtos);
   }
 
   @Override
-  public int getUserChatTicketCount(Long userId) {
+  public int getUserRealChatTicketCount(Long userId) {
     UserDomain userDomain = getUser(userId);
-    return getUserTicket(userDomain).getChatBalance();
+    return getUserTicket(userDomain).getRealChatBalance();
   }
 
   @Override
-  public int getUserVoiceTicketCount(Long userId) {
+  public int getUserRealVoiceTicketCount(Long userId) {
     UserDomain userDomain = getUser(userId);
-    return getUserTicket(userDomain).getVoiceBalance();
+    return getUserTicket(userDomain).getRealVoiceBalance();
+  }
+
+  @Override
+  public int getUserGeneralChatTicketCount(Long userId) {
+    UserDomain userDomain = getUser(userId);
+    return getUserTicket(userDomain).getGeneralChatBalance();
+  }
+
+  @Override
+  public int getUserGeneralVoiceTicketCount(Long userId) {
+    UserDomain userDomain = getUser(userId);
+    return getUserTicket(userDomain).getGeneralVoiceBalance();
   }
 
   private UserDomain getUser(Long userId) {
@@ -132,7 +158,13 @@ public class TicketServiceImpl implements TicketService {
     if (ticketDomain == null) {
       ticketDomain =
           ticketRepository.save(
-              TicketDomain.builder().userDomain(userDomain).chatBalance(0).voiceBalance(0).build());
+              TicketDomain.builder()
+                  .userDomain(userDomain)
+                  .realChatBalance(0)
+                  .realVoiceBalance(0)
+                  .generalChatBalance(0)
+                  .generalVoiceBalance(0)
+                  .build());
     }
     return ticketDomain;
   }

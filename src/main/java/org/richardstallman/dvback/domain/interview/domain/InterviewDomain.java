@@ -21,9 +21,7 @@ public class InterviewDomain {
   private InterviewType interviewType;
   private InterviewMethod interviewMethod;
   private InterviewMode interviewMode;
+  private int questionCount;
   private JobDomain job;
   private CoverLetterDomain coverLetter;
-
-  //  private Long resumeId;
-  //  private Long portfolioId;
 }

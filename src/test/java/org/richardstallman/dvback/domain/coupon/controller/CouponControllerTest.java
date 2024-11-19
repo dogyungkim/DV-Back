@@ -193,13 +193,16 @@ public class CouponControllerTest {
     InterviewMode interviewMode = InterviewMode.REAL;
     boolean isExpired = false;
     LocalDateTime expiredAt = LocalDateTime.now().plusMonths(1).with(LocalTime.MAX);
-    int currentBalance = 5;
-    int currentChatBalance = 2;
-    int currentVoiceBalance = 3;
+    int currentBalance = 10;
+    int currentRealChatBalance = 1;
+    int currentRealVoiceBalance = 2;
+    int currentGeneralChatBalance = 3;
+    int currentGeneralVoiceBalance = 4;
     Long ticketTransactionId = 1L;
     int amount = 1;
     TicketTransactionType ticketTransactionType = TicketTransactionType.CHARGE;
     TicketTransactionMethod ticketTransactionMethod = TicketTransactionMethod.COUPON;
+    InterviewMode interviewMode2 = InterviewMode.REAL;
     InterviewAssetType interviewAssetType2 = InterviewAssetType.CHAT;
     String descripton =
         ticketTransactionType.getKoreanName() + " " + ticketTransactionMethod.getKoreanName();
@@ -234,6 +237,8 @@ public class CouponControllerTest {
             ticketTransactionType.getKoreanName(),
             ticketTransactionMethod,
             ticketTransactionMethod.getKoreanName(),
+            interviewMode2,
+            interviewMode2.getKoreanName(),
             interviewAssetType2,
             interviewAssetType2.getKoreanName(),
             descripton,
@@ -242,8 +247,10 @@ public class CouponControllerTest {
     TicketTransactionResponseDto ticketTransactionResponseDto =
         new TicketTransactionResponseDto(
             currentBalance,
-            currentChatBalance,
-            currentVoiceBalance,
+            currentRealChatBalance,
+            currentRealVoiceBalance,
+            currentGeneralChatBalance,
+            currentGeneralVoiceBalance,
             ticketTransactionDetailResponseDto);
 
     CouponUseResponseDto couponUseResponseDto =
@@ -275,8 +282,7 @@ public class CouponControllerTest {
         .andExpect(
             jsonPath("data.usedCouponInfo.interviewAssetTypeKorean")
                 .value(interviewAssetType.getKoreanName()))
-        .andExpect(
-            jsonPath("data.chargedTicketTransactionInfo.currentBalance").value(currentBalance))
+        .andExpect(jsonPath("data.chargedTicketTransactionInfo.totalBalance").value(currentBalance))
         .andExpect(
             jsonPath(
                     "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketTransactionId")
@@ -360,15 +366,21 @@ public class CouponControllerTest {
                         fieldWithPath("data.usedCouponInfo.expireAt")
                             .type(JsonFieldType.STRING)
                             .description("쿠폰 만료 일시"),
-                        fieldWithPath("data.chargedTicketTransactionInfo.currentBalance")
+                        fieldWithPath("data.chargedTicketTransactionInfo.totalBalance")
                             .type(JsonFieldType.NUMBER)
                             .description("회원이 현재 보유한 이용권 장 수"),
-                        fieldWithPath("data.chargedTicketTransactionInfo.currentChatBalance")
+                        fieldWithPath("data.chargedTicketTransactionInfo.realChatBalance")
                             .type(JsonFieldType.NUMBER)
-                            .description("회원이 현재 보유한 채팅 이용권 장 수"),
-                        fieldWithPath("data.chargedTicketTransactionInfo.currentVoiceBalance")
+                            .description("회원이 현재 보유한 실전 채팅 이용권 장 수"),
+                        fieldWithPath("data.chargedTicketTransactionInfo.realVoiceBalance")
                             .type(JsonFieldType.NUMBER)
-                            .description("회원이 현재 보유한 음성 이용권 장 수"),
+                            .description("회원이 현재 보유한 실전 음성 이용권 장 수"),
+                        fieldWithPath("data.chargedTicketTransactionInfo.generalChatBalance")
+                            .type(JsonFieldType.NUMBER)
+                            .description("회원이 현재 보유한 모의 채팅 이용권 장 수"),
+                        fieldWithPath("data.chargedTicketTransactionInfo.generalVoiceBalance")
+                            .type(JsonFieldType.NUMBER)
+                            .description("회원이 현재 보유한 모의 음성 이용권 장 수"),
                         fieldWithPath(
                                 "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketTransactionId")
                             .type(JsonFieldType.NUMBER)
@@ -393,6 +405,14 @@ public class CouponControllerTest {
                                 "data.chargedTicketTransactionInfo.ticketTransactionDetail.ticketTransactionMethodKorean")
                             .type(JsonFieldType.STRING)
                             .description("이용권 충전 방법 한글"),
+                        fieldWithPath(
+                                "data.chargedTicketTransactionInfo.ticketTransactionDetail.interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("이용권 면접 모드: REAL(실전), GENERAL(모의)"),
+                        fieldWithPath(
+                                "data.chargedTicketTransactionInfo.ticketTransactionDetail.interviewModeKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("이용권 면접 모드 한글"),
                         fieldWithPath(
                                 "data.chargedTicketTransactionInfo.ticketTransactionDetail.interviewAssetType")
                             .type(JsonFieldType.STRING)

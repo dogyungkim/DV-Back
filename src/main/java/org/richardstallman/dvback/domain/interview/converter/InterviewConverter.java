@@ -40,6 +40,7 @@ public class InterviewConverter {
         interviewDomain.getInterviewType(),
         interviewDomain.getInterviewMethod(),
         interviewDomain.getInterviewMode(),
+        interviewDomain.getQuestionCount(),
         jobConverter.toEntity(interviewDomain.getJob()),
         interviewDomain.getInterviewMode() == InterviewMode.REAL
             ? coverLetterConverter.fromDomainToEntity(interviewDomain.getCoverLetter())
@@ -54,6 +55,7 @@ public class InterviewConverter {
         interviewDomain.getInterviewType(),
         interviewDomain.getInterviewMethod(),
         interviewDomain.getInterviewMode(),
+        interviewDomain.getQuestionCount(),
         jobConverter.toEntity(interviewDomain.getJob()),
         interviewDomain.getInterviewMode() == InterviewMode.REAL
             ? coverLetterConverter.fromDomainToEntity(interviewDomain.getCoverLetter())
@@ -69,6 +71,7 @@ public class InterviewConverter {
         .interviewType(interviewEntity.getInterviewType())
         .interviewMethod(interviewEntity.getInterviewMethod())
         .interviewMode(interviewEntity.getInterviewMode())
+        .questionCount(interviewEntity.getQuestionCount())
         .job(jobConverter.toDomain(interviewEntity.getJob()))
         .coverLetter(
             interviewEntity.getInterviewMode() == InterviewMode.REAL
@@ -88,6 +91,10 @@ public class InterviewConverter {
         .interviewType(interviewCreateRequestDto.interviewType())
         .interviewMethod(interviewCreateRequestDto.interviewMethod())
         .interviewMode(interviewCreateRequestDto.interviewMode())
+        .questionCount(
+            interviewCreateRequestDto.interviewMode() == InterviewMode.GENERAL
+                ? 3
+                : interviewCreateRequestDto.questionCount())
         .job(job)
         .build();
   }
@@ -104,6 +111,7 @@ public class InterviewConverter {
         .interviewType(interviewCreateRequestDto.interviewType())
         .interviewMethod(interviewCreateRequestDto.interviewMethod())
         .interviewMode(interviewCreateRequestDto.interviewMode())
+        .questionCount(interviewCreateRequestDto.questionCount())
         .job(job)
         .coverLetter(coverLetterDomain)
         .build();
@@ -120,6 +128,7 @@ public class InterviewConverter {
         interviewDomain.getInterviewType(),
         interviewDomain.getInterviewMethod(),
         interviewDomain.getInterviewMode(),
+        interviewDomain.getQuestionCount(),
         interviewDomain.getJob(),
         fileResponseDtos,
         ticketResponseDto);
@@ -134,6 +143,7 @@ public class InterviewConverter {
         interviewDomain.getInterviewType(),
         interviewDomain.getInterviewMethod(),
         interviewDomain.getInterviewMode(),
+        interviewDomain.getQuestionCount(),
         interviewDomain.getJob(),
         fileResponseDtos);
   }
@@ -147,6 +157,7 @@ public class InterviewConverter {
         interviewDomain.getInterviewType(),
         interviewDomain.getInterviewMethod(),
         interviewDomain.getInterviewMode(),
+        interviewDomain.getQuestionCount(),
         interviewDomain.getJob());
   }
 
@@ -163,6 +174,7 @@ public class InterviewConverter {
         .interviewType(questionInitialRequestDto.interviewType())
         .interviewMethod(questionInitialRequestDto.interviewMethod())
         .interviewMode(questionInitialRequestDto.interviewMode())
+        .questionCount(questionInitialRequestDto.questionCount())
         .job(jobDomain)
         .coverLetter(coverLetterDomain)
         .build();

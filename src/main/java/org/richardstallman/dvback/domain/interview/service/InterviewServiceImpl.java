@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
@@ -60,13 +58,16 @@ public class InterviewServiceImpl implements InterviewService {
   public static final String ERROR_INTERVIEW_ID_NULL_AFTER_SAVE =
       "Interview ID was not generated properly";
 
+  @Override
   @Transactional
   public InterviewCreateResponseDto createInterview(
       InterviewCreateRequestDto interviewCreateRequestDto, Long userId) {
 
     JobDomain jobDomain = jobService.findJobById(interviewCreateRequestDto.jobId());
 
-    TicketResponseDto ticketResponseDto = confirmInterviewMode(interviewCreateRequestDto, userId);
+    TicketResponseDto ticketResponseDto =
+        confirmInterviewMode(
+            interviewCreateRequestDto, userId, interviewCreateRequestDto.questionCount());
 
     InterviewDomain interviewDomain =
         initializeInterviewDomain(interviewCreateRequestDto, jobDomain, userId);
@@ -86,20 +87,18 @@ public class InterviewServiceImpl implements InterviewService {
   }
 
   private TicketResponseDto confirmInterviewMode(
-      InterviewCreateRequestDto interviewCreateRequestDto, Long userId) {
-    if (interviewCreateRequestDto.interviewMode() == InterviewMode.REAL) {
-      validateUserTicket(interviewCreateRequestDto, userId);
-      TicketTransactionRequestDto ticketTransactionRequestDto =
-          new TicketTransactionRequestDto(
-              -1,
-              TicketTransactionType.USE,
-              fromInterviewMethodToTicketTransactionMethod(
-                  interviewCreateRequestDto.interviewMethod()),
-              fromInterviewMethodToInterviewAssetType(interviewCreateRequestDto.interviewMethod()),
-              "");
-      return ticketService.useTicket(ticketTransactionRequestDto, userId);
-    }
-    return null;
+      InterviewCreateRequestDto interviewCreateRequestDto, Long userId, int questionCount) {
+    validateUserTicket(interviewCreateRequestDto, userId, questionCount);
+    TicketTransactionRequestDto ticketTransactionRequestDto =
+        new TicketTransactionRequestDto(
+            -1,
+            TicketTransactionType.USE,
+            fromInterviewMethodToTicketTransactionMethod(
+                interviewCreateRequestDto.interviewMethod()),
+            interviewCreateRequestDto.interviewMode(),
+            fromInterviewMethodToInterviewAssetType(interviewCreateRequestDto.interviewMethod()),
+            "");
+    return ticketService.useTicket(ticketTransactionRequestDto, userId);
   }
 
   private TicketTransactionMethod fromInterviewMethodToTicketTransactionMethod(
@@ -125,29 +124,47 @@ public class InterviewServiceImpl implements InterviewService {
   }
 
   private void validateUserTicket(
-      InterviewCreateRequestDto interviewCreateRequestDto, Long userId) {
-    Map<InterviewMethod, Function<Long, Integer>> ticketCheckMap =
-        Map.of(
-            InterviewMethod.CHAT, ticketService::getUserChatTicketCount,
-            InterviewMethod.VOICE, ticketService::getUserVoiceTicketCount);
+      InterviewCreateRequestDto interviewCreateRequestDto, Long userId, int questionCount) {
 
-    Function<Long, Integer> ticketChecker =
-        ticketCheckMap.get(interviewCreateRequestDto.interviewMethod());
-    if (ticketChecker == null) {
+    InterviewMode interviewMode = interviewCreateRequestDto.interviewMode();
+    InterviewMethod interviewMethod = interviewCreateRequestDto.interviewMethod();
+
+    int availableTickets = getUserTicketCount(interviewMode, interviewMethod, userId);
+
+    int requiredTickets = calculateRequiredTickets(questionCount);
+
+    if (availableTickets < requiredTickets) {
       throw new ApiException(
           HttpStatus.BAD_REQUEST,
-          "There is no such interview method: " + interviewCreateRequestDto.interviewMethod());
+          String.format(
+              "%d user doesn't have enough %s %s balance",
+              userId, interviewMode.getKoreanName(), interviewMethod.getKoreanName()));
     }
+  }
 
-    int balance = ticketChecker.apply(userId);
-    if (balance <= 0) {
-      throw new ApiException(
-          HttpStatus.BAD_REQUEST,
-          userId
-              + " user doesn't have "
-              + interviewCreateRequestDto.interviewMethod().name().toLowerCase()
-              + " balance");
+  private int getUserTicketCount(InterviewMode mode, InterviewMethod method, Long userId) {
+    if (mode == InterviewMode.REAL) {
+      return switch (method) {
+        case CHAT -> ticketService.getUserRealChatTicketCount(userId);
+        case VOICE -> ticketService.getUserRealVoiceTicketCount(userId);
+        default -> throw new ApiException(
+            HttpStatus.BAD_REQUEST, "No such interview method: " + method);
+      };
+    } else if (mode == InterviewMode.GENERAL) {
+      return switch (method) {
+        case CHAT -> ticketService.getUserGeneralChatTicketCount(userId);
+        case VOICE -> ticketService.getUserGeneralVoiceTicketCount(userId);
+        default -> throw new ApiException(
+            HttpStatus.BAD_REQUEST, "No such interview method: " + method);
+      };
+    } else {
+      throw new ApiException(HttpStatus.BAD_REQUEST, "No such interview mode: " + mode);
     }
+  }
+
+  private int calculateRequiredTickets(int questionCount) {
+    final int QUESTIONS_PER_TICKET = 5;
+    return (int) Math.ceil((double) questionCount / QUESTIONS_PER_TICKET);
   }
 
   @Override

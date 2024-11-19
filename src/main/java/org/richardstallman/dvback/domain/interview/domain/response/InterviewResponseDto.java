@@ -13,5 +13,6 @@ public record InterviewResponseDto(
     @NotNull CommonConstants.InterviewType interviewType,
     @NotNull CommonConstants.InterviewMethod interviewMethod,
     @NotNull CommonConstants.InterviewMode interviewMode,
+    @NotNull int questionCount,
     @NotNull JobDomain job,
     List<FileResponseDto> files) {}
