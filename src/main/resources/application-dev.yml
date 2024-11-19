@@ -15,7 +15,7 @@ spring:
   data:
     redis:
       host: ${REDIS_HOST}
-      port: 7369
+      port: 6379
   security:
     oauth2:
       client:
@@ -68,7 +68,7 @@ app:
     refresh-expiration: 604800000
   properties:
     mainDomain: ${MAIN_DOMAIN}
-    frontendDomain: ${FRONT_DOMAIN}|
+    frontendDomain: ${FRONT_DOMAIN}
     secure: false
     cookie:
       sameSite: "Lax"
