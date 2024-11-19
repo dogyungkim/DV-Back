@@ -236,7 +236,7 @@ public class UserControllerTest {
     // restdocs
     resultActions.andDo(
         document(
-            "/authenticated - 인증 상태 확인 성공",
+            "로그인 여부 확인 - 인증 상태 확인 성공",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
             resource(
@@ -268,7 +268,7 @@ public class UserControllerTest {
     // restdocs
     resultActions.andDo(
         document(
-            "/authenticated - 인증 실패 (토큰 없음)",
+            "로그인 여부 확인 - 인증 실패 (토큰 없음)",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
             resource(
