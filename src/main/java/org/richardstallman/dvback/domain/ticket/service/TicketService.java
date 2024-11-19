@@ -1,5 +1,6 @@
 package org.richardstallman.dvback.domain.ticket.service;
 
+import org.richardstallman.dvback.domain.ticket.domain.TicketUserCountInfoDto;
 import org.richardstallman.dvback.domain.ticket.domain.TicketUserInfoDto;
 import org.richardstallman.dvback.domain.ticket.domain.request.TicketTransactionRequestDto;
 import org.richardstallman.dvback.domain.ticket.domain.response.TicketResponseDto;
@@ -13,6 +14,8 @@ public interface TicketService {
   TicketResponseDto useTicket(TicketTransactionRequestDto ticketTransactionRequestDto, Long userId);
 
   TicketUserInfoDto getUserTicketInfo(Long userId);
+
+  TicketUserCountInfoDto getUserCountInfo(Long userId);
 
   int getUserRealChatTicketCount(Long userId);
 

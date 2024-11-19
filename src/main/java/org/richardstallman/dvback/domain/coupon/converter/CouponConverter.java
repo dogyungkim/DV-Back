@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.coupon.domain.CouponDomain;
 import org.richardstallman.dvback.domain.coupon.domain.request.CouponCreateRequestDto;
+import org.richardstallman.dvback.domain.coupon.domain.response.CouponDetailSimpleResponseDto;
+import org.richardstallman.dvback.domain.coupon.domain.response.CouponDetailUsedResponseDto;
 import org.richardstallman.dvback.domain.coupon.domain.response.CouponInfoResponseDto;
 import org.richardstallman.dvback.domain.coupon.domain.response.CouponUseResponseDto;
 import org.richardstallman.dvback.domain.coupon.entity.CouponEntity;
@@ -120,5 +122,26 @@ public class CouponConverter {
         .usedAt(usedAt)
         .expireAt(couponDomain.getExpireAt())
         .build();
+  }
+
+  public CouponDetailSimpleResponseDto fromDomainToDetailSimpleResponseDto(
+      CouponDomain couponDomain) {
+    return new CouponDetailSimpleResponseDto(
+        couponDomain.getCouponId(),
+        couponDomain.getChargeAmount(),
+        couponDomain.getCouponName(),
+        couponDomain.getInterviewMode().getKoreanName(),
+        couponDomain.getInterviewAssetType().getKoreanName(),
+        couponDomain.getExpireAt());
+  }
+
+  public CouponDetailUsedResponseDto fromDomainToDetailUsedResponseDto(CouponDomain couponDomain) {
+    return new CouponDetailUsedResponseDto(
+        couponDomain.getCouponId(),
+        couponDomain.getChargeAmount(),
+        couponDomain.getCouponName(),
+        couponDomain.getInterviewMode().getKoreanName(),
+        couponDomain.getInterviewAssetType().getKoreanName(),
+        couponDomain.getUsedAt());
   }
 }

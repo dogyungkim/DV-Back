@@ -1,9 +1,13 @@
 package org.richardstallman.dvback.domain.ticket.converter;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.ticket.domain.TicketDomain;
+import org.richardstallman.dvback.domain.ticket.domain.TicketUserCountInfoDto;
+import org.richardstallman.dvback.domain.ticket.domain.TicketUserInfoDto;
+import org.richardstallman.dvback.domain.ticket.domain.response.TicketTransactionDetailResponseDto;
 import org.richardstallman.dvback.domain.ticket.entity.TicketEntity;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.springframework.stereotype.Component;
@@ -68,5 +72,11 @@ public class TicketConverter {
                     ? ticketDomain.getGeneralVoiceBalance() + amount
                     : ticketDomain.getGeneralVoiceBalance())
         .build();
+  }
+
+  public TicketUserInfoDto generateUserInfoDto(
+      TicketUserCountInfoDto ticketUserCountInfoDto,
+      List<TicketTransactionDetailResponseDto> ticketTransactionDetailResponseDtos) {
+    return new TicketUserInfoDto(ticketUserCountInfoDto, ticketTransactionDetailResponseDtos);
   }
 }

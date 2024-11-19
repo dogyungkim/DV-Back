@@ -5,6 +5,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -17,6 +18,8 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
@@ -25,7 +28,12 @@ import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransact
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
 import org.richardstallman.dvback.domain.coupon.domain.request.CouponCreateRequestDto;
 import org.richardstallman.dvback.domain.coupon.domain.request.CouponUseRequestDto;
+import org.richardstallman.dvback.domain.coupon.domain.response.CouponDetailSimpleResponseDto;
+import org.richardstallman.dvback.domain.coupon.domain.response.CouponDetailUsedResponseDto;
 import org.richardstallman.dvback.domain.coupon.domain.response.CouponInfoResponseDto;
+import org.richardstallman.dvback.domain.coupon.domain.response.CouponListExpiredResponseDto;
+import org.richardstallman.dvback.domain.coupon.domain.response.CouponListSimpleResponseDto;
+import org.richardstallman.dvback.domain.coupon.domain.response.CouponListUsedResponseDto;
 import org.richardstallman.dvback.domain.coupon.domain.response.CouponUseResponseDto;
 import org.richardstallman.dvback.domain.coupon.service.CouponService;
 import org.richardstallman.dvback.domain.ticket.domain.response.TicketTransactionDetailResponseDto;
@@ -429,6 +437,263 @@ public class CouponControllerTest {
                                 "data.chargedTicketTransactionInfo.ticketTransactionDetail.generatedAt")
                             .type(JsonFieldType.STRING)
                             .description("이용권 내역 발생 일시"))
+                    .build())));
+  }
+
+  @Test
+  @DisplayName("유저 보유 쿠폰 목록 조회 - 성공")
+  void getUserCouponsSimple() throws Exception {
+    // given
+    Long userId = 1L;
+
+    CouponDetailSimpleResponseDto couponDetailSimpleResponseDto1 =
+        new CouponDetailSimpleResponseDto(
+            1L, 1, "웰컴 쿠폰", "실전", "채팅", LocalDateTime.now().plusMonths(1).with(LocalTime.MAX));
+    CouponDetailSimpleResponseDto couponDetailSimpleResponseDto2 =
+        new CouponDetailSimpleResponseDto(
+            2L, 1, "웰컴 쿠폰", "실전", "음성", LocalDateTime.now().plusMonths(1).with(LocalTime.MAX));
+    CouponDetailSimpleResponseDto couponDetailSimpleResponseDto3 =
+        new CouponDetailSimpleResponseDto(
+            3L, 5, "웰컴 쿠폰", "모의", "채팅", LocalDateTime.now().plusMonths(1).with(LocalTime.MAX));
+    CouponDetailSimpleResponseDto couponDetailSimpleResponseDto4 =
+        new CouponDetailSimpleResponseDto(
+            4L, 3, "웰컴 쿠폰", "모의", "음성", LocalDateTime.now().plusMonths(1).with(LocalTime.MAX));
+
+    List<CouponDetailSimpleResponseDto> couponDetailSimpleResponseDtos = new ArrayList<>();
+    couponDetailSimpleResponseDtos.add(couponDetailSimpleResponseDto1);
+    couponDetailSimpleResponseDtos.add(couponDetailSimpleResponseDto2);
+    couponDetailSimpleResponseDtos.add(couponDetailSimpleResponseDto3);
+    couponDetailSimpleResponseDtos.add(couponDetailSimpleResponseDto4);
+
+    CouponListSimpleResponseDto couponListSimpleResponseDto =
+        new CouponListSimpleResponseDto(couponDetailSimpleResponseDtos);
+
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    when(couponService.getSimpleCouponList(eq(userId))).thenReturn(couponListSimpleResponseDto);
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/coupon/user/simple").cookie(authCookie).contentType(MediaType.APPLICATION_JSON));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("code").value(200))
+        .andExpect(jsonPath("message").value("SUCCESS"))
+        .andExpect(
+            jsonPath("data.coupons[0].couponId").value(couponDetailSimpleResponseDto1.couponId()))
+        .andExpect(
+            jsonPath("data.coupons[0].chargeAmount")
+                .value(couponDetailSimpleResponseDto1.chargeAmount()))
+        .andExpect(
+            jsonPath("data.coupons[0].couponName")
+                .value(couponDetailSimpleResponseDto1.couponName()))
+        .andExpect(
+            jsonPath("data.coupons[0].interviewModeKorean")
+                .value(couponDetailSimpleResponseDto1.interviewModeKorean()))
+        .andExpect(
+            jsonPath("data.coupons[0].interviewAssetTypeKorean")
+                .value(couponDetailSimpleResponseDto1.interviewAssetTypeKorean()))
+        .andExpect(
+            jsonPath("data.coupons[0].expireAt")
+                .value(couponDetailSimpleResponseDto1.expireAt().toString()));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "유저 보유 쿠폰 목록 조회 - 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Coupon API")
+                    .summary("쿠폰 API")
+                    .description("조회한 유저의 보유 쿠폰 목록 (만료 전, 사용 전) 최신순 조회")
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data.coupons[].couponId").description("쿠폰 식별자"),
+                        fieldWithPath("data.coupons[].chargeAmount")
+                            .description("쿠폰 사용 시 충전 가능 이용권 수량"),
+                        fieldWithPath("data.coupons[].couponName").description("쿠폰 이름"),
+                        fieldWithPath("data.coupons[].interviewModeKorean")
+                            .description("면접 모드 한글(실전, 모의)"),
+                        fieldWithPath("data.coupons[].interviewAssetTypeKorean")
+                            .description("이용권 유형 한글(채팅, 음성)"),
+                        fieldWithPath("data.coupons[].expireAt").description("만료 예정 일시"))
+                    .build())));
+  }
+
+  @Test
+  @DisplayName("유저 사용 쿠폰 목록 조회 - 성공")
+  void getUserCouponsUsed() throws Exception {
+    // given
+    Long userId = 1L;
+
+    CouponDetailUsedResponseDto couponDetailUsedResponseDto1 =
+        new CouponDetailUsedResponseDto(
+            1L, 1, "웰컴 쿠폰", "실전", "채팅", LocalDateTime.now().minusHours(3));
+    CouponDetailUsedResponseDto couponDetailUsedResponseDto2 =
+        new CouponDetailUsedResponseDto(
+            2L, 1, "웰컴 쿠폰", "실전", "음성", LocalDateTime.now().minusDays(1));
+    CouponDetailUsedResponseDto couponDetailUsedResponseDto3 =
+        new CouponDetailUsedResponseDto(
+            3L, 5, "웰컴 쿠폰", "모의", "채팅", LocalDateTime.now().minusMonths(2));
+    CouponDetailUsedResponseDto couponDetailUsedResponseDto4 =
+        new CouponDetailUsedResponseDto(
+            4L, 3, "웰컴 쿠폰", "모의", "음성", LocalDateTime.now().minusMonths(4));
+
+    List<CouponDetailUsedResponseDto> couponDetailUsedResponseDtos = new ArrayList<>();
+    couponDetailUsedResponseDtos.add(couponDetailUsedResponseDto1);
+    couponDetailUsedResponseDtos.add(couponDetailUsedResponseDto2);
+    couponDetailUsedResponseDtos.add(couponDetailUsedResponseDto3);
+    couponDetailUsedResponseDtos.add(couponDetailUsedResponseDto4);
+
+    CouponListUsedResponseDto couponListUsedResponseDto =
+        new CouponListUsedResponseDto(couponDetailUsedResponseDtos);
+
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    when(couponService.getUsedCouponList(eq(userId))).thenReturn(couponListUsedResponseDto);
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/coupon/user/used").cookie(authCookie).contentType(MediaType.APPLICATION_JSON));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("code").value(200))
+        .andExpect(jsonPath("message").value("SUCCESS"))
+        .andExpect(
+            jsonPath("data.coupons[0].couponId").value(couponDetailUsedResponseDto1.couponId()))
+        .andExpect(
+            jsonPath("data.coupons[0].chargeAmount")
+                .value(couponDetailUsedResponseDto1.chargeAmount()))
+        .andExpect(
+            jsonPath("data.coupons[0].couponName").value(couponDetailUsedResponseDto1.couponName()))
+        .andExpect(
+            jsonPath("data.coupons[0].interviewModeKorean")
+                .value(couponDetailUsedResponseDto1.interviewModeKorean()))
+        .andExpect(
+            jsonPath("data.coupons[0].interviewAssetTypeKorean")
+                .value(couponDetailUsedResponseDto1.interviewAssetTypeKorean()))
+        .andExpect(
+            jsonPath("data.coupons[0].usedAt")
+                .value(couponDetailUsedResponseDto1.usedAt().toString()));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "유저 사용 쿠폰 목록 조회 - 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Coupon API")
+                    .summary("쿠폰 API")
+                    .description("조회한 유저가 이미 사용한 쿠폰 목록 최신순 조회")
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data.coupons[].couponId").description("쿠폰 식별자"),
+                        fieldWithPath("data.coupons[].chargeAmount")
+                            .description("쿠폰 사용 시 충전 가능 이용권 수량"),
+                        fieldWithPath("data.coupons[].couponName").description("쿠폰 이름"),
+                        fieldWithPath("data.coupons[].interviewModeKorean")
+                            .description("면접 모드 한글(실전, 모의)"),
+                        fieldWithPath("data.coupons[].interviewAssetTypeKorean")
+                            .description("이용권 유형 한글(채팅, 음성)"),
+                        fieldWithPath("data.coupons[].usedAt").description("사용 일시"))
+                    .build())));
+  }
+
+  @Test
+  @DisplayName("유저 만료 쿠폰 목록 조회 - 성공")
+  void getUserCouponsExpired() throws Exception {
+    // given
+    Long userId = 1L;
+
+    CouponDetailSimpleResponseDto couponDetailSimpleResponseDto1 =
+        new CouponDetailSimpleResponseDto(
+            1L, 1, "웰컴 쿠폰", "실전", "채팅", LocalDateTime.now().minusMinutes(1));
+    CouponDetailSimpleResponseDto couponDetailSimpleResponseDto2 =
+        new CouponDetailSimpleResponseDto(
+            2L, 1, "웰컴 쿠폰", "실전", "음성", LocalDateTime.now().minusHours(1));
+    CouponDetailSimpleResponseDto couponDetailSimpleResponseDto3 =
+        new CouponDetailSimpleResponseDto(
+            3L, 5, "웰컴 쿠폰", "모의", "채팅", LocalDateTime.now().minusDays(1));
+    CouponDetailSimpleResponseDto couponDetailSimpleResponseDto4 =
+        new CouponDetailSimpleResponseDto(
+            4L, 3, "웰컴 쿠폰", "모의", "음성", LocalDateTime.now().minusMonths(1));
+
+    List<CouponDetailSimpleResponseDto> couponDetailSimpleResponseDtos = new ArrayList<>();
+    couponDetailSimpleResponseDtos.add(couponDetailSimpleResponseDto1);
+    couponDetailSimpleResponseDtos.add(couponDetailSimpleResponseDto2);
+    couponDetailSimpleResponseDtos.add(couponDetailSimpleResponseDto3);
+    couponDetailSimpleResponseDtos.add(couponDetailSimpleResponseDto4);
+
+    CouponListExpiredResponseDto couponListExpiredResponseDto =
+        new CouponListExpiredResponseDto(couponDetailSimpleResponseDtos);
+
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    when(couponService.getExpiredCouponList(eq(userId))).thenReturn(couponListExpiredResponseDto);
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/coupon/user/expired").cookie(authCookie).contentType(MediaType.APPLICATION_JSON));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("code").value(200))
+        .andExpect(jsonPath("message").value("SUCCESS"))
+        .andExpect(
+            jsonPath("data.coupons[0].couponId").value(couponDetailSimpleResponseDto1.couponId()))
+        .andExpect(
+            jsonPath("data.coupons[0].chargeAmount")
+                .value(couponDetailSimpleResponseDto1.chargeAmount()))
+        .andExpect(
+            jsonPath("data.coupons[0].couponName")
+                .value(couponDetailSimpleResponseDto1.couponName()))
+        .andExpect(
+            jsonPath("data.coupons[0].interviewModeKorean")
+                .value(couponDetailSimpleResponseDto1.interviewModeKorean()))
+        .andExpect(
+            jsonPath("data.coupons[0].interviewAssetTypeKorean")
+                .value(couponDetailSimpleResponseDto1.interviewAssetTypeKorean()))
+        .andExpect(
+            jsonPath("data.coupons[0].expireAt")
+                .value(couponDetailSimpleResponseDto1.expireAt().toString()));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "유저 만료 쿠폰 목록 조회 - 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Coupon API")
+                    .summary("쿠폰 API")
+                    .description("조회한 유저의 만료된 쿠폰 목록 최신순 조회")
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data.coupons[].couponId").description("쿠폰 식별자"),
+                        fieldWithPath("data.coupons[].chargeAmount")
+                            .description("쿠폰 사용 시 충전 가능 이용권 수량"),
+                        fieldWithPath("data.coupons[].couponName").description("쿠폰 이름"),
+                        fieldWithPath("data.coupons[].interviewModeKorean")
+                            .description("면접 모드 한글(실전, 모의)"),
+                        fieldWithPath("data.coupons[].interviewAssetTypeKorean")
+                            .description("이용권 유형 한글(채팅, 음성)"),
+                        fieldWithPath("data.coupons[].expireAt").description("만료 예정 일시"))
                     .build())));
   }
 }

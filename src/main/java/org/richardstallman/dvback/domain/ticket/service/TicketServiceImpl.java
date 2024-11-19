@@ -13,6 +13,7 @@ import org.richardstallman.dvback.domain.ticket.converter.TicketConverter;
 import org.richardstallman.dvback.domain.ticket.converter.TicketTransactionConverter;
 import org.richardstallman.dvback.domain.ticket.domain.TicketDomain;
 import org.richardstallman.dvback.domain.ticket.domain.TicketTransactionDomain;
+import org.richardstallman.dvback.domain.ticket.domain.TicketUserCountInfoDto;
 import org.richardstallman.dvback.domain.ticket.domain.TicketUserInfoDto;
 import org.richardstallman.dvback.domain.ticket.domain.request.TicketTransactionRequestDto;
 import org.richardstallman.dvback.domain.ticket.domain.response.TicketResponseDto;
@@ -113,13 +114,32 @@ public class TicketServiceImpl implements TicketService {
         ticketTransactionRepository.findTicketsByUserId(userId).stream()
             .map(ticketTransactionConverter::fromDomainToDetailResponseDto)
             .toList();
-    return new TicketUserInfoDto(
+    TicketUserCountInfoDto ticketUserCountInfoDto =
+        new TicketUserCountInfoDto(
+            currentBalance,
+            ticketDomain.getRealChatBalance(),
+            ticketDomain.getRealVoiceBalance(),
+            ticketDomain.getGeneralChatBalance(),
+            ticketDomain.getGeneralVoiceBalance());
+    return ticketConverter.generateUserInfoDto(
+        ticketUserCountInfoDto, ticketTransactionDetailResponseDtos);
+  }
+
+  @Override
+  public TicketUserCountInfoDto getUserCountInfo(Long userId) {
+    TicketDomain ticketDomain = getUserTicket(getUser(userId));
+    int currentBalance =
+        ticketDomain.getRealChatBalance()
+            + ticketDomain.getRealVoiceBalance()
+            + ticketDomain.getGeneralChatBalance()
+            + ticketDomain.getGeneralVoiceBalance();
+
+    return new TicketUserCountInfoDto(
         currentBalance,
         ticketDomain.getRealChatBalance(),
         ticketDomain.getRealVoiceBalance(),
         ticketDomain.getGeneralChatBalance(),
-        ticketDomain.getGeneralVoiceBalance(),
-        ticketTransactionDetailResponseDtos);
+        ticketDomain.getGeneralVoiceBalance());
   }
 
   @Override
@@ -172,7 +192,12 @@ public class TicketServiceImpl implements TicketService {
   private String generateDescription(TicketTransactionRequestDto ticketTransactionRequestDto) {
     if (ticketTransactionRequestDto.description() == null
         || ticketTransactionRequestDto.description().isEmpty()) {
-      return ticketTransactionRequestDto.ticketTransactionMethod().getKoreanName()
+      return ticketTransactionRequestDto.interviewMode().getKoreanName()
+          + " "
+          + (ticketTransactionRequestDto.ticketTransactionType() == USE
+              ? ""
+              : ticketTransactionRequestDto.interviewAssetType() + " ")
+          + ticketTransactionRequestDto.ticketTransactionMethod().getKoreanName()
           + " "
           + ticketTransactionRequestDto.ticketTransactionType().getKoreanName();
     }

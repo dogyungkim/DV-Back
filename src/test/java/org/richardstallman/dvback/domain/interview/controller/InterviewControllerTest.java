@@ -40,6 +40,7 @@ import org.richardstallman.dvback.domain.interview.domain.response.InterviewList
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewResponseDto;
 import org.richardstallman.dvback.domain.interview.service.InterviewService;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
+import org.richardstallman.dvback.domain.ticket.domain.TicketUserCountInfoDto;
 import org.richardstallman.dvback.domain.ticket.domain.TicketUserInfoDto;
 import org.richardstallman.dvback.domain.ticket.domain.response.TicketResponseDto;
 import org.richardstallman.dvback.domain.ticket.domain.response.TicketTransactionDetailResponseDto;
@@ -103,8 +104,9 @@ public class InterviewControllerTest {
     TicketResponseDto ticketResponseDto =
         new TicketResponseDto(10, 1, 2, 3, 4, ticketTransactionDetailResponseDto1);
 
+    TicketUserCountInfoDto ticketUserCountInfoDto = new TicketUserCountInfoDto(10, 1, 2, 3, 4);
     TicketUserInfoDto ticketUserInfoDto =
-        new TicketUserInfoDto(10, 1, 2, 3, 4, ticketTransactionDetailResponseDtos);
+        new TicketUserInfoDto(ticketUserCountInfoDto, ticketTransactionDetailResponseDtos);
 
     files.add(
         new CoverLetterRequestDto(

@@ -3,6 +3,7 @@ package org.richardstallman.dvback.domain.coupon.service;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
@@ -10,7 +11,12 @@ import org.richardstallman.dvback.domain.coupon.converter.CouponConverter;
 import org.richardstallman.dvback.domain.coupon.domain.CouponDomain;
 import org.richardstallman.dvback.domain.coupon.domain.request.CouponCreateRequestDto;
 import org.richardstallman.dvback.domain.coupon.domain.request.CouponUseRequestDto;
+import org.richardstallman.dvback.domain.coupon.domain.response.CouponDetailSimpleResponseDto;
+import org.richardstallman.dvback.domain.coupon.domain.response.CouponDetailUsedResponseDto;
 import org.richardstallman.dvback.domain.coupon.domain.response.CouponInfoResponseDto;
+import org.richardstallman.dvback.domain.coupon.domain.response.CouponListExpiredResponseDto;
+import org.richardstallman.dvback.domain.coupon.domain.response.CouponListSimpleResponseDto;
+import org.richardstallman.dvback.domain.coupon.domain.response.CouponListUsedResponseDto;
 import org.richardstallman.dvback.domain.coupon.domain.response.CouponUseResponseDto;
 import org.richardstallman.dvback.domain.coupon.repository.CouponRepository;
 import org.richardstallman.dvback.domain.ticket.domain.request.TicketTransactionRequestDto;
@@ -75,6 +81,36 @@ public class CouponServiceImpl implements CouponService {
         couponConverter.fromDomainToInfoResponseDto(usedCoupon), ticketTransactionResponseDto);
   }
 
+  @Override
+  public CouponListSimpleResponseDto getSimpleCouponList(Long userId) {
+    validateCouponsForUser(userId);
+    List<CouponDetailSimpleResponseDto> couponDetailSimpleResponseDtos =
+        couponRepository.findSimpleListByUserId(userId).stream()
+            .map(couponConverter::fromDomainToDetailSimpleResponseDto)
+            .toList();
+    return new CouponListSimpleResponseDto(couponDetailSimpleResponseDtos);
+  }
+
+  @Override
+  public CouponListUsedResponseDto getUsedCouponList(Long userId) {
+    validateCouponsForUser(userId);
+    List<CouponDetailUsedResponseDto> couponDetailUsedResponseDtos =
+        couponRepository.findUsedListByUserId(userId).stream()
+            .map(couponConverter::fromDomainToDetailUsedResponseDto)
+            .toList();
+    return new CouponListUsedResponseDto(couponDetailUsedResponseDtos);
+  }
+
+  @Override
+  public CouponListExpiredResponseDto getExpiredCouponList(Long userId) {
+    validateCouponsForUser(userId);
+    List<CouponDetailSimpleResponseDto> couponDetailSimpleResponseDtos =
+        couponRepository.findExpiredListByUserId(userId).stream()
+            .map(couponConverter::fromDomainToDetailSimpleResponseDto)
+            .toList();
+    return new CouponListExpiredResponseDto(couponDetailSimpleResponseDtos);
+  }
+
   private void validateCoupon(CouponDomain couponDomain) {
     if (couponDomain.getExpireAt().isBefore(LocalDateTime.now())) {
       couponDomain = couponRepository.save(couponConverter.fromUnExpiredToExpired(couponDomain));
@@ -89,6 +125,15 @@ public class CouponServiceImpl implements CouponService {
               + ") expired at ("
               + couponDomain.getExpireAt()
               + ")");
+    }
+  }
+
+  private void validateCouponsForUser(Long userId) {
+    List<CouponDomain> coupons = couponRepository.findSimpleListByUserId(userId);
+    for (CouponDomain couponDomain : coupons) {
+      if (couponDomain.getExpireAt().isBefore(LocalDateTime.now())) {
+        couponRepository.save(couponConverter.fromUnExpiredToExpired(couponDomain));
+      }
     }
   }
 
