@@ -91,7 +91,7 @@ public class InterviewServiceImpl implements InterviewService {
     validateUserTicket(interviewCreateRequestDto, userId, questionCount);
     TicketTransactionRequestDto ticketTransactionRequestDto =
         new TicketTransactionRequestDto(
-            -1,
+            -1 * calculateRequiredTickets(questionCount),
             TicketTransactionType.USE,
             fromInterviewMethodToTicketTransactionMethod(
                 interviewCreateRequestDto.interviewMethod()),
