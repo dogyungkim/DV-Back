@@ -211,4 +211,74 @@ public class UserControllerTest {
                         fieldWithPath("data.birthdate").description("생년월일"))
                     .build())));
   }
+
+  @Test
+  @WithMockUser
+  @DisplayName("/authenticated - 인증 상태 확인 성공")
+  void isAuthenticated_success() throws Exception {
+    // given
+    Long userId = 1L; // Mock user ID
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/user/authenticated").contentType(MediaType.APPLICATION_JSON).cookie(authCookie));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code").value(200))
+        .andExpect(jsonPath("$.message").value("SUCCESS"))
+        .andExpect(jsonPath("$.data").value(true));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "로그인 여부 확인 - 인증 상태 확인 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("User API")
+                    .summary("현재 사용자 인증 상태 확인")
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data").description("인증 여부 (true: 인증됨, false: 인증되지 않음)"))
+                    .build())));
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("/authenticated - 토큰 없음으로 인증 실패")
+  void isAuthenticated_failure_noToken() throws Exception {
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(get("/user/authenticated").contentType(MediaType.APPLICATION_JSON));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code").value(200))
+        .andExpect(jsonPath("$.message").value("SUCCESS"))
+        .andExpect(jsonPath("$.data").value(false));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "로그인 여부 확인 - 인증 실패 (토큰 없음)",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("User API")
+                    .summary("현재 사용자 인증 상태 확인")
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data").description("인증 여부 (true: 인증됨, false: 인증되지 않음)"))
+                    .build())));
+  }
 }

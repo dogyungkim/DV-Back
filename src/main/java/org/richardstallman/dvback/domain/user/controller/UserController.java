@@ -12,8 +12,6 @@ import org.richardstallman.dvback.domain.user.domain.response.UserLoginResponseD
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.richardstallman.dvback.domain.user.service.UserService;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
-import org.richardstallman.dvback.global.jwt.refreshtoken.repository.RefreshTokenRepository;
-import org.richardstallman.dvback.global.oauth.service.CookieService;
 import org.richardstallman.dvback.global.oauth.service.TokenService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +25,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
   private final TokenService tokenService;
-  private final CookieService cookieService;
-  private final RefreshTokenRepository refreshTokenRepository;
   private final UserService userService;
   private final UserConverter userConverter;
+  private final JwtUtil jwtUtil;
 
   @PostMapping("/logout")
   public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
@@ -68,5 +65,21 @@ public class UserController {
     return ResponseEntity.ok(
         DvApiResponse.of(
             userConverter.fromResponseDtoToLoginResponseDto(userResponseDto, "login")));
+  }
+
+  @GetMapping("/authenticated")
+  public ResponseEntity<DvApiResponse<Boolean>> isAuthenticated(HttpServletRequest request) {
+    String accessToken =
+        tokenService.getTokenFromCookies(request.getCookies(), JwtUtil.ACCESS_TOKEN);
+
+    if (accessToken == null || accessToken.isEmpty()) {
+      return ResponseEntity.ok(DvApiResponse.of(false));
+    }
+
+    if (jwtUtil.validateToken(accessToken)) {
+      return ResponseEntity.ok(DvApiResponse.of(false));
+    }
+
+    return ResponseEntity.ok(DvApiResponse.of(true));
   }
 }
