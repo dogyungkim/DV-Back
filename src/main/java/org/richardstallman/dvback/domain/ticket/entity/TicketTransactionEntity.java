@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
 import org.richardstallman.dvback.domain.user.entity.UserEntity;
@@ -47,6 +48,9 @@ public class TicketTransactionEntity extends BaseEntity {
 
   @Enumerated(EnumType.STRING)
   private TicketTransactionMethod ticketTransactionMethod;
+
+  @Enumerated(EnumType.STRING)
+  private InterviewMode interviewMode;
 
   @Enumerated(EnumType.STRING)
   private InterviewAssetType interviewAssetType;

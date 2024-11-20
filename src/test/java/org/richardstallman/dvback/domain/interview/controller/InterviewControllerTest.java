@@ -40,6 +40,7 @@ import org.richardstallman.dvback.domain.interview.domain.response.InterviewList
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewResponseDto;
 import org.richardstallman.dvback.domain.interview.service.InterviewService;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
+import org.richardstallman.dvback.domain.ticket.domain.TicketUserCountInfoDto;
 import org.richardstallman.dvback.domain.ticket.domain.TicketUserInfoDto;
 import org.richardstallman.dvback.domain.ticket.domain.response.TicketResponseDto;
 import org.richardstallman.dvback.domain.ticket.domain.response.TicketTransactionDetailResponseDto;
@@ -93,16 +94,19 @@ public class InterviewControllerTest {
             TicketTransactionType.USE.getKoreanName(),
             TicketTransactionMethod.CHAT,
             TicketTransactionMethod.CHAT.getKoreanName(),
+            InterviewMode.REAL,
+            InterviewMode.REAL.getKoreanName(),
             InterviewAssetType.CHAT,
             InterviewAssetType.CHAT.getKoreanName(),
             "채팅 면접 사용",
             LocalDateTime.now());
 
     TicketResponseDto ticketResponseDto =
-        new TicketResponseDto(3, 2, 1, ticketTransactionDetailResponseDto1);
+        new TicketResponseDto(10, 1, 2, 3, 4, ticketTransactionDetailResponseDto1);
 
+    TicketUserCountInfoDto ticketUserCountInfoDto = new TicketUserCountInfoDto(10, 1, 2, 3, 4);
     TicketUserInfoDto ticketUserInfoDto =
-        new TicketUserInfoDto(3, 2, 1, ticketTransactionDetailResponseDtos);
+        new TicketUserInfoDto(ticketUserCountInfoDto, ticketTransactionDetailResponseDtos);
 
     files.add(
         new CoverLetterRequestDto(
@@ -110,7 +114,13 @@ public class InterviewControllerTest {
 
     InterviewCreateRequestDto interviewCreateRequestDto =
         new InterviewCreateRequestDto(
-            "면접 제목", InterviewType.TECHNICAL, InterviewMethod.VIDEO, InterviewMode.REAL, 2L, files);
+            "면접 제목",
+            InterviewType.TECHNICAL,
+            InterviewMethod.VOICE,
+            InterviewMode.REAL,
+            2L,
+            5,
+            files);
 
     MockCookie authCookie = new MockCookie("access_token", accessToken);
 
@@ -131,8 +141,9 @@ public class InterviewControllerTest {
                 "면접 제목",
                 InterviewStatus.INITIAL,
                 InterviewType.TECHNICAL,
-                InterviewMethod.VIDEO,
+                InterviewMethod.VOICE,
                 InterviewMode.REAL,
+                5,
                 JobDomain.builder()
                     .jobId(1L)
                     .jobName("BACK_END")
@@ -156,7 +167,7 @@ public class InterviewControllerTest {
         .andExpect(jsonPath("data.interviewId").value(1))
         .andExpect(jsonPath("data.interviewStatus").value("INITIAL"))
         .andExpect(jsonPath("data.interviewType").value("TECHNICAL"))
-        .andExpect(jsonPath("data.interviewMethod").value("VIDEO"))
+        .andExpect(jsonPath("data.interviewMethod").value("VOICE"))
         .andExpect(jsonPath("data.interviewMode").value("REAL"))
         .andExpect(jsonPath("data.job.jobId").value(1L))
         .andExpect(jsonPath("data.job.jobName").value("BACK_END"))
@@ -186,6 +197,9 @@ public class InterviewControllerTest {
                         fieldWithPath("interviewMode")
                             .type(JsonFieldType.STRING)
                             .description("면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"),
+                        fieldWithPath("questionCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 질문 개수"),
                         fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자"),
                         fieldWithPath("files[0].type")
                             .type(JsonFieldType.STRING)
@@ -215,6 +229,9 @@ public class InterviewControllerTest {
                         fieldWithPath("data.interviewMode")
                             .type(JsonFieldType.STRING)
                             .description("면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"),
+                        fieldWithPath("data.questionCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 질문 개수"),
                         fieldWithPath("data.job.jobId")
                             .type(JsonFieldType.NUMBER)
                             .description("직무 식별자"),
@@ -240,48 +257,60 @@ public class InterviewControllerTest {
                         fieldWithPath("data.files[0].s3FileUrl")
                             .type(JsonFieldType.STRING)
                             .description("파일 경로: {파일 유형}/{유저 식별자}/{timestamp}/{파일명}"),
-                        fieldWithPath("data.ticket.currentBalance")
+                        fieldWithPath("data.ticket.totalBalance")
                             .type(JsonFieldType.NUMBER)
-                            .description("(실전 면접 시) 이용권 사용 후 잔여 이용권 수"),
-                        fieldWithPath("data.ticket.currentChatBalance")
+                            .description("이용권 사용 후 잔여 이용권 수"),
+                        fieldWithPath("data.ticket.realChatBalance")
                             .type(JsonFieldType.NUMBER)
                             .description("(실전 면접 시) 이용권 사용 후 잔여 채팅 이용권 수"),
-                        fieldWithPath("data.ticket.currentVoiceBalance")
+                        fieldWithPath("data.ticket.realVoiceBalance")
                             .type(JsonFieldType.NUMBER)
                             .description("(실전 면접 시) 이용권 사용 후 잔여 음성 이용권 수"),
+                        fieldWithPath("data.ticket.generalChatBalance")
+                            .type(JsonFieldType.NUMBER)
+                            .description("(모의 면접 시) 이용권 사용 후 잔여 채팅 이용권 수"),
+                        fieldWithPath("data.ticket.generalVoiceBalance")
+                            .type(JsonFieldType.NUMBER)
+                            .description("(모의 면접 시) 이용권 사용 후 잔여 음성 이용권 수"),
                         fieldWithPath("data.ticket.ticketTransactionDetail.ticketTransactionId")
                             .type(JsonFieldType.NUMBER)
-                            .description("(실전 면접 시) 이용권 사용 내역 식별자"),
+                            .description("이용권 사용 내역 식별자"),
                         fieldWithPath("data.ticket.ticketTransactionDetail.amount")
                             .type(JsonFieldType.NUMBER)
-                            .description("(실전 면접 시) 이용권 사용 내역 사용 수량"),
+                            .description("이용권 사용 내역 사용 수량"),
                         fieldWithPath("data.ticket.ticketTransactionDetail.ticketTransactionType")
                             .type(JsonFieldType.STRING)
-                            .description("(실전 면접 시) 이용권 사용 내역 타입: USE(사용), CHARGE(충전)"),
+                            .description("이용권 사용 내역 타입: USE(사용), CHARGE(충전)"),
                         fieldWithPath(
                                 "data.ticket.ticketTransactionDetail.ticketTransactionTypeKorean")
                             .type(JsonFieldType.STRING)
-                            .description("(실전 면접 시) 이용권 사용 내역 타입 한글"),
+                            .description("이용권 사용 내역 타입 한글"),
                         fieldWithPath("data.ticket.ticketTransactionDetail.ticketTransactionMethod")
                             .type(JsonFieldType.STRING)
-                            .description("(실전 면접 시) 이용권 사용 내역 방식: CHAT(채팅), VOICE(음성)"),
+                            .description("이용권 사용 내역 방식: CHAT(채팅), VOICE(음성)"),
                         fieldWithPath(
                                 "data.ticket.ticketTransactionDetail.ticketTransactionMethodKorean")
                             .type(JsonFieldType.STRING)
-                            .description("(실전 면접 시) 이용권 사용 내역 방식 한글"),
+                            .description("이용권 사용 내역 방식 한글"),
+                        fieldWithPath("data.ticket.ticketTransactionDetail.interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("이용권 면접 모드: REAL(실전), GENERAL(모의)"),
+                        fieldWithPath("data.ticket.ticketTransactionDetail.interviewModeKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("이용권 면접 모드 한글"),
                         fieldWithPath("data.ticket.ticketTransactionDetail.interviewAssetType")
                             .type(JsonFieldType.STRING)
-                            .description("(실전 면접 시) 이용권 사용 내역 타입: CHAT(채팅), VOICE(음성)"),
+                            .description("이용권 사용 내역 타입: CHAT(채팅), VOICE(음성)"),
                         fieldWithPath(
                                 "data.ticket.ticketTransactionDetail.interviewAssetTypeKorean")
                             .type(JsonFieldType.STRING)
-                            .description("(실전 면접 시) 이용권 사용 내역 타입 한글"),
+                            .description("이용권 사용 내역 타입 한글"),
                         fieldWithPath("data.ticket.ticketTransactionDetail.description")
                             .type(JsonFieldType.STRING)
-                            .description("(실전 면접 시) 이용권 사용 내역 설명"),
+                            .description("이용권 사용 내역 설명"),
                         fieldWithPath("data.ticket.ticketTransactionDetail.generatedAt")
                             .type(JsonFieldType.STRING)
-                            .description("(실전 면접 시) 이용권 사용 내역 생성 일시"))
+                            .description("이용권 사용 내역 생성 일시"))
                     .build())));
   }
 
@@ -298,7 +327,7 @@ public class InterviewControllerTest {
             FileType.COVER_LETTER, "COVER_LETTER/1/" + timestamp + "/coverLetterName"));
     InterviewCreateRequestDto interviewCreateRequestDto =
         new InterviewCreateRequestDto(
-            null, null, InterviewMethod.VIDEO, InterviewMode.REAL, 2L, files);
+            null, null, InterviewMethod.VOICE, InterviewMode.REAL, 2L, 5, files);
     String content = objectMapper.writeValueAsString(interviewCreateRequestDto);
 
     // when
@@ -352,9 +381,10 @@ public class InterviewControllerTest {
         new InterviewCreateRequestDto(
             "interview title",
             InterviewType.TECHNICAL,
-            InterviewMethod.VIDEO,
+            InterviewMethod.VOICE,
             InterviewMode.REAL,
             999L, // 유효하지 않은 직무 ID
+            5,
             files);
 
     MockCookie authCookie = new MockCookie("access_token", accessToken);
@@ -414,9 +444,10 @@ public class InterviewControllerTest {
         new InterviewCreateRequestDto(
             "interview title",
             InterviewType.TECHNICAL,
-            InterviewMethod.VIDEO,
+            InterviewMethod.VOICE,
             InterviewMode.REAL,
             2L,
+            5,
             files);
     String content = objectMapper.writeValueAsString(interviewCreateRequestDto);
 
@@ -464,7 +495,7 @@ public class InterviewControllerTest {
   void create_interview_with_invalid_data_format() throws Exception {
     // given
     String invalidContent =
-        "{\"interviewType\":\"INVALID_TYPE\",\"interviewMethod\":\"VIDEO\",\"interviewMode\":\"REAL\",\"jobId\":2}";
+        "{\"interviewType\":\"INVALID_TYPE\",\"interviewMethod\":\"VOICE\",\"interviewMode\":\"REAL\",\"jobId\":2}";
 
     // when
     ResultActions resultActions =
@@ -529,8 +560,9 @@ public class InterviewControllerTest {
             "면접 제목",
             InterviewStatus.READY,
             InterviewType.TECHNICAL,
-            InterviewMethod.VIDEO,
+            InterviewMethod.VOICE,
             InterviewMode.REAL,
+            5,
             JobDomain.builder()
                 .jobId(2L)
                 .jobName("BACK_END")
@@ -547,6 +579,7 @@ public class InterviewControllerTest {
             InterviewType.PERSONAL,
             InterviewMethod.VOICE,
             InterviewMode.REAL,
+            5,
             JobDomain.builder()
                 .jobId(3L)
                 .jobName("FRONT_END")
@@ -563,6 +596,7 @@ public class InterviewControllerTest {
             InterviewType.TECHNICAL,
             InterviewMethod.CHAT,
             InterviewMode.REAL,
+            5,
             JobDomain.builder()
                 .jobId(4L)
                 .jobName("INFRA")
@@ -579,6 +613,7 @@ public class InterviewControllerTest {
             InterviewType.TECHNICAL,
             InterviewMethod.CHAT,
             InterviewMode.GENERAL,
+            5,
             JobDomain.builder()
                 .jobId(5L)
                 .jobName("AI")
@@ -609,7 +644,7 @@ public class InterviewControllerTest {
         .andExpect(jsonPath("data.interviews[0].interviewTitle").value("면접 제목"))
         .andExpect(jsonPath("data.interviews[0].interviewStatus").value("READY"))
         .andExpect(jsonPath("data.interviews[0].interviewType").value("TECHNICAL"))
-        .andExpect(jsonPath("data.interviews[0].interviewMethod").value("VIDEO"))
+        .andExpect(jsonPath("data.interviews[0].interviewMethod").value("VOICE"))
         .andExpect(jsonPath("data.interviews[0].interviewMode").value("REAL"))
         .andExpect(jsonPath("data.interviews[0].job.jobId").value(2))
         .andExpect(jsonPath("data.interviews[0].job.jobName").value("BACK_END"))
@@ -652,6 +687,9 @@ public class InterviewControllerTest {
                         fieldWithPath("data.interviews[].interviewMode")
                             .type(JsonFieldType.STRING)
                             .description("면접 모드"),
+                        fieldWithPath("data.interviews[].questionCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 질문 개수"),
                         fieldWithPath("data.interviews[].job.jobId")
                             .type(JsonFieldType.NUMBER)
                             .description("직무 식별자"),

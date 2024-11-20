@@ -16,7 +16,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   config:
-    import: classpath:/initial_data.yml, optional:file:.env[.properties]
+    import: classpath:/initial_data.yml, optional:file:.env[.properties], classpath:/welcome_coupon.yml
   data:
     redis:
       host: ${REDIS_HOST}

@@ -64,6 +64,7 @@ public class QuestionConverter {
         questionInitialRequestDto.interviewMode(),
         questionInitialRequestDto.interviewType(),
         questionInitialRequestDto.interviewMethod(),
+        questionInitialRequestDto.questionCount(),
         jobName,
         questionInitialRequestDto.files().stream()
             .map(FileRequestDto::getFilePath)

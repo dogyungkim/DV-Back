@@ -75,6 +75,7 @@ public class QuestionControllerTest {
             InterviewType.TECHNICAL,
             InterviewMethod.CHAT,
             InterviewMode.GENERAL,
+            3,
             new ArrayList<>(),
             1L);
     String content = objectMapper.writeValueAsString(questionInitialRequestDto);
@@ -91,6 +92,7 @@ public class QuestionControllerTest {
                     InterviewType.TECHNICAL,
                     InterviewMethod.CHAT,
                     InterviewMode.GENERAL,
+                    3,
                     JobDomain.builder()
                         .jobId(1L)
                         .jobName("BACK_END")
@@ -159,6 +161,10 @@ public class QuestionControllerTest {
                         fieldWithPath("interviewMode")
                             .type(JsonFieldType.STRING)
                             .description("면접 모드"),
+                        fieldWithPath("questionCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description(
+                                "질문 개수: 모의(3개 고정. 다르게 보내줘도 3으로 저장됨.), 실전(5 / 10 / 15 중 유저가 선택)"),
                         fieldWithPath("files")
                             .type(JsonFieldType.ARRAY)
                             .description("모의 면접이므로 파일 정보 없어야 함."),
@@ -184,6 +190,9 @@ public class QuestionControllerTest {
                         fieldWithPath("data.interview.interviewMode")
                             .type(JsonFieldType.STRING)
                             .description("면접 모드"),
+                        fieldWithPath("data.interview.questionCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 질문 개수"),
                         fieldWithPath("data.interview.job.jobId")
                             .type(JsonFieldType.NUMBER)
                             .description("직무 식별자"),
@@ -233,6 +242,7 @@ public class QuestionControllerTest {
             InterviewType.TECHNICAL,
             InterviewMethod.CHAT,
             InterviewMode.REAL,
+            5,
             files,
             1L);
     String content = objectMapper.writeValueAsString(questionInitialRequestDto);
@@ -249,6 +259,7 @@ public class QuestionControllerTest {
                     InterviewType.TECHNICAL,
                     InterviewMethod.CHAT,
                     InterviewMode.REAL,
+                    5,
                     JobDomain.builder()
                         .jobId(1L)
                         .jobName("BACK_END")
@@ -317,6 +328,10 @@ public class QuestionControllerTest {
                         fieldWithPath("interviewMode")
                             .type(JsonFieldType.STRING)
                             .description("면접 모드"),
+                        fieldWithPath("questionCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description(
+                                "질문 개수: 모의(3개 고정. 다르게 보내줘도 3으로 저장됨.), 실전(5 / 10 / 15 중 유저가 선택)"),
                         fieldWithPath("files[0].filePath")
                             .type(JsonFieldType.STRING)
                             .description("파일 s3 url"),
@@ -345,6 +360,9 @@ public class QuestionControllerTest {
                         fieldWithPath("data.interview.interviewMode")
                             .type(JsonFieldType.STRING)
                             .description("면접 모드"),
+                        fieldWithPath("data.interview.questionCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 질문 개수"),
                         fieldWithPath("data.interview.job.jobId")
                             .type(JsonFieldType.NUMBER)
                             .description("직무 식별자"),
@@ -395,6 +413,7 @@ public class QuestionControllerTest {
                     InterviewType.TECHNICAL,
                     InterviewMethod.CHAT,
                     InterviewMode.GENERAL,
+                    3,
                     JobDomain.builder()
                         .jobId(1L)
                         .jobName("BACK_END")
@@ -483,6 +502,10 @@ public class QuestionControllerTest {
                         fieldWithPath("data.interview.interviewMode")
                             .type(JsonFieldType.STRING)
                             .description("면접 모드"),
+                        fieldWithPath("data.interview.questionCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description(
+                                "질문 개수: 모의(3개 고정. 다르게 보내줘도 3으로 저장됨.), 실전(5 / 10 / 15 중 유저가 선택)"),
                         fieldWithPath("data.interview.job.jobId")
                             .type(JsonFieldType.NUMBER)
                             .description("직무 식별자"),
