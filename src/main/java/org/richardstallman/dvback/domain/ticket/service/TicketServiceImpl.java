@@ -170,7 +170,9 @@ public class TicketServiceImpl implements TicketService {
     return userRepository
         .findById(userId)
         .orElseThrow(
-            () -> new ApiException(HttpStatus.NOT_FOUND, "(" + userId + "): User Not Found"));
+            () ->
+                new ApiException(
+                    HttpStatus.NOT_FOUND, String.format("(%d): User Not Found", userId)));
   }
 
   private TicketDomain getUserTicket(UserDomain userDomain) {
@@ -192,14 +194,14 @@ public class TicketServiceImpl implements TicketService {
   private String generateDescription(TicketTransactionRequestDto ticketTransactionRequestDto) {
     if (ticketTransactionRequestDto.description() == null
         || ticketTransactionRequestDto.description().isEmpty()) {
-      return ticketTransactionRequestDto.interviewMode().getKoreanName()
-          + " "
-          + (ticketTransactionRequestDto.ticketTransactionType() == USE
+      return String.format(
+          "%s %s%s %s",
+          ticketTransactionRequestDto.interviewMode().getKoreanName(),
+          (ticketTransactionRequestDto.ticketTransactionType() == USE
               ? ""
-              : ticketTransactionRequestDto.interviewAssetType() + " ")
-          + ticketTransactionRequestDto.ticketTransactionMethod().getKoreanName()
-          + " "
-          + ticketTransactionRequestDto.ticketTransactionType().getKoreanName();
+              : " " + ticketTransactionRequestDto.interviewAssetType()),
+          ticketTransactionRequestDto.ticketTransactionMethod().getKoreanName(),
+          ticketTransactionRequestDto.ticketTransactionType().getKoreanName());
     }
     return ticketTransactionRequestDto.description();
   }
@@ -209,7 +211,7 @@ public class TicketServiceImpl implements TicketService {
     if (actual != expected) {
       throw new ApiException(
           HttpStatus.BAD_REQUEST,
-          "Invalid transaction type: expected (" + expected + "), actual (" + actual + ")");
+          String.format("Invalid transaction type: expected (%s), actual (%s)", expected, actual));
     }
   }
 
