@@ -11,4 +11,6 @@ public interface UserService {
   UserResponseDto getUserInfo(Long userId);
 
   void logout(HttpServletResponse response, String RefreshToken);
+
+  boolean existsByUsername(String username);
 }

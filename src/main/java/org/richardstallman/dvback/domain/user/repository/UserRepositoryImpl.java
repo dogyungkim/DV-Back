@@ -28,4 +28,9 @@ public class UserRepositoryImpl implements UserRepository {
     return userConverter.fromEntityToDomain(
         userJpaRepository.save(userConverter.fromDomainToEntity(userDomain)));
   }
+
+  @Override
+  public boolean existsByUsername(String username) {
+    return userJpaRepository.existsByUsername(username);
+  }
 }

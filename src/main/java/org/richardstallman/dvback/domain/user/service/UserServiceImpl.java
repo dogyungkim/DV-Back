@@ -61,6 +61,11 @@ public class UserServiceImpl implements UserService {
     tokenService.deleteRefreshTokenByRefreshToken(refreshToken);
   }
 
+  @Override
+  public boolean existsByUsername(String username) {
+    return userRepository.existsByUsername(username);
+  }
+
   private UserDomain findUserById(Long userId) {
     return userRepository
         .findById(userId)

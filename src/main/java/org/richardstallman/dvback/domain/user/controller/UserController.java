@@ -33,7 +33,6 @@ public class UserController {
   public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
     String refreshToken =
         tokenService.getTokenFromCookies(request.getCookies(), JwtUtil.REFRESH_TOKEN);
-    log.info("refreshToken: {}", refreshToken);
     userService.logout(response, refreshToken);
 
     return ResponseEntity.ok("Logged out successfully");
@@ -81,5 +80,21 @@ public class UserController {
     }
 
     return ResponseEntity.ok(DvApiResponse.of(true));
+  }
+
+  @GetMapping("/profile-image")
+  public ResponseEntity<DvApiResponse<Boolean>> getProfileImage(@AuthenticationPrincipal Long userId) {
+
+    return ResponseEntity.ok(DvApiResponse.of(true));
+  }
+
+  @GetMapping("/validate-username")
+  public ResponseEntity<DvApiResponse<Boolean>> validateUsername(@RequestParam("username") String username) {
+
+    if (userService.existsByUsername(username)) {
+      return ResponseEntity.ok(DvApiResponse.of(true));
+    }
+
+    return ResponseEntity.ok(DvApiResponse.of(false));
   }
 }

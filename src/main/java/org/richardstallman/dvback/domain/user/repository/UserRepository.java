@@ -10,4 +10,6 @@ public interface UserRepository {
   Optional<UserDomain> findBySocialId(String socialId);
 
   UserDomain save(UserDomain userDomain);
+
+  boolean existsByUsername(String username);
 }
