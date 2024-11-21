@@ -89,6 +89,7 @@ public class EvaluationControllerTest {
             interviewType,
             interviewMethod,
             interviewMode,
+            5,
             job,
             new ArrayList<>());
     List<EvaluationCriteriaResponseDto> evaluationCriteriaResponseDtos = new ArrayList<>();
@@ -207,6 +208,7 @@ public class EvaluationControllerTest {
                         fieldWithPath("data.interview.interviewType").description("면접 유형"),
                         fieldWithPath("data.interview.interviewMethod").description("면접 방식"),
                         fieldWithPath("data.interview.interviewMode").description("면접 모드"),
+                        fieldWithPath("data.interview.questionCount").description("면접 질문 개수"),
                         fieldWithPath("data.interview.job.jobId").description("직무 식별자"),
                         fieldWithPath("data.interview.job.jobName").description("직무 이름"),
                         fieldWithPath("data.interview.job.jobNameKorean").description("직무 이름(한국어)"),

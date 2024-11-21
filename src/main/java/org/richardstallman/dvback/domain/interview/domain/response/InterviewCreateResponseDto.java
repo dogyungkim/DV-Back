@@ -17,6 +17,7 @@ public record InterviewCreateResponseDto(
     @NotNull InterviewType interviewType,
     @NotNull InterviewMethod interviewMethod,
     @NotNull InterviewMode interviewMode,
+    @NotNull int questionCount,
     @NotNull JobDomain job,
     List<FileResponseDto> files,
     TicketResponseDto ticket) {}

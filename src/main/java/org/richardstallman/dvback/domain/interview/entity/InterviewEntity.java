@@ -54,6 +54,8 @@ public class InterviewEntity extends BaseEntity {
   @NotNull(message = "Interview Mode is required") @Enumerated(EnumType.STRING)
   private InterviewMode interviewMode;
 
+  @NotNull(message = "Question Count is required") private int questionCount;
+
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "job_id", nullable = false)
   private JobEntity job;
@@ -69,6 +71,7 @@ public class InterviewEntity extends BaseEntity {
       InterviewType interviewType,
       InterviewMethod interviewMethod,
       InterviewMode interviewMode,
+      int questionCount,
       JobEntity job,
       CoverLetterEntity coverLetter) {
     super();
@@ -78,10 +81,8 @@ public class InterviewEntity extends BaseEntity {
     this.interviewType = interviewType;
     this.interviewMethod = interviewMethod;
     this.interviewMode = interviewMode;
+    this.questionCount = questionCount;
     this.job = job;
     this.coverLetter = coverLetter;
   }
-
-  //  private Long resumeId;
-  //  private Long portfolioId;
 }

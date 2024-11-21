@@ -26,6 +26,7 @@ public class TicketTransactionConverter {
         .userDomain(userConverter.fromEntityToDomain(ticketTransactionEntity.getUser()))
         .ticketTransactionType(ticketTransactionEntity.getTicketTransactionType())
         .ticketTransactionMethod(ticketTransactionEntity.getTicketTransactionMethod())
+        .interviewMode(ticketTransactionEntity.getInterviewMode())
         .interviewAssetType(ticketTransactionEntity.getInterviewAssetType())
         .description(ticketTransactionEntity.getDescription())
         .generatedAt(ticketTransactionEntity.getGeneratedAt())
@@ -40,6 +41,7 @@ public class TicketTransactionConverter {
         ticketTransactionDomain.getAmount(),
         ticketTransactionDomain.getTicketTransactionType(),
         ticketTransactionDomain.getTicketTransactionMethod(),
+        ticketTransactionDomain.getInterviewMode(),
         ticketTransactionDomain.getInterviewAssetType(),
         ticketTransactionDomain.getDescription(),
         ticketTransactionDomain.getGeneratedAt());
@@ -55,6 +57,7 @@ public class TicketTransactionConverter {
         .amount(ticketTransactionRequestDto.amount())
         .ticketTransactionType(ticketTransactionRequestDto.ticketTransactionType())
         .ticketTransactionMethod(ticketTransactionRequestDto.ticketTransactionMethod())
+        .interviewMode(ticketTransactionRequestDto.interviewMode())
         .interviewAssetType(ticketTransactionRequestDto.interviewAssetType())
         .description(ticketTransactionDescription)
         .generatedAt(generatedAt)
@@ -63,10 +66,17 @@ public class TicketTransactionConverter {
 
   public TicketTransactionResponseDto fromDomainToResponseDto(
       TicketTransactionDomain ticketTransactionDomain, TicketDomain ticketDomain) {
+    int ticketTotalAmount =
+        ticketDomain.getRealChatBalance()
+            + ticketDomain.getRealVoiceBalance()
+            + ticketDomain.getGeneralChatBalance()
+            + ticketDomain.getGeneralVoiceBalance();
     return new TicketTransactionResponseDto(
-        ticketDomain.getChatBalance() + ticketDomain.getVoiceBalance(),
-        ticketDomain.getChatBalance(),
-        ticketDomain.getVoiceBalance(),
+        ticketTotalAmount,
+        ticketDomain.getRealChatBalance(),
+        ticketDomain.getRealVoiceBalance(),
+        ticketDomain.getGeneralChatBalance(),
+        ticketDomain.getGeneralVoiceBalance(),
         new TicketTransactionDetailResponseDto(
             ticketTransactionDomain.getTicketTransactionId(),
             ticketTransactionDomain.getAmount(),
@@ -74,6 +84,8 @@ public class TicketTransactionConverter {
             ticketTransactionDomain.getTicketTransactionType().getKoreanName(),
             ticketTransactionDomain.getTicketTransactionMethod(),
             ticketTransactionDomain.getTicketTransactionMethod().getKoreanName(),
+            ticketTransactionDomain.getInterviewMode(),
+            ticketTransactionDomain.getInterviewMode().getKoreanName(),
             ticketTransactionDomain.getInterviewAssetType(),
             ticketTransactionDomain.getInterviewAssetType().getKoreanName(),
             ticketTransactionDomain.getDescription(),
@@ -89,6 +101,8 @@ public class TicketTransactionConverter {
         ticketTransactionDomain.getTicketTransactionType().getKoreanName(),
         ticketTransactionDomain.getTicketTransactionMethod(),
         ticketTransactionDomain.getTicketTransactionMethod().getKoreanName(),
+        ticketTransactionDomain.getInterviewMode(),
+        ticketTransactionDomain.getInterviewMode().getKoreanName(),
         ticketTransactionDomain.getInterviewAssetType(),
         ticketTransactionDomain.getInterviewAssetType().getKoreanName(),
         ticketTransactionDomain.getDescription(),

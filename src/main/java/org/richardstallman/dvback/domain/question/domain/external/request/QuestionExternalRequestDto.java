@@ -10,6 +10,7 @@ public record QuestionExternalRequestDto(
     @JsonProperty("interview_mode") @NotNull String interviewMode,
     @JsonProperty("interview_type") @NotNull String interviewType,
     @JsonProperty("interview_method") @NotNull String interviewMethod,
+    @JsonProperty("question_count") @NotNull Integer questionCount,
     @JsonProperty("job_role") @NotNull String jobName,
     @JsonProperty("file_paths") String[] filePaths) {
 
@@ -17,12 +18,14 @@ public record QuestionExternalRequestDto(
       InterviewMode interviewMode,
       InterviewType interviewType,
       InterviewMethod interviewMethod,
+      Integer questionCount,
       String jobName,
       String[] filePaths) {
     this(
         interviewMode.getPythonFormat(),
         interviewType.getPythonFormat(),
         interviewMethod.getPythonFormat(),
+        questionCount,
         convertJobNameToPythonFormat(jobName),
         filePaths);
   }

@@ -39,7 +39,8 @@ public class EvaluationCriteriaEntity extends BaseEntity {
   @NotNull(message = "Evaluation Criteria is required") @Enumerated(EnumType.STRING)
   private EvaluationCriteria evaluationCriteriaName;
 
-  @NotNull(message = "Feedback Text is required") private String feedbackText;
+  @NotNull(message = "Feedback Text is required") @Column(columnDefinition = "TEXT")
+  private String feedbackText;
 
   @NotNull(message = "Score is required") private int score;
 

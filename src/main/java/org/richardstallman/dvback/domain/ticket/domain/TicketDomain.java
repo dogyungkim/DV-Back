@@ -10,6 +10,8 @@ public class TicketDomain {
 
   private final Long ticketId;
   private final UserDomain userDomain;
-  private int chatBalance;
-  private int voiceBalance;
+  private int realChatBalance;
+  private int realVoiceBalance;
+  private int generalChatBalance;
+  private int generalVoiceBalance;
 }
