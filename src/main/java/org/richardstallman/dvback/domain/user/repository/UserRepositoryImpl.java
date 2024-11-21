@@ -33,4 +33,9 @@ public class UserRepositoryImpl implements UserRepository {
   public boolean existsByUsername(String username) {
     return userJpaRepository.existsByUsername(username);
   }
+
+  @Override
+  public Optional<String> findProfileImageUrlById(Long userId) {
+    return userJpaRepository.findProfileImageUrlById(userId);
+  }
 }

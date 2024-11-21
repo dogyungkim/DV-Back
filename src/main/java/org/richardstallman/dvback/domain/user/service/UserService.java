@@ -13,4 +13,6 @@ public interface UserService {
   void logout(HttpServletResponse response, String RefreshToken);
 
   boolean existsByUsername(String username);
+
+  String getProfileImage(Long userId);
 }

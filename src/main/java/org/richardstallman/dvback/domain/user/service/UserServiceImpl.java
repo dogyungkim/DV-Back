@@ -84,6 +84,13 @@ public class UserServiceImpl implements UserService {
     return userRepository.existsByUsername(username);
   }
 
+  @Override
+  public String getProfileImage(Long userId) {
+    return userRepository
+            .findProfileImageUrlById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("Profile image not found for user id: " + userId));
+  }
+
   private UserDomain findUserById(Long userId) {
     return userRepository
         .findById(userId)

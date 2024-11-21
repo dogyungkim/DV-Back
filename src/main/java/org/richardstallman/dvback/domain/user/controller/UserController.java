@@ -83,9 +83,9 @@ public class UserController {
   }
 
   @GetMapping("/profile-image")
-  public ResponseEntity<DvApiResponse<Boolean>> getProfileImage(@AuthenticationPrincipal Long userId) {
-
-    return ResponseEntity.ok(DvApiResponse.of(true));
+  public ResponseEntity<DvApiResponse<String>> getProfileImage(@AuthenticationPrincipal Long userId) {
+    String profileImageUrl = userService.getProfileImage(userId);
+    return ResponseEntity.ok(DvApiResponse.of(profileImageUrl));
   }
 
   @GetMapping("/validate-username")
