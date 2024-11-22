@@ -3,6 +3,8 @@ package org.richardstallman.dvback.domain.user.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
@@ -17,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -38,11 +41,14 @@ public class UserController {
     return ResponseEntity.ok("Logged out successfully");
   }
 
-  @PutMapping("/info")
+  @PostMapping("/info")
   public ResponseEntity<DvApiResponse<UserResponseDto>> updateUserInfo(
       @AuthenticationPrincipal Long userId,
-      @Valid @RequestBody final UserRequestDto userRequestDto) {
-    final UserResponseDto userResponseDto = userService.updateUserInfo(userId, userRequestDto);
+      @RequestPart("userInfo") @Valid final UserRequestDto userRequestDto,
+      @RequestPart("profileImage") @NotNull MultipartFile profileImage)
+      throws IOException {
+    final UserResponseDto userResponseDto =
+        userService.updateUserInfo(userId, userRequestDto, profileImage);
     return ResponseEntity.ok(DvApiResponse.of(userResponseDto));
   }
 
@@ -83,13 +89,15 @@ public class UserController {
   }
 
   @GetMapping("/profile-image")
-  public ResponseEntity<DvApiResponse<String>> getProfileImage(@AuthenticationPrincipal Long userId) {
+  public ResponseEntity<DvApiResponse<String>> getProfileImage(
+      @AuthenticationPrincipal Long userId) {
     String profileImageUrl = userService.getProfileImage(userId);
     return ResponseEntity.ok(DvApiResponse.of(profileImageUrl));
   }
 
   @GetMapping("/validate-username")
-  public ResponseEntity<DvApiResponse<Boolean>> validateUsername(@RequestParam("username") String username) {
+  public ResponseEntity<DvApiResponse<Boolean>> validateUsername(
+      @RequestParam("username") String username) {
 
     if (userService.existsByUsername(username)) {
       return ResponseEntity.ok(DvApiResponse.of(true));

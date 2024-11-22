@@ -1,12 +1,15 @@
 package org.richardstallman.dvback.domain.user.service;
 
+import static org.richardstallman.dvback.common.constant.CommonConstants.FileType.PROFILE_IMAGE;
 import static org.richardstallman.dvback.global.util.TimeUtil.generateExpirationDateTime;
 import static org.richardstallman.dvback.global.util.TimeUtil.getCurrentDateTime;
 
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.richardstallman.dvback.client.s3.service.S3Service;
 import org.richardstallman.dvback.domain.coupon.converter.CouponConverter;
 import org.richardstallman.dvback.domain.coupon.repository.CouponRepository;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
@@ -21,6 +24,7 @@ import org.richardstallman.dvback.global.oauth.service.CookieService;
 import org.richardstallman.dvback.global.oauth.service.TokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -34,15 +38,24 @@ public class UserServiceImpl implements UserService {
   private final CouponRepository couponRepository;
   private final CouponsConfig couponsConfig;
   private final CouponConverter couponConverter;
+  private final S3Service s3Service;
 
   @Transactional
-  public UserResponseDto updateUserInfo(Long userId, UserRequestDto userRequestDto) {
+  public UserResponseDto updateUserInfo(
+      Long userId, UserRequestDto userRequestDto, MultipartFile profileImage) throws IOException {
     UserDomain user = findUserById(userId);
     UserEntity userEntity = userConverter.fromDomainToEntity(user);
 
+    String profileImageUrl = s3Service.uploadImageToS3(profileImage, PROFILE_IMAGE, userId);
+
     UserEntity updatedUser =
         userEntity.updatedUserEntity(
-            userRequestDto.nickname(), userRequestDto.birthdate(), userRequestDto.gender());
+            userRequestDto.username(),
+            userRequestDto.name(),
+            userRequestDto.nickname(),
+            profileImageUrl,
+            userRequestDto.birthdate(),
+            userRequestDto.gender());
 
     user = userRepository.save(userConverter.fromEntityToDomain(updatedUser));
 
@@ -57,6 +70,7 @@ public class UserServiceImpl implements UserService {
         updatedUser.getId(),
         updatedUser.getSocialId(),
         updatedUser.getEmail(),
+        updatedUser.getUsername(),
         updatedUser.getName(),
         updatedUser.getNickname(),
         updatedUser.getS3ProfileImageUrl(),
@@ -87,8 +101,9 @@ public class UserServiceImpl implements UserService {
   @Override
   public String getProfileImage(Long userId) {
     return userRepository
-            .findProfileImageUrlById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("Profile image not found for user id: " + userId));
+        .findProfileImageUrlById(userId)
+        .orElseThrow(
+            () -> new IllegalArgumentException("Profile image not found for user id: " + userId));
   }
 
   private UserDomain findUserById(Long userId) {

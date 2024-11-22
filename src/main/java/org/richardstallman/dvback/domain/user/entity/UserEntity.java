@@ -1,12 +1,11 @@
 package org.richardstallman.dvback.domain.user.entity;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants;
-import org.richardstallman.dvback.domain.job.entity.JobEntity;
 
 @Entity
 @Getter
@@ -27,6 +26,9 @@ public class UserEntity {
   private String email;
 
   @Column(nullable = false)
+  private String username;
+
+  @Column(nullable = false)
   private String name;
 
   @Column(nullable = false, unique = true)
@@ -40,7 +42,7 @@ public class UserEntity {
   @Enumerated(EnumType.STRING)
   private CommonConstants.Gender gender;
 
-  @Column private Date birthdate;
+  @Column private LocalDate birthdate;
 
   //  @OneToOne(fetch = FetchType.EAGER)
   //  @JoinColumn(name = "job_id", nullable = false)
@@ -53,7 +55,9 @@ public class UserEntity {
       String nickname,
       String s3ProfileImageUrl,
       CommonConstants.Gender gender,
-      JobEntity job) {
+      LocalDate birthdate
+      //    JobEntity job
+      ) {
     this.socialId = socialId;
     this.email = email;
     this.name = name;
@@ -61,19 +65,25 @@ public class UserEntity {
     this.s3ProfileImageUrl = s3ProfileImageUrl;
     this.leave = false;
     this.gender = gender;
-    this.birthdate = new Date();
+    this.birthdate = birthdate;
     //    this.job = job;
   }
 
   public UserEntity updatedUserEntity(
-      String nickname, Date birthdate, CommonConstants.Gender gender) {
+      String username,
+      String name,
+      String nickname,
+      String s3ProfileImageUrl,
+      LocalDate birthdate,
+      CommonConstants.Gender gender) {
     return new UserEntity(
         this.id,
         this.socialId,
         this.email,
-        this.name,
+        username,
+        name,
         nickname,
-        this.s3ProfileImageUrl,
+        s3ProfileImageUrl,
         this.leave,
         gender,
         birthdate
