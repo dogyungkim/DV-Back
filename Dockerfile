@@ -11,5 +11,8 @@ COPY ${JAR_FILE} app.jar
 ARG ENVIRONMENT=dev
 ENV ENVIRONMENT=${ENVIRONMENT}
 
+# 로그 디렉토리 생성
+RUN mkdir /app/logs
+
 # 애플리케이션 실행
 ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=${ENVIRONMENT}"]
