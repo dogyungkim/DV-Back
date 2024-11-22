@@ -18,6 +18,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -471,6 +472,8 @@ public class CouponControllerTest {
     String accessToken = jwtUtil.generateAccessToken(userId);
     MockCookie authCookie = new MockCookie("access_token", accessToken);
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS");
+
     when(couponService.getSimpleCouponList(eq(userId))).thenReturn(couponListSimpleResponseDto);
     // when
     ResultActions resultActions =
@@ -498,7 +501,7 @@ public class CouponControllerTest {
                 .value(couponDetailSimpleResponseDto1.interviewAssetTypeKorean()))
         .andExpect(
             jsonPath("data.coupons[0].expireAt")
-                .value(couponDetailSimpleResponseDto1.expireAt().toString()));
+                .value(couponDetailSimpleResponseDto1.expireAt().format(formatter)));
 
     // restdocs
     resultActions.andDo(
@@ -554,6 +557,8 @@ public class CouponControllerTest {
     CouponListUsedResponseDto couponListUsedResponseDto =
         new CouponListUsedResponseDto(couponDetailUsedResponseDtos);
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+
     String accessToken = jwtUtil.generateAccessToken(userId);
     MockCookie authCookie = new MockCookie("access_token", accessToken);
 
@@ -583,7 +588,7 @@ public class CouponControllerTest {
                 .value(couponDetailUsedResponseDto1.interviewAssetTypeKorean()))
         .andExpect(
             jsonPath("data.coupons[0].usedAt")
-                .value(couponDetailUsedResponseDto1.usedAt().toString()));
+                .value(couponDetailUsedResponseDto1.usedAt().format(formatter)));
 
     // restdocs
     resultActions.andDo(
@@ -639,6 +644,8 @@ public class CouponControllerTest {
     CouponListExpiredResponseDto couponListExpiredResponseDto =
         new CouponListExpiredResponseDto(couponDetailSimpleResponseDtos);
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+
     String accessToken = jwtUtil.generateAccessToken(userId);
     MockCookie authCookie = new MockCookie("access_token", accessToken);
 
@@ -669,7 +676,7 @@ public class CouponControllerTest {
                 .value(couponDetailSimpleResponseDto1.interviewAssetTypeKorean()))
         .andExpect(
             jsonPath("data.coupons[0].expireAt")
-                .value(couponDetailSimpleResponseDto1.expireAt().toString()));
+                .value(couponDetailSimpleResponseDto1.expireAt().format(formatter)));
 
     // restdocs
     resultActions.andDo(
