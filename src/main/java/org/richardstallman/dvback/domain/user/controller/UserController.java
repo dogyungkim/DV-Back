@@ -12,6 +12,7 @@ import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserLoginResponseDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
+import org.richardstallman.dvback.domain.user.service.UserPostService;
 import org.richardstallman.dvback.domain.user.service.UserService;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
 import org.richardstallman.dvback.global.oauth.service.TokenService;
@@ -29,6 +30,7 @@ public class UserController {
 
   private final TokenService tokenService;
   private final UserService userService;
+  private final UserPostService userPostService;
   private final UserConverter userConverter;
   private final JwtUtil jwtUtil;
 
@@ -48,7 +50,7 @@ public class UserController {
       @RequestPart("profileImage") @NotNull MultipartFile profileImage)
       throws IOException {
     final UserResponseDto userResponseDto =
-        userService.updateUserInfo(userId, userRequestDto, profileImage);
+        userPostService.updateUserInfo(userId, userRequestDto, profileImage);
     return ResponseEntity.ok(DvApiResponse.of(userResponseDto));
   }
 
