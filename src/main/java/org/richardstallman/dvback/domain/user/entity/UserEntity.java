@@ -48,25 +48,9 @@ public class UserEntity {
   //  @JoinColumn(name = "job_id", nullable = false)
   //  private JobEntity job;
 
-  public UserEntity(
-      String socialId,
-      String email,
-      String name,
-      String nickname,
-      String s3ProfileImageUrl,
-      CommonConstants.Gender gender,
-      LocalDate birthdate
-      //    JobEntity job
-      ) {
+  public UserEntity(String socialId, String email) {
     this.socialId = socialId;
     this.email = email;
-    this.name = name;
-    this.nickname = nickname;
-    this.s3ProfileImageUrl = s3ProfileImageUrl;
-    this.leave = false;
-    this.gender = gender;
-    this.birthdate = birthdate;
-    //    this.job = job;
   }
 
   public UserEntity updatedUserEntity(

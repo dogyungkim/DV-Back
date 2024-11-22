@@ -6,7 +6,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -27,7 +27,7 @@ spring:
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             client-name: kakao
-            scope: profile_nickname, profile_image, account_email
+            scope: account_email
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize

@@ -21,16 +21,4 @@ public class KakaoUserInfo {
     }
     return (String) account.get("email");
   }
-
-  public String getNickname() {
-    Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
-    Map<String, Object> profile = (Map<String, Object>) account.get("profile");
-    return (String) profile.get("nickname");
-  }
-
-  public String getProfileImage() {
-    Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
-    Map<String, Object> profile = (Map<String, Object>) account.get("profile");
-    return (String) profile.get("thumbnail_image_url");
-  }
 }

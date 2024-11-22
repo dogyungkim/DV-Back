@@ -41,14 +41,7 @@ public class UserConverter {
   }
 
   public UserEntity kakaoInfoToUserEntity(KakaoUserInfo kakaoUserInfo) {
-    return new UserEntity(
-        kakaoUserInfo.getId(),
-        kakaoUserInfo.getEmail(),
-        kakaoUserInfo.getNickname(),
-        kakaoUserInfo.getNickname(),
-        kakaoUserInfo.getProfileImage(),
-        null,
-        null);
+    return new UserEntity(kakaoUserInfo.getId(), kakaoUserInfo.getEmail());
   }
 
   public UserResponseDto fromDomainToDto(UserDomain userDomain) {
