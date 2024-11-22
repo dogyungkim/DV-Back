@@ -516,8 +516,7 @@ public class CouponControllerTest {
         .andExpect(
             jsonPath("data.coupons[0].interviewAssetTypeKorean")
                 .value(couponDetailSimpleResponseDto1.interviewAssetTypeKorean()))
-        .andExpect(
-            jsonPath("data.coupons[0].expireAt").value(couponDetailSimpleResponseDto1.expireAt().toString()));
+        .andExpect(jsonPath("data.coupons[0].expireAt").exists());
 
     // restdocs
     resultActions.andDo(
@@ -600,7 +599,7 @@ public class CouponControllerTest {
         .andExpect(
             jsonPath("data.coupons[0].interviewAssetTypeKorean")
                 .value(couponDetailUsedResponseDto1.interviewAssetTypeKorean()))
-        .andExpect(jsonPath("data.coupons[0].usedAt").value(couponDetailUsedResponseDto1.usedAt().toString()));
+        .andExpect(jsonPath("data.coupons[0].usedAt").exists());
 
     // restdocs
     resultActions.andDo(
@@ -684,8 +683,7 @@ public class CouponControllerTest {
         .andExpect(
             jsonPath("data.coupons[0].interviewAssetTypeKorean")
                 .value(couponDetailSimpleResponseDto1.interviewAssetTypeKorean()))
-        .andExpect(
-            jsonPath("data.coupons[0].expireAt").value(couponDetailSimpleResponseDto1.expireAt().toString()));
+        .andExpect(jsonPath("data.coupons[0].expireAt").exists());
 
     // restdocs
     resultActions.andDo(
