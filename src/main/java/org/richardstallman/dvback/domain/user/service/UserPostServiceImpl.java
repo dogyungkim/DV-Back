@@ -42,8 +42,11 @@ public class UserPostServiceImpl implements UserPostService {
   public UserResponseDto updateUserInfo(
       Long userId, UserRequestDto userRequestDto, MultipartFile profileImage) throws IOException {
     UserDomain user = findUserById(userId);
-    UserEntity userEntity = userConverter.fromDomainToEntity(user);
 
+    validateUsername(userRequestDto.username());
+    validateNickname(userRequestDto.nickname());
+
+    UserEntity userEntity = userConverter.fromDomainToEntity(user);
     String profileImageUrl = s3Service.uploadImageToS3(profileImage, PROFILE_IMAGE, userId);
 
     UserEntity updatedUser =
@@ -81,5 +84,22 @@ public class UserPostServiceImpl implements UserPostService {
     return userRepository
         .findById(userId)
         .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+  }
+
+  private void validateUsername(String username) {
+    if (!username.matches("^[a-zA-Z0-9]+$")) {
+      throw new IllegalArgumentException("Username must contain only letters and numbers.");
+    }
+
+    boolean usernameExists = userRepository.existsByUsername(username);
+    if (usernameExists) {
+      throw new IllegalArgumentException("Username is already taken.");
+    }
+  }
+
+  private void validateNickname(String nickname) {
+    if (!nickname.matches("^[a-zA-Z0-9]+$")) {
+      throw new IllegalArgumentException("Nickname must contain only letters and numbers.");
+    }
   }
 }
