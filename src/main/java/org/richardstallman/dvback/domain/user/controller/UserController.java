@@ -43,7 +43,7 @@ public class UserController {
     return ResponseEntity.ok("Logged out successfully");
   }
 
-  @PostMapping("/info")
+  @PostMapping(value = "/info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<DvApiResponse<UserResponseDto>> updateUserInfo(
       @AuthenticationPrincipal Long userId,
       @RequestPart("userInfo") @Valid final UserRequestDto userRequestDto,
@@ -88,13 +88,6 @@ public class UserController {
     }
 
     return ResponseEntity.ok(DvApiResponse.of(true));
-  }
-
-  @GetMapping("/profile-image")
-  public ResponseEntity<DvApiResponse<String>> getProfileImage(
-      @AuthenticationPrincipal Long userId) {
-    String profileImageUrl = userService.getProfileImage(userId);
-    return ResponseEntity.ok(DvApiResponse.of(profileImageUrl));
   }
 
   @GetMapping("/validate-username")

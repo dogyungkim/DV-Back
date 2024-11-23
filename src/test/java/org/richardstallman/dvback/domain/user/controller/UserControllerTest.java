@@ -1,12 +1,13 @@
 package org.richardstallman.dvback.domain.user.controller;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,7 +59,7 @@ public class UserControllerTest {
     // given
     UserRequestDto userRequestDto =
         new UserRequestDto(
-            "김수현", "suhyun", "왕감자", LocalDate.of(1990, 1, 1), CommonConstants.Gender.WOMAN);
+            "김수현", "suhyun", "dodam", LocalDate.of(1990, 1, 1), CommonConstants.Gender.WOMAN);
 
     String userInfoJson = objectMapper.writeValueAsString(userRequestDto);
     MockMultipartFile userInfoPart =
@@ -81,7 +82,7 @@ public class UserControllerTest {
             "example@test.com",
             "suhyun",
             "김수현",
-            "왕감자",
+            "dodam",
             "https://example.com/image.jpg",
             false,
             CommonConstants.Gender.WOMAN,
@@ -110,7 +111,7 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.code").value(200))
         .andExpect(jsonPath("$.message").value("SUCCESS"))
         .andExpect(jsonPath("$.data.userId").value(1L))
-        .andExpect(jsonPath("$.data.nickname").value("왕감자"))
+        .andExpect(jsonPath("$.data.nickname").value("dodam"))
         .andExpect(jsonPath("$.data.email").value("example@test.com"));
 
     // restdocs
@@ -236,7 +237,7 @@ public class UserControllerTest {
 
   @Test
   @WithMockUser
-  @DisplayName("/authenticated - 인증 상태 확인 성공")
+  @DisplayName("인증 상태 확인 성공")
   void isAuthenticated_success() throws Exception {
     // given
     Long userId = 1L; // Mock user ID
@@ -274,7 +275,7 @@ public class UserControllerTest {
 
   @Test
   @WithMockUser
-  @DisplayName("/authenticated - 토큰 없음으로 인증 실패")
+  @DisplayName("토큰 없음으로 인증 실패")
   void isAuthenticated_failure_noToken() throws Exception {
     // when
     ResultActions resultActions =
@@ -301,6 +302,90 @@ public class UserControllerTest {
                         fieldWithPath("code").description("응답 코드"),
                         fieldWithPath("message").description("응답 메시지"),
                         fieldWithPath("data").description("인증 여부 (true: 인증됨, false: 인증되지 않음)"))
+                    .build())));
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("유저네임 중복 확인 - 중복있음")
+  void validate_username_success() throws Exception {
+    // given
+    String username = "suhyun";
+    when(userService.existsByUsername(username)).thenReturn(true);
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/user/validate-username")
+                .param("username", username)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8"));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code").value(200))
+        .andExpect(jsonPath("$.message").value("SUCCESS"))
+        .andExpect(jsonPath("$.data").value(true));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "유저네임 중복 확인 - 중복있음",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("User API")
+                    .summary("유저네임 중복 확인 API")
+                    .description("주어진 유저네임이 중복인지 확인합니다.")
+                    .queryParameters(parameterWithName("username").description("중복 확인할 유저네임"))
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data").description("유저네임 중복 여부 (true: 중복, false: 사용 가능)"))
+                    .build())));
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("유저네임 중복 확인 - 중복 없음")
+  void validate_username_no_duplicate() throws Exception {
+    // given
+    String username = "newUser";
+    when(userService.existsByUsername(username)).thenReturn(false);
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/user/validate-username")
+                .param("username", username)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8"));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code").value(200))
+        .andExpect(jsonPath("$.message").value("SUCCESS"))
+        .andExpect(jsonPath("$.data").value(false));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "유저네임 중복 확인 - 중복 없음",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("User API")
+                    .summary("유저네임 중복 확인 API")
+                    .description("주어진 유저네임이 중복인지 확인합니다.")
+                    .queryParameters(parameterWithName("username").description("중복 확인할 유저네임"))
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data").description("유저네임 중복 여부 (true: 중복, false: 사용 가능)"))
                     .build())));
   }
 }

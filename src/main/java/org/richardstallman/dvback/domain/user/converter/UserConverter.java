@@ -31,6 +31,7 @@ public class UserConverter {
         .id(userEntity.getId())
         .socialId(userEntity.getSocialId())
         .email(userEntity.getEmail())
+        .username(userEntity.getUsername())
         .name(userEntity.getName())
         .nickname(userEntity.getNickname())
         .s3ProfileImageUrl(userEntity.getS3ProfileImageUrl())

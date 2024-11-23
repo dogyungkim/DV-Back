@@ -25,13 +25,11 @@ public class UserEntity {
   @Column(nullable = false)
   private String email;
 
-  @Column(nullable = false)
   private String username;
 
-  @Column(nullable = false)
   private String name;
 
-  @Column(nullable = false, unique = true)
+  @Column(unique = true)
   private String nickname;
 
   @Column(name = "s3_profile_image_url")

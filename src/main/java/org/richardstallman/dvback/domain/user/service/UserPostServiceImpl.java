@@ -4,6 +4,7 @@ import static org.richardstallman.dvback.common.constant.CommonConstants.FileTyp
 import static org.richardstallman.dvback.global.util.TimeUtil.generateExpirationDateTime;
 import static org.richardstallman.dvback.global.util.TimeUtil.getCurrentDateTime;
 
+import com.vane.badwordfiltering.BadWordFiltering;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -90,6 +91,9 @@ public class UserPostServiceImpl implements UserPostService {
     if (!username.matches("^[a-zA-Z0-9]+$")) {
       throw new IllegalArgumentException("Username must contain only letters and numbers.");
     }
+    if (containsBadWord(username)) {
+      throw new IllegalArgumentException("The username contains words that are not allowed.");
+    }
 
     boolean usernameExists = userRepository.existsByUsername(username);
     if (usernameExists) {
@@ -101,5 +105,13 @@ public class UserPostServiceImpl implements UserPostService {
     if (!nickname.matches("^[a-zA-Z0-9]+$")) {
       throw new IllegalArgumentException("Nickname must contain only letters and numbers.");
     }
+    if (containsBadWord(nickname)) {
+      throw new IllegalArgumentException("The nickname contains words that are not allowed.");
+    }
+  }
+
+  private boolean containsBadWord(String value) {
+    BadWordFiltering badWordFiltering = new BadWordFiltering();
+    return badWordFiltering.check(value);
   }
 }
