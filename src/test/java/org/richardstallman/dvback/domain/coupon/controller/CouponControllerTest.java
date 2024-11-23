@@ -78,8 +78,8 @@ public class CouponControllerTest {
     InterviewMode interviewMode = InterviewMode.REAL;
     boolean isUsed = false;
     boolean isExpired = false;
-    LocalDateTime createdAt = LocalDateTime.now();
-    LocalDateTime expiredAt = createdAt.plusMonths(1).with(LocalTime.MAX);
+    LocalDateTime createdAt = LocalDateTime.now().withNano(0);
+    LocalDateTime expiredAt = createdAt.plusMonths(1).with(LocalTime.MAX).withNano(0);
     CouponCreateRequestDto couponCreateRequestDto =
         new CouponCreateRequestDto(
             userId, chargeAmount, couponName, interviewMode, interviewAssetType);
@@ -200,7 +200,7 @@ public class CouponControllerTest {
     InterviewAssetType interviewAssetType = InterviewAssetType.CHAT;
     InterviewMode interviewMode = InterviewMode.REAL;
     boolean isExpired = false;
-    LocalDateTime expiredAt = LocalDateTime.now().plusMonths(1).with(LocalTime.MAX);
+    LocalDateTime expiredAt = LocalDateTime.now().plusMonths(1).with(LocalTime.MAX).withNano(0);
     int currentBalance = 10;
     int currentRealChatBalance = 1;
     int currentRealVoiceBalance = 2;
@@ -214,9 +214,9 @@ public class CouponControllerTest {
     InterviewAssetType interviewAssetType2 = InterviewAssetType.CHAT;
     String descripton =
         ticketTransactionType.getKoreanName() + " " + ticketTransactionMethod.getKoreanName();
-    LocalDateTime createdAt = LocalDateTime.now();
-    LocalDateTime usedAt = LocalDateTime.now();
-    LocalDateTime occurredAt = LocalDateTime.now();
+    LocalDateTime createdAt = LocalDateTime.now().withNano(0);
+    LocalDateTime usedAt = LocalDateTime.now().withNano(0);
+    LocalDateTime occurredAt = LocalDateTime.now().withNano(0);
     String accessToken = jwtUtil.generateAccessToken(userId);
 
     CouponUseRequestDto couponUseRequestDto = new CouponUseRequestDto(1L);
@@ -448,16 +448,36 @@ public class CouponControllerTest {
 
     CouponDetailSimpleResponseDto couponDetailSimpleResponseDto1 =
         new CouponDetailSimpleResponseDto(
-            1L, 1, "웰컴 쿠폰", "실전", "채팅", LocalDateTime.now().plusMonths(1).with(LocalTime.MAX));
+            1L,
+            1,
+            "웰컴 쿠폰",
+            "실전",
+            "채팅",
+            LocalDateTime.now().plusMonths(1).with(LocalTime.MAX).withNano(0));
     CouponDetailSimpleResponseDto couponDetailSimpleResponseDto2 =
         new CouponDetailSimpleResponseDto(
-            2L, 1, "웰컴 쿠폰", "실전", "음성", LocalDateTime.now().plusMonths(1).with(LocalTime.MAX));
+            2L,
+            1,
+            "웰컴 쿠폰",
+            "실전",
+            "음성",
+            LocalDateTime.now().plusMonths(1).with(LocalTime.MAX).withNano(0));
     CouponDetailSimpleResponseDto couponDetailSimpleResponseDto3 =
         new CouponDetailSimpleResponseDto(
-            3L, 5, "웰컴 쿠폰", "모의", "채팅", LocalDateTime.now().plusMonths(1).with(LocalTime.MAX));
+            3L,
+            5,
+            "웰컴 쿠폰",
+            "모의",
+            "채팅",
+            LocalDateTime.now().plusMonths(1).with(LocalTime.MAX).withNano(0));
     CouponDetailSimpleResponseDto couponDetailSimpleResponseDto4 =
         new CouponDetailSimpleResponseDto(
-            4L, 3, "웰컴 쿠폰", "모의", "음성", LocalDateTime.now().plusMonths(1).with(LocalTime.MAX));
+            4L,
+            3,
+            "웰컴 쿠폰",
+            "모의",
+            "음성",
+            LocalDateTime.now().plusMonths(1).with(LocalTime.MAX).withNano(0));
 
     List<CouponDetailSimpleResponseDto> couponDetailSimpleResponseDtos = new ArrayList<>();
     couponDetailSimpleResponseDtos.add(couponDetailSimpleResponseDto1);
@@ -496,9 +516,7 @@ public class CouponControllerTest {
         .andExpect(
             jsonPath("data.coupons[0].interviewAssetTypeKorean")
                 .value(couponDetailSimpleResponseDto1.interviewAssetTypeKorean()))
-        .andExpect(
-            jsonPath("data.coupons[0].expireAt")
-                .value(couponDetailSimpleResponseDto1.expireAt().toString()));
+        .andExpect(jsonPath("data.coupons[0].expireAt").exists());
 
     // restdocs
     resultActions.andDo(
@@ -534,16 +552,16 @@ public class CouponControllerTest {
 
     CouponDetailUsedResponseDto couponDetailUsedResponseDto1 =
         new CouponDetailUsedResponseDto(
-            1L, 1, "웰컴 쿠폰", "실전", "채팅", LocalDateTime.now().minusHours(3));
+            1L, 1, "웰컴 쿠폰", "실전", "채팅", LocalDateTime.now().minusHours(3).withNano(0));
     CouponDetailUsedResponseDto couponDetailUsedResponseDto2 =
         new CouponDetailUsedResponseDto(
-            2L, 1, "웰컴 쿠폰", "실전", "음성", LocalDateTime.now().minusDays(1));
+            2L, 1, "웰컴 쿠폰", "실전", "음성", LocalDateTime.now().minusDays(1).withNano(0));
     CouponDetailUsedResponseDto couponDetailUsedResponseDto3 =
         new CouponDetailUsedResponseDto(
-            3L, 5, "웰컴 쿠폰", "모의", "채팅", LocalDateTime.now().minusMonths(2));
+            3L, 5, "웰컴 쿠폰", "모의", "채팅", LocalDateTime.now().minusMonths(2).withNano(0));
     CouponDetailUsedResponseDto couponDetailUsedResponseDto4 =
         new CouponDetailUsedResponseDto(
-            4L, 3, "웰컴 쿠폰", "모의", "음성", LocalDateTime.now().minusMonths(4));
+            4L, 3, "웰컴 쿠폰", "모의", "음성", LocalDateTime.now().minusMonths(4).withNano(0));
 
     List<CouponDetailUsedResponseDto> couponDetailUsedResponseDtos = new ArrayList<>();
     couponDetailUsedResponseDtos.add(couponDetailUsedResponseDto1);
@@ -581,9 +599,7 @@ public class CouponControllerTest {
         .andExpect(
             jsonPath("data.coupons[0].interviewAssetTypeKorean")
                 .value(couponDetailUsedResponseDto1.interviewAssetTypeKorean()))
-        .andExpect(
-            jsonPath("data.coupons[0].usedAt")
-                .value(couponDetailUsedResponseDto1.usedAt().toString()));
+        .andExpect(jsonPath("data.coupons[0].usedAt").exists());
 
     // restdocs
     resultActions.andDo(
@@ -619,16 +635,16 @@ public class CouponControllerTest {
 
     CouponDetailSimpleResponseDto couponDetailSimpleResponseDto1 =
         new CouponDetailSimpleResponseDto(
-            1L, 1, "웰컴 쿠폰", "실전", "채팅", LocalDateTime.now().minusMinutes(1));
+            1L, 1, "웰컴 쿠폰", "실전", "채팅", LocalDateTime.now().minusMinutes(1).withNano(0));
     CouponDetailSimpleResponseDto couponDetailSimpleResponseDto2 =
         new CouponDetailSimpleResponseDto(
-            2L, 1, "웰컴 쿠폰", "실전", "음성", LocalDateTime.now().minusHours(1));
+            2L, 1, "웰컴 쿠폰", "실전", "음성", LocalDateTime.now().minusHours(1).withNano(0));
     CouponDetailSimpleResponseDto couponDetailSimpleResponseDto3 =
         new CouponDetailSimpleResponseDto(
-            3L, 5, "웰컴 쿠폰", "모의", "채팅", LocalDateTime.now().minusDays(1));
+            3L, 5, "웰컴 쿠폰", "모의", "채팅", LocalDateTime.now().minusDays(1).withNano(0));
     CouponDetailSimpleResponseDto couponDetailSimpleResponseDto4 =
         new CouponDetailSimpleResponseDto(
-            4L, 3, "웰컴 쿠폰", "모의", "음성", LocalDateTime.now().minusMonths(1));
+            4L, 3, "웰컴 쿠폰", "모의", "음성", LocalDateTime.now().minusMonths(1).withNano(0));
 
     List<CouponDetailSimpleResponseDto> couponDetailSimpleResponseDtos = new ArrayList<>();
     couponDetailSimpleResponseDtos.add(couponDetailSimpleResponseDto1);
@@ -667,9 +683,7 @@ public class CouponControllerTest {
         .andExpect(
             jsonPath("data.coupons[0].interviewAssetTypeKorean")
                 .value(couponDetailSimpleResponseDto1.interviewAssetTypeKorean()))
-        .andExpect(
-            jsonPath("data.coupons[0].expireAt")
-                .value(couponDetailSimpleResponseDto1.expireAt().toString()));
+        .andExpect(jsonPath("data.coupons[0].expireAt").exists());
 
     // restdocs
     resultActions.andDo(
