@@ -55,4 +55,12 @@ public class FakeJobRepository implements JobRepository {
   public long count() {
     return data.size();
   }
+
+  @Override
+  public JobDomain findByJobNameKorean(String name) {
+    return data.stream()
+        .filter(item -> item.getJobNameKorean().equals(name))
+        .findAny()
+        .orElseThrow();
+  }
 }

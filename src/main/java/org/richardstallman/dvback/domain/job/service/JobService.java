@@ -10,4 +10,6 @@ public interface JobService {
   JobDomain findJobById(Long jobId);
 
   List<JobDomain> findAllJobs();
+
+  JobDomain findJobByKoreanName(String jobNameKorean);
 }
