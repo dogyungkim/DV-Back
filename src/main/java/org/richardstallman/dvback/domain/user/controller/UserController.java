@@ -3,8 +3,6 @@ package org.richardstallman.dvback.domain.user.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
@@ -15,7 +13,6 @@ import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserLoginResponseDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserMyPageResponseDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
-import org.richardstallman.dvback.domain.user.service.UserPostService;
 import org.richardstallman.dvback.domain.user.service.UserService;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
 import org.richardstallman.dvback.global.oauth.service.TokenService;
@@ -23,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -33,7 +29,6 @@ public class UserController {
 
   private final TokenService tokenService;
   private final UserService userService;
-  private final UserPostService userPostService;
   private final TicketService ticketService;
   private final UserConverter userConverter;
   private final JwtUtil jwtUtil;
@@ -47,14 +42,11 @@ public class UserController {
     return ResponseEntity.ok("Logged out successfully");
   }
 
-  @PostMapping(value = "/info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/info")
   public ResponseEntity<DvApiResponse<UserResponseDto>> updateUserInfo(
       @AuthenticationPrincipal Long userId,
-      @RequestPart("userInfo") @Valid final UserRequestDto userRequestDto,
-      @RequestPart("profileImage") @NotNull MultipartFile profileImage)
-      throws IOException {
-    final UserResponseDto userResponseDto =
-        userPostService.updateUserInfo(userId, userRequestDto, profileImage);
+      @RequestBody @Valid final UserRequestDto userRequestDto) {
+    final UserResponseDto userResponseDto = userService.updateUserInfo(userId, userRequestDto);
     return ResponseEntity.ok(DvApiResponse.of(userResponseDto));
   }
 
