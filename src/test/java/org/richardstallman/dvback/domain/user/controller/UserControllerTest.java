@@ -91,8 +91,7 @@ public class UserControllerTest {
             post("/user/info")
                 .cookie(authCookie)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(userInfoJson)
-                .characterEncoding("UTF-8"));
+                .content(userInfoJson));
 
     // then
     resultActions
