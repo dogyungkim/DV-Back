@@ -11,5 +11,5 @@ public interface JobService {
 
   List<JobDomain> findAllJobs();
 
-  JobDomain findJobByKoreanName(String jobName);
+  JobDomain findJobByKoreanName(String jobNameKorean);
 }

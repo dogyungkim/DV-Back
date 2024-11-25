@@ -35,7 +35,7 @@ public class JobServiceImpl implements JobService {
   }
 
   @Override
-  public JobDomain findJobByKoreanName(String jobName) {
-    return jobRepository.findByJobNameKorean(jobName);
+  public JobDomain findJobByKoreanName(String jobNameKorean) {
+    return jobRepository.findByJobNameKorean(jobNameKorean);
   }
 }

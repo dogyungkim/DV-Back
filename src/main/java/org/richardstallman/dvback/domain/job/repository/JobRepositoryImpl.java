@@ -38,7 +38,7 @@ public class JobRepositoryImpl implements JobRepository {
   }
 
   @Override
-  public JobDomain findByJobNameKorean(String name) {
-    return jobConverter.toDomain(jobJpaRepository.findByJobNameKorean(name));
+  public JobDomain findByJobNameKorean(String jobNameKorean) {
+    return jobConverter.toDomain(jobJpaRepository.findByJobNameKorean(jobNameKorean));
   }
 }
