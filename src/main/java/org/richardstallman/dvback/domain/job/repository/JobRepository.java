@@ -13,4 +13,6 @@ public interface JobRepository {
   List<JobDomain> findAll();
 
   long count();
+
+  JobDomain findByJobNameKorean(String name);
 }

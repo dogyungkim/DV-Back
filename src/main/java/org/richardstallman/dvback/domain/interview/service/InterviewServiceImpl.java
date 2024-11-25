@@ -203,6 +203,11 @@ public class InterviewServiceImpl implements InterviewService {
             .toList());
   }
 
+  @Override
+  public InterviewResponseDto getInterviewResponseDtoByDomain(InterviewDomain interviewDomain) {
+    return interviewConverter.fromDomainToResponseDto(interviewDomain, getFiles(interviewDomain));
+  }
+
   private InterviewDomain initializeInterviewDomain(
       InterviewCreateRequestDto interviewCreateRequestDto, JobDomain jobDomain, Long userId) {
     if (interviewCreateRequestDto.interviewMode() == InterviewMode.REAL) {
