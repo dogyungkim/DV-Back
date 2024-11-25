@@ -13,14 +13,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.richardstallman.dvback.common.constant.CommonConstants;
 import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
-import org.richardstallman.dvback.domain.user.service.UserPostService;
 import org.richardstallman.dvback.domain.user.service.UserService;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
 import org.richardstallman.dvback.global.jwt.refreshtoken.repository.RefreshTokenRepository;
@@ -31,12 +29,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockCookie;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.web.multipart.MultipartFile;
 
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
@@ -49,7 +45,6 @@ public class UserControllerTest {
   @Autowired private JwtUtil jwtUtil;
 
   @MockBean private UserService userService;
-  @MockBean private UserPostService userPostService;
   @MockBean private RefreshTokenRepository refreshTokenRepository;
 
   @Test
@@ -59,21 +54,14 @@ public class UserControllerTest {
     // given
     UserRequestDto userRequestDto =
         new UserRequestDto(
-            "김수현", "suhyun", "dodam", LocalDate.of(1990, 1, 1), CommonConstants.Gender.WOMAN);
+            "https://example.com/image.jpg",
+            "김수현",
+            "suhyun",
+            "dodam",
+            LocalDate.of(1990, 1, 1),
+            CommonConstants.Gender.WOMAN);
 
     String userInfoJson = objectMapper.writeValueAsString(userRequestDto);
-    MockMultipartFile userInfoPart =
-        new MockMultipartFile(
-            "userInfo",
-            "",
-            MediaType.APPLICATION_JSON_VALUE,
-            userInfoJson.getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile profileImage =
-        new MockMultipartFile(
-            "profileImage",
-            "image.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "test-image".getBytes(StandardCharsets.UTF_8));
 
     UserResponseDto userResponseDto =
         new UserResponseDto(
@@ -88,8 +76,7 @@ public class UserControllerTest {
             CommonConstants.Gender.WOMAN,
             LocalDate.of(1990, 1, 1));
 
-    when(userPostService.updateUserInfo(
-            any(Long.class), any(UserRequestDto.class), any(MultipartFile.class)))
+    when(userService.updateUserInfo(any(Long.class), any(UserRequestDto.class)))
         .thenReturn(userResponseDto);
 
     String accessToken = jwtUtil.generateAccessToken(1L);
@@ -98,11 +85,10 @@ public class UserControllerTest {
     // when
     ResultActions resultActions =
         mockMvc.perform(
-            multipart("/user/info")
-                .file(userInfoPart)
-                .file(profileImage)
+            post("/user/info")
                 .cookie(authCookie)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userInfoJson)
                 .characterEncoding("UTF-8"));
 
     // then
@@ -120,27 +106,26 @@ public class UserControllerTest {
             "유저 정보 업데이트 - 성공",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
-            resource(
-                ResourceSnippetParameters.builder()
-                    .tag("User API")
-                    .summary("유저 정보 업데이트 API")
-                    .responseFields(
-                        fieldWithPath("userInfo").description("사용자의 JSON 정보"),
-                        fieldWithPath("profileImage").description("사용자의 프로필 이미지 파일"))
-                    .responseFields(
-                        fieldWithPath("code").description("응답 코드"),
-                        fieldWithPath("message").description("응답 메시지"),
-                        fieldWithPath("data.userId").description("유저 ID"),
-                        fieldWithPath("data.socialId").description("소셜 ID"),
-                        fieldWithPath("data.email").description("이메일"),
-                        fieldWithPath("data.username").description("유저네임"),
-                        fieldWithPath("data.name").description("유저 이름"),
-                        fieldWithPath("data.nickname").description("유저 닉네임"),
-                        fieldWithPath("data.s3ProfileImageUrl").description("프로필 이미지 URL"),
-                        fieldWithPath("data.leave").description("탈퇴 여부"),
-                        fieldWithPath("data.gender").description("성별"),
-                        fieldWithPath("data.birthdate").description("생년월일"))
-                    .build())));
+            requestFields(
+                fieldWithPath("s3ProfileImageUrl").description("프로필 이미지 URL"),
+                fieldWithPath("name").description("유저 이름"),
+                fieldWithPath("username").description("유저네임"),
+                fieldWithPath("nickname").description("유저 닉네임"),
+                fieldWithPath("birthdate").description("생년월일"),
+                fieldWithPath("gender").description("성별")),
+            responseFields(
+                fieldWithPath("code").description("응답 코드"),
+                fieldWithPath("message").description("응답 메시지"),
+                fieldWithPath("data.userId").description("유저 ID"),
+                fieldWithPath("data.socialId").description("소셜 ID"),
+                fieldWithPath("data.email").description("이메일"),
+                fieldWithPath("data.username").description("유저네임"),
+                fieldWithPath("data.name").description("유저 이름"),
+                fieldWithPath("data.nickname").description("유저 닉네임"),
+                fieldWithPath("data.s3ProfileImageUrl").description("프로필 이미지 URL"),
+                fieldWithPath("data.leave").description("탈퇴 여부"),
+                fieldWithPath("data.gender").description("성별"),
+                fieldWithPath("data.birthdate").description("생년월일"))));
   }
 
   @Test
