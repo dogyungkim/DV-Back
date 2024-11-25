@@ -6,9 +6,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
+import org.richardstallman.dvback.domain.ticket.domain.TicketUserCountInfoDto;
+import org.richardstallman.dvback.domain.ticket.service.TicketService;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserLoginResponseDto;
+import org.richardstallman.dvback.domain.user.domain.response.UserMyPageResponseDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.richardstallman.dvback.domain.user.service.UserService;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
@@ -26,6 +29,7 @@ public class UserController {
 
   private final TokenService tokenService;
   private final UserService userService;
+  private final TicketService ticketService;
   private final UserConverter userConverter;
   private final JwtUtil jwtUtil;
 
@@ -91,5 +95,14 @@ public class UserController {
     }
 
     return ResponseEntity.ok(DvApiResponse.of(false));
+  }
+
+  @GetMapping("/my-page")
+  public ResponseEntity<DvApiResponse<UserMyPageResponseDto>> getMyPageUserInfo(
+      @AuthenticationPrincipal Long userId) {
+    final UserResponseDto userResponseDto = userService.getUserInfo(userId);
+    final TicketUserCountInfoDto ticketUserCountInfoDto = ticketService.getUserCountInfo(userId);
+    return ResponseEntity.ok(
+        DvApiResponse.of(new UserMyPageResponseDto(userResponseDto, ticketUserCountInfoDto)));
   }
 }

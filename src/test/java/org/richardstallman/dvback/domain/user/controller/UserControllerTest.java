@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.richardstallman.dvback.common.constant.CommonConstants;
+import org.richardstallman.dvback.domain.ticket.domain.TicketUserCountInfoDto;
+import org.richardstallman.dvback.domain.ticket.service.TicketService;
 import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.richardstallman.dvback.domain.user.service.UserService;
@@ -45,6 +47,7 @@ public class UserControllerTest {
   @Autowired private JwtUtil jwtUtil;
 
   @MockBean private UserService userService;
+  @MockBean private TicketService ticketService;
   @MockBean private RefreshTokenRepository refreshTokenRepository;
 
   @Test
@@ -371,6 +374,99 @@ public class UserControllerTest {
                         fieldWithPath("code").description("응답 코드"),
                         fieldWithPath("message").description("응답 메시지"),
                         fieldWithPath("data").description("유저네임 중복 여부 (true: 중복, false: 사용 가능)"))
+                    .build())));
+  }
+
+  @Test
+  @DisplayName("마이페이지 - 유저 정보 + 유저 보유 이용권 수량 조회 - 성공")
+  void get_user_info_and_ticket_amount_in_my_page() throws Exception {
+    // given
+    Long userId = 1L;
+    int totalBalance = 10;
+    int realChatBalance = 1;
+    int realVoiceBalance = 2;
+    int generalChatBalance = 3;
+    int generalVoiceBalance = 4;
+
+    TicketUserCountInfoDto ticketUserCountInfoDto =
+        new TicketUserCountInfoDto(
+            totalBalance,
+            realChatBalance,
+            realVoiceBalance,
+            generalChatBalance,
+            generalVoiceBalance);
+
+    UserResponseDto userResponseDto =
+        new UserResponseDto(
+            userId,
+            "12345",
+            "example@test.com",
+            "suhyun",
+            "김수현",
+            "왕감자",
+            "https://example.com/image.jpg",
+            false,
+            CommonConstants.Gender.WOMAN,
+            LocalDate.of(1990, 1, 1));
+
+    when(userService.getUserInfo(userId)).thenReturn(userResponseDto);
+    when(ticketService.getUserCountInfo(userId)).thenReturn(ticketUserCountInfoDto);
+
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/user/my-page").cookie(authCookie).contentType(MediaType.APPLICATION_JSON));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code").value(200))
+        .andExpect(jsonPath("$.message").value("SUCCESS"))
+        .andExpect(jsonPath("$.data.user.userId").value(userId))
+        .andExpect(jsonPath("$.data.user.username").value("suhyun"))
+        .andExpect(jsonPath("$.data.user.email").value("example@test.com"))
+        .andExpect(jsonPath("$.data.ticketInfo.totalBalance").value(totalBalance))
+        .andExpect(jsonPath("$.data.ticketInfo.realChatBalance").value(realChatBalance))
+        .andExpect(jsonPath("$.data.ticketInfo.realVoiceBalance").value(realVoiceBalance))
+        .andExpect(jsonPath("$.data.ticketInfo.generalChatBalance").value(generalChatBalance))
+        .andExpect(jsonPath("$.data.ticketInfo.generalVoiceBalance").value(generalVoiceBalance));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "마이페이지 - 유저 정보 + 유저 보유 이용권 수량 조회 - 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("User API")
+                    .summary("유저 API")
+                    .description("마이페이지 - 유저 정보 + 유저가 보유한 이용권 수량 조회")
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data.user.userId").description("유저 ID"),
+                        fieldWithPath("data.user.socialId").description("소셜 ID"),
+                        fieldWithPath("data.user.email").description("이메일"),
+                        fieldWithPath("data.user.username").description("유저네임"),
+                        fieldWithPath("data.user.name").description("유저 이름"),
+                        fieldWithPath("data.user.nickname").description("유저 닉네임"),
+                        fieldWithPath("data.user.s3ProfileImageUrl").description("프로필 이미지 URL"),
+                        fieldWithPath("data.user.leave").description("탈퇴 여부"),
+                        fieldWithPath("data.user.gender").description("성별"),
+                        fieldWithPath("data.user.birthdate").description("생년월일"),
+                        fieldWithPath("data.ticketInfo.totalBalance").description("총 보유 이용권 수"),
+                        fieldWithPath("data.ticketInfo.realChatBalance")
+                            .description("보유 실전 채팅 이용권 수"),
+                        fieldWithPath("data.ticketInfo.realVoiceBalance")
+                            .description("보유 실전 음성 이용권 수"),
+                        fieldWithPath("data.ticketInfo.generalChatBalance")
+                            .description("보유 모의 채팅 이용권 수"),
+                        fieldWithPath("data.ticketInfo.generalVoiceBalance")
+                            .description("보유 모의 음성 이용권 수"))
                     .build())));
   }
 }
