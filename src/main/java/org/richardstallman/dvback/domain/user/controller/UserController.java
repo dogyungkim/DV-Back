@@ -3,6 +3,8 @@ package org.richardstallman.dvback.domain.user.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
@@ -10,6 +12,7 @@ import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserLoginResponseDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
+import org.richardstallman.dvback.domain.user.service.UserPostService;
 import org.richardstallman.dvback.domain.user.service.UserService;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
 import org.richardstallman.dvback.global.oauth.service.TokenService;
@@ -17,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -26,6 +30,7 @@ public class UserController {
 
   private final TokenService tokenService;
   private final UserService userService;
+  private final UserPostService userPostService;
   private final UserConverter userConverter;
   private final JwtUtil jwtUtil;
 
@@ -33,17 +38,19 @@ public class UserController {
   public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
     String refreshToken =
         tokenService.getTokenFromCookies(request.getCookies(), JwtUtil.REFRESH_TOKEN);
-    log.info("refreshToken: {}", refreshToken);
     userService.logout(response, refreshToken);
 
     return ResponseEntity.ok("Logged out successfully");
   }
 
-  @PutMapping("/info")
+  @PostMapping(value = "/info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<DvApiResponse<UserResponseDto>> updateUserInfo(
       @AuthenticationPrincipal Long userId,
-      @Valid @RequestBody final UserRequestDto userRequestDto) {
-    final UserResponseDto userResponseDto = userService.updateUserInfo(userId, userRequestDto);
+      @RequestPart("userInfo") @Valid final UserRequestDto userRequestDto,
+      @RequestPart("profileImage") @NotNull MultipartFile profileImage)
+      throws IOException {
+    final UserResponseDto userResponseDto =
+        userPostService.updateUserInfo(userId, userRequestDto, profileImage);
     return ResponseEntity.ok(DvApiResponse.of(userResponseDto));
   }
 
@@ -81,5 +88,16 @@ public class UserController {
     }
 
     return ResponseEntity.ok(DvApiResponse.of(true));
+  }
+
+  @GetMapping("/validate-username")
+  public ResponseEntity<DvApiResponse<Boolean>> validateUsername(
+      @RequestParam("username") String username) {
+
+    if (userService.existsByUsername(username)) {
+      return ResponseEntity.ok(DvApiResponse.of(true));
+    }
+
+    return ResponseEntity.ok(DvApiResponse.of(false));
   }
 }

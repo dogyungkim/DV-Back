@@ -17,6 +17,7 @@ public class UserConverter {
         userDomain.getId(),
         userDomain.getSocialId(),
         userDomain.getEmail(),
+        userDomain.getUsername(),
         userDomain.getName(),
         userDomain.getNickname(),
         userDomain.getS3ProfileImageUrl(),
@@ -30,6 +31,7 @@ public class UserConverter {
         .id(userEntity.getId())
         .socialId(userEntity.getSocialId())
         .email(userEntity.getEmail())
+        .username(userEntity.getUsername())
         .name(userEntity.getName())
         .nickname(userEntity.getNickname())
         .s3ProfileImageUrl(userEntity.getS3ProfileImageUrl())
@@ -40,14 +42,7 @@ public class UserConverter {
   }
 
   public UserEntity kakaoInfoToUserEntity(KakaoUserInfo kakaoUserInfo) {
-    return new UserEntity(
-        kakaoUserInfo.getId(),
-        kakaoUserInfo.getEmail(),
-        kakaoUserInfo.getNickname(),
-        kakaoUserInfo.getNickname(),
-        kakaoUserInfo.getProfileImage(),
-        null,
-        null);
+    return new UserEntity(kakaoUserInfo.getId(), kakaoUserInfo.getEmail());
   }
 
   public UserResponseDto fromDomainToDto(UserDomain userDomain) {
@@ -55,6 +50,7 @@ public class UserConverter {
         userDomain.getId(),
         userDomain.getSocialId(),
         userDomain.getEmail(),
+        userDomain.getUsername(),
         userDomain.getName(),
         userDomain.getNickname(),
         userDomain.getS3ProfileImageUrl(),
@@ -84,6 +80,7 @@ public class UserConverter {
         userResponseDto.userId(),
         userResponseDto.socialId(),
         userResponseDto.email(),
+        userResponseDto.username(),
         userResponseDto.name(),
         userResponseDto.nickname(),
         userResponseDto.s3ProfileImageUrl(),
@@ -94,6 +91,6 @@ public class UserConverter {
 
   public UserLoginResponseDto forSignUp(UserResponseDto userResponseDto, String type) {
     return new UserLoginResponseDto(
-        type, userResponseDto.userId(), null, null, null, null, null, null, null, null);
+        type, userResponseDto.userId(), null, null, null, null, null, null, null, null, null);
   }
 }

@@ -1,6 +1,6 @@
 package org.richardstallman.dvback.domain.user.domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
 import org.richardstallman.dvback.common.constant.CommonConstants;
@@ -13,11 +13,12 @@ public class UserDomain {
   private Long id;
   private String socialId;
   private String email;
+  private String username;
   private String name;
   private String nickname;
   private String s3ProfileImageUrl;
   private Boolean leave;
   private CommonConstants.Gender gender;
-  private Date birthdate;
+  private LocalDate birthdate;
   private JobDomain job;
 }

@@ -2,6 +2,7 @@ package org.richardstallman.dvback.client.s3.service;
 
 import jakarta.annotation.Nullable;
 import jakarta.annotation.PostConstruct;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,9 @@ import org.richardstallman.dvback.domain.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -23,6 +27,8 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequ
 public class S3ServiceImpl implements S3Service {
 
   @Autowired private final S3Presigner s3Presigner;
+
+  @Autowired private final S3Client s3Client;
 
   @Value("${cloud.aws.s3.bucket}")
   private String bucketName;
@@ -101,6 +107,24 @@ public class S3ServiceImpl implements S3Service {
             builder -> builder.signatureDuration(urlDuration).getObjectRequest(getObjectRequest));
 
     return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString());
+  }
+
+  @Override
+  public String uploadImageToS3(MultipartFile image, FileType fileType, Long userId)
+      throws IOException {
+    String filePathKey = makeS3FilePathForImage(fileType, image.getOriginalFilename(), userId);
+
+    PutObjectRequest putObjectRequest =
+        PutObjectRequest.builder()
+            .bucket(bucketName)
+            .key(filePathKey)
+            .contentType(image.getContentType())
+            .build();
+
+    s3Client.putObject(
+        putObjectRequest, RequestBody.fromInputStream(image.getInputStream(), image.getSize()));
+
+    return filePathKey;
   }
 
   private String makeS3FilePathForImage(FileType fileType, String fileName, Long userId) {

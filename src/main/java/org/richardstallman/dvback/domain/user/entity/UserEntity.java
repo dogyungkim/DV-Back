@@ -1,12 +1,11 @@
 package org.richardstallman.dvback.domain.user.entity;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants;
-import org.richardstallman.dvback.domain.job.entity.JobEntity;
 
 @Entity
 @Getter
@@ -26,10 +25,11 @@ public class UserEntity {
   @Column(nullable = false)
   private String email;
 
-  @Column(nullable = false)
+  private String username;
+
   private String name;
 
-  @Column(nullable = false, unique = true)
+  @Column(unique = true)
   private String nickname;
 
   @Column(name = "s3_profile_image_url")
@@ -40,40 +40,32 @@ public class UserEntity {
   @Enumerated(EnumType.STRING)
   private CommonConstants.Gender gender;
 
-  @Column private Date birthdate;
+  @Column private LocalDate birthdate;
 
   //  @OneToOne(fetch = FetchType.EAGER)
   //  @JoinColumn(name = "job_id", nullable = false)
   //  private JobEntity job;
 
-  public UserEntity(
-      String socialId,
-      String email,
-      String name,
-      String nickname,
-      String s3ProfileImageUrl,
-      CommonConstants.Gender gender,
-      JobEntity job) {
+  public UserEntity(String socialId, String email) {
     this.socialId = socialId;
     this.email = email;
-    this.name = name;
-    this.nickname = nickname;
-    this.s3ProfileImageUrl = s3ProfileImageUrl;
-    this.leave = false;
-    this.gender = gender;
-    this.birthdate = new Date();
-    //    this.job = job;
   }
 
   public UserEntity updatedUserEntity(
-      String nickname, Date birthdate, CommonConstants.Gender gender) {
+      String username,
+      String name,
+      String nickname,
+      String s3ProfileImageUrl,
+      LocalDate birthdate,
+      CommonConstants.Gender gender) {
     return new UserEntity(
         this.id,
         this.socialId,
         this.email,
-        this.name,
+        username,
+        name,
         nickname,
-        this.s3ProfileImageUrl,
+        s3ProfileImageUrl,
         this.leave,
         gender,
         birthdate

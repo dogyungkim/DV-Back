@@ -9,4 +9,8 @@ import org.springframework.stereotype.Repository;
 public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 
   Optional<UserEntity> findBySocialId(String socialId);
+
+  boolean existsByUsername(String username);
+
+  Optional<String> findProfileImageUrlById(Long id);
 }

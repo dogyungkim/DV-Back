@@ -1,9 +1,11 @@
 package org.richardstallman.dvback.client.s3.service;
 
 import jakarta.annotation.Nullable;
+import java.io.IOException;
 import java.util.Map;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
 import org.richardstallman.dvback.domain.file.domain.response.PreSignedUrlResponseDto;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface S3Service {
 
@@ -20,4 +22,6 @@ public interface S3Service {
 
   PreSignedUrlResponseDto getDownloadURLForInterview(
       String filePath, Long userId, @Nullable Long interviewId);
+
+  String uploadImageToS3(MultipartFile image, FileType fileType, Long userId) throws IOException;
 }
