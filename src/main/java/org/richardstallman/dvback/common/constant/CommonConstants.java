@@ -137,4 +137,14 @@ public class CommonConstants {
 
     private final String folderName;
   }
+
+  @Getter
+  @AllArgsConstructor
+  public enum PostType {
+    EVALUATION("평가 공유"),
+    INTERVIEW("면접 공유"),
+    POST("게시글");
+
+    private final String koreanName;
+  }
 }

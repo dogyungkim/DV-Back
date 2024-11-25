@@ -7,4 +7,6 @@ public interface OverallEvaluationRepository {
   OverallEvaluationDomain save(OverallEvaluationDomain overallEvaluationDomain);
 
   OverallEvaluationDomain findByInterviewId(Long interviewId);
+
+  OverallEvaluationDomain findById(Long overallEvaluationId);
 }
