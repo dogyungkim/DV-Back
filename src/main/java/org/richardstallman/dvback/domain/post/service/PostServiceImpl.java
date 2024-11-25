@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.domain.post.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationRequestDto;
@@ -57,19 +58,42 @@ public class PostServiceImpl implements PostService {
                 interviewDomain,
                 overallEvaluationDomain,
                 generatedAt));
-    InterviewResponseDto interviewResponseDto =
-        interviewDomain == null
-            ? null
-            : interviewService.getInterviewResponseDtoByDomain(interviewDomain);
+    InterviewResponseDto interviewResponseDto = getInterviewResponseDtoByDomain(interviewDomain);
     OverallEvaluationResponseDto overallEvaluationResponseDto =
-        overallEvaluationDomain == null
-            ? null
-            : evaluationService.getOverallEvaluation(
-                new OverallEvaluationRequestDto(
-                    overallEvaluationDomain.getInterviewDomain().getInterviewId()));
+        getOverallEvaluationResponseDtoByDomain(overallEvaluationDomain);
 
     return postConverter.fromDomainToCreateResponseDto(
         postDomain, interviewResponseDto, overallEvaluationResponseDto);
+  }
+
+  @Override
+  public List<PostCreateResponseDto> getPostsByUserId(Long userId) {
+    List<PostDomain> postDomains = postRepository.findByAuthorId(userId);
+    return postDomains.stream()
+        .map(
+            (e) ->
+                postConverter.fromDomainToCreateResponseDto(
+                    e,
+                    getInterviewResponseDtoByDomain(e.getInterviewDomain()),
+                    getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain())))
+        .toList();
+  }
+
+  private InterviewResponseDto getInterviewResponseDtoByDomain(InterviewDomain interviewDomain) {
+    if (interviewDomain == null) {
+      return null;
+    }
+    return interviewService.getInterviewResponseDtoByDomain(interviewDomain);
+  }
+
+  private OverallEvaluationResponseDto getOverallEvaluationResponseDtoByDomain(
+      OverallEvaluationDomain overallEvaluationDomain) {
+    if (overallEvaluationDomain == null) {
+      return null;
+    }
+    return evaluationService.getOverallEvaluation(
+        new OverallEvaluationRequestDto(
+            overallEvaluationDomain.getInterviewDomain().getInterviewId()));
   }
 
   private UserDomain getUser(Long userId) {
