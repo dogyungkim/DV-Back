@@ -112,6 +112,11 @@ public class EvaluationServiceImpl implements EvaluationService {
     return buildResponseDto(interviewDomain, overallEvaluationDomain, answerEvaluationDomains);
   }
 
+  @Override
+  public OverallEvaluationDomain getOverallEvaluationDomainById(Long overallEvaluationId) {
+    return overallEvaluationRepository.findById(overallEvaluationId);
+  }
+
   private List<QuestionDomain> retrieveQuestions(Long interviewId) {
     return questionRepository.findQuestionsByInterviewId(interviewId);
   }

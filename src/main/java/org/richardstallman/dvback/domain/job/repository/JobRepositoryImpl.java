@@ -36,4 +36,9 @@ public class JobRepositoryImpl implements JobRepository {
   public long count() {
     return jobJpaRepository.count();
   }
+
+  @Override
+  public JobDomain findByJobNameKorean(String jobNameKorean) {
+    return jobConverter.toDomain(jobJpaRepository.findByJobNameKorean(jobNameKorean));
+  }
 }

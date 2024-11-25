@@ -5,6 +5,7 @@ import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreat
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationListResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewListResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewResponseDto;
 
 public interface InterviewService {
 
@@ -16,4 +17,6 @@ public interface InterviewService {
   InterviewDomain getInterviewById(Long interviewId);
 
   InterviewEvaluationListResponseDto getInterviewsByUserIdForEvaluation(Long userId);
+
+  InterviewResponseDto getInterviewResponseDtoByDomain(InterviewDomain interviewDomain);
 }
