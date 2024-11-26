@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import org.richardstallman.dvback.common.constant.CommonConstants;
 
 public record UserRequestDto(
-    @NotNull(message = "S3ProfileImageUrl is required") String s3ProfileImageUrl,
+    String s3ProfileImageObjectKey,
     @NotNull(message = "Name is required") String name,
     @NotNull(message = "Username is required") String username,
     @NotNull(message = "Nickname is required") String nickname,
