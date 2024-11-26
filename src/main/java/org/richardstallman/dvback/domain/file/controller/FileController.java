@@ -81,15 +81,6 @@ public class FileController {
     return ResponseEntity.ok(DvApiResponse.of(preSignedUrl));
   }
 
-  @GetMapping("/profile-image/download-url")
-  public ResponseEntity<DvApiResponse<PreSignedUrlResponseDto>> getProfileImageDownloadUrl(
-      @AuthenticationPrincipal Long userId) {
-    log.info("Generating preSigned URL for profile image upload: userId={}", userId);
-
-    PreSignedUrlResponseDto preSignedUrlResponseDto = s3Service.getDownloadUrlForImage(userId);
-    return ResponseEntity.ok(DvApiResponse.of(preSignedUrlResponseDto));
-  }
-
   @GetMapping("/cover-letter")
   public ResponseEntity<DvApiResponse<CoverLetterListResponseDto>> getUserCoverLetterList(
       @AuthenticationPrincipal Long userId) {

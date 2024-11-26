@@ -8,8 +8,6 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
 import org.richardstallman.dvback.domain.file.domain.response.PreSignedUrlResponseDto;
-import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
-import org.richardstallman.dvback.domain.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -41,8 +39,6 @@ public class S3ServiceImpl implements S3Service {
 
   private Duration urlDuration;
 
-  private final UserService userService;
-
   @PostConstruct
   private void init() {
     this.urlDuration = Duration.ofMinutes(urlDurationMinutes);
@@ -60,20 +56,6 @@ public class S3ServiceImpl implements S3Service {
             builder -> builder.signatureDuration(urlDuration).putObjectRequest(putObjectRequest));
 
     return new PreSignedUrlResponseDto(presignedPutObjectRequest.url().toString());
-  }
-
-  @Override
-  public PreSignedUrlResponseDto getDownloadUrlForImage(Long userId) {
-    UserResponseDto userResponseDto = userService.getUserInfo(userId);
-    String filePathKey = userResponseDto.s3ProfileImageUrl();
-    GetObjectRequest getObjectRequest =
-        GetObjectRequest.builder().bucket(bucketName).key(filePathKey).build();
-
-    PresignedGetObjectRequest presignedGetObjectRequest =
-        s3Presigner.presignGetObject(
-            builder -> builder.signatureDuration(urlDuration).getObjectRequest(getObjectRequest));
-
-    return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString());
   }
 
   @Override

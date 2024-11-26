@@ -11,8 +11,6 @@ public interface S3Service {
 
   PreSignedUrlResponseDto getPreSignedUrlForImage(String fileName, Long userId);
 
-  PreSignedUrlResponseDto getDownloadUrlForImage(Long userId);
-
   PreSignedUrlResponseDto createPreSignedURLForInterview(
       FileType fileType,
       String fileName,

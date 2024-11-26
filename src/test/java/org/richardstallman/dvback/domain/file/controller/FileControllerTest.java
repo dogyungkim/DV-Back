@@ -263,51 +263,6 @@ public class FileControllerTest {
   }
 
   @Test
-  @DisplayName("프로필 이미지 다운로드 url 받기 - 성공")
-  @WithMockUser
-  void testGetProfileImageDownloadUrl() throws Exception {
-    // given
-    Long userId = 1L;
-    String expectedUrl = "https://s3.aws.com/profile-image/1/profile-image.jpg";
-    PreSignedUrlResponseDto preSignedUrlResponseDto = new PreSignedUrlResponseDto(expectedUrl);
-
-    String accessToken = jwtUtil.generateAccessToken(userId);
-    MockCookie authCookie = new MockCookie("access_token", accessToken);
-
-    when(s3Service.getDownloadUrlForImage(eq(userId))).thenReturn(preSignedUrlResponseDto);
-
-    // when & then
-    ResultActions resultActions =
-        mockMvc.perform(
-            get("/file/profile-image/download-url")
-                .cookie(authCookie)
-                .accept(MediaType.APPLICATION_JSON));
-
-    // validate the response
-    resultActions
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("data.preSignedUrl").value(expectedUrl));
-
-    // rest docs
-    resultActions.andDo(
-        document(
-            "프로필 이미지 다운로드 url 받기 - 성공",
-            preprocessResponse(prettyPrint()),
-            resource(
-                ResourceSnippetParameters.builder()
-                    .tag("File API")
-                    .summary("파일 API")
-                    .responseFields(
-                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
-                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                        fieldWithPath("data.preSignedUrl")
-                            .type(JsonFieldType.STRING)
-                            .description("aws s3 preSigned Url"))
-                    .build())));
-  }
-
-  @Test
   @DisplayName("유저가 올린 자소서 목록 조회")
   @WithMockUser
   void testGetCoverLetterByUserId() throws Exception {
