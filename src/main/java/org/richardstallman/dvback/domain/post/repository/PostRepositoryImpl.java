@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.domain.post.repository;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.post.converter.PostConverter;
 import org.richardstallman.dvback.domain.post.domain.PostDomain;
@@ -24,5 +25,10 @@ public class PostRepositoryImpl implements PostRepository {
     return postJpaRepository.findByAuthorIdOrderByPostIdDesc(authorId).stream()
         .map(postConverter::fromEntityToDomain)
         .toList();
+  }
+
+  @Override
+  public Optional<PostDomain> findByPostId(Long postId) {
+    return postJpaRepository.findById(postId).map(postConverter::fromEntityToDomain);
   }
 }

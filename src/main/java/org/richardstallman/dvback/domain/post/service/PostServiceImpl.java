@@ -79,6 +79,16 @@ public class PostServiceImpl implements PostService {
         .toList();
   }
 
+  @Override
+  public PostDomain getPost(Long postId) {
+    return postRepository
+        .findByPostId(postId)
+        .orElseThrow(
+            () ->
+                new ApiException(
+                    HttpStatus.NOT_FOUND, String.format("Post with id %s not found", postId)));
+  }
+
   private InterviewResponseDto getInterviewResponseDtoByDomain(InterviewDomain interviewDomain) {
     if (interviewDomain == null) {
       return null;
