@@ -68,7 +68,12 @@ public class CommentServiceImpl implements CommentService {
   }
 
   private CommentDomain getComment(Long commentId) {
-    return commentRepository.findByCommentId(commentId);
+    CommentDomain commentDomain = commentRepository.findByCommentId(commentId);
+    if (commentDomain == null) {
+      throw new ApiException(
+          HttpStatus.BAD_REQUEST, String.format("Comment Id (%d) not found.", commentId));
+    }
+    return commentDomain;
   }
 
   private UserDomain getUser(Long userId) {
