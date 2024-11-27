@@ -32,8 +32,8 @@ public class UserEntity {
   @Column(unique = true)
   private String nickname;
 
-  @Column(name = "s3_profile_image_url")
-  private String s3ProfileImageUrl;
+  @Column(name = "s3_profile_image_object_key")
+  private String s3ProfileImageObjectKey;
 
   @Column private Boolean leave = false;
 
@@ -55,7 +55,7 @@ public class UserEntity {
       String username,
       String name,
       String nickname,
-      String s3ProfileImageUrl,
+      String s3ProfileImageObjectKey,
       LocalDate birthdate,
       CommonConstants.Gender gender) {
     return new UserEntity(
@@ -65,7 +65,7 @@ public class UserEntity {
         username,
         name,
         nickname,
-        s3ProfileImageUrl,
+        s3ProfileImageObjectKey,
         this.leave,
         gender,
         birthdate

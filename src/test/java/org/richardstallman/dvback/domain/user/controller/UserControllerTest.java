@@ -108,26 +108,31 @@ public class UserControllerTest {
             "유저 정보 업데이트 - 성공",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
-            requestFields(
-                fieldWithPath("s3ProfileImageUrl").description("프로필 이미지 URL"),
-                fieldWithPath("name").description("유저 이름"),
-                fieldWithPath("username").description("유저네임"),
-                fieldWithPath("nickname").description("유저 닉네임"),
-                fieldWithPath("birthdate").description("생년월일"),
-                fieldWithPath("gender").description("성별")),
-            responseFields(
-                fieldWithPath("code").description("응답 코드"),
-                fieldWithPath("message").description("응답 메시지"),
-                fieldWithPath("data.userId").description("유저 ID"),
-                fieldWithPath("data.socialId").description("소셜 ID"),
-                fieldWithPath("data.email").description("이메일"),
-                fieldWithPath("data.username").description("유저네임"),
-                fieldWithPath("data.name").description("유저 이름"),
-                fieldWithPath("data.nickname").description("유저 닉네임"),
-                fieldWithPath("data.s3ProfileImageUrl").description("프로필 이미지 URL"),
-                fieldWithPath("data.leave").description("탈퇴 여부"),
-                fieldWithPath("data.gender").description("성별"),
-                fieldWithPath("data.birthdate").description("생년월일"))));
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("User API")
+                    .summary("유저 API")
+                    .requestFields(
+                        fieldWithPath("s3ProfileImageObjectKey").description("프로필 이미지 오브젝트 키"),
+                        fieldWithPath("name").description("유저 이름"),
+                        fieldWithPath("username").description("유저네임"),
+                        fieldWithPath("nickname").description("유저 닉네임"),
+                        fieldWithPath("birthdate").description("생년월일"),
+                        fieldWithPath("gender").description("성별"))
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data.userId").description("유저 ID"),
+                        fieldWithPath("data.socialId").description("소셜 ID"),
+                        fieldWithPath("data.email").description("이메일"),
+                        fieldWithPath("data.username").description("유저네임"),
+                        fieldWithPath("data.name").description("유저 이름"),
+                        fieldWithPath("data.nickname").description("유저 닉네임"),
+                        fieldWithPath("data.s3ProfileImageUrl").description("프로필 이미지 URL"),
+                        fieldWithPath("data.leave").description("탈퇴 여부"),
+                        fieldWithPath("data.gender").description("성별"),
+                        fieldWithPath("data.birthdate").description("생년월일"))
+                    .build())));
   }
 
   @Test

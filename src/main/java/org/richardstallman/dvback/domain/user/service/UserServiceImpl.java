@@ -8,8 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.richardstallman.dvback.client.s3.service.S3Service;
 import org.richardstallman.dvback.domain.coupon.converter.CouponConverter;
 import org.richardstallman.dvback.domain.coupon.repository.CouponRepository;
+import org.richardstallman.dvback.domain.file.domain.response.PreSignedUrlResponseDto;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.richardstallman.dvback.domain.user.domain.UserDomain;
 import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
@@ -33,12 +35,15 @@ public class UserServiceImpl implements UserService {
   private final CouponRepository couponRepository;
   private final CouponsConfig couponsConfig;
   private final CouponConverter couponConverter;
+  private final S3Service s3Service;
 
   @Override
   public UserResponseDto getUserInfo(Long userId) {
     log.info("getUserInfo");
     UserDomain userDomain = findUserById(userId);
-    return userConverter.fromDomainToDto(userDomain);
+    PreSignedUrlResponseDto preSignedUrl =
+        s3Service.getPreSignedUrlForImage(userDomain.getS3ProfileImageObjectKey(), userId);
+    return userConverter.fromDomainWithPreSignedUrlToDto(userDomain, preSignedUrl.preSignedUrl());
   }
 
   @Override
@@ -67,7 +72,7 @@ public class UserServiceImpl implements UserService {
             userRequestDto.username(),
             userRequestDto.name(),
             userRequestDto.nickname(),
-            userRequestDto.s3ProfileImageUrl(),
+            userRequestDto.s3ProfileImageObjectKey(),
             userRequestDto.birthdate(),
             userRequestDto.gender());
 
@@ -80,6 +85,9 @@ public class UserServiceImpl implements UserService {
           couponConverter.fromWelcomeCouponToDomain(welcomeCoupons, user, now, expireAt));
     }
 
+    PreSignedUrlResponseDto preSignedUrl =
+        s3Service.getPreSignedUrlForImage(updatedUser.getS3ProfileImageObjectKey(), userId);
+
     return new UserResponseDto(
         updatedUser.getId(),
         updatedUser.getSocialId(),
@@ -87,7 +95,7 @@ public class UserServiceImpl implements UserService {
         updatedUser.getUsername(),
         updatedUser.getName(),
         updatedUser.getNickname(),
-        updatedUser.getS3ProfileImageUrl(),
+        preSignedUrl.preSignedUrl(),
         updatedUser.getLeave(),
         updatedUser.getGender(),
         updatedUser.getBirthdate());

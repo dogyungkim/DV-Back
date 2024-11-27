@@ -16,7 +16,7 @@ public class UserDomain {
   private String username;
   private String name;
   private String nickname;
-  private String s3ProfileImageUrl;
+  private String s3ProfileImageObjectKey;
   private Boolean leave;
   private CommonConstants.Gender gender;
   private LocalDate birthdate;
