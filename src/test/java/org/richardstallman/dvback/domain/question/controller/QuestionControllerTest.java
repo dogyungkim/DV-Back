@@ -101,8 +101,10 @@ public class QuestionControllerTest {
                         .build()),
                 1L,
                 "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
+                "",
                 2L,
                 "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요2.",
+                "",
                 true));
     ResultActions resultActions =
         mockMvc.perform(
@@ -211,12 +213,18 @@ public class QuestionControllerTest {
                         fieldWithPath("data.currentQuestionText")
                             .type(JsonFieldType.STRING)
                             .description("현재 질문 내용"),
+                        fieldWithPath("data.currentQuestionS3AudioUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("현재 질문 음성 파일 주소"),
                         fieldWithPath("data.nextQuestionId")
                             .type(JsonFieldType.NUMBER)
                             .description("다음 질문 식별자"),
                         fieldWithPath("data.nextQuestionText")
                             .type(JsonFieldType.STRING)
                             .description("다음 질문 내용"),
+                        fieldWithPath("data.nextQuestionS3AudioUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("다음 질문 음성 파일 주소"),
                         fieldWithPath("data.hasNext")
                             .type(JsonFieldType.BOOLEAN)
                             .description("다음 질문 존재 여부"))
@@ -268,8 +276,10 @@ public class QuestionControllerTest {
                         .build()),
                 1L,
                 "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
+                "",
                 2L,
                 "다음 질문입니다.",
+                "",
                 true));
     ResultActions resultActions =
         mockMvc.perform(
@@ -381,12 +391,18 @@ public class QuestionControllerTest {
                         fieldWithPath("data.currentQuestionText")
                             .type(JsonFieldType.STRING)
                             .description("현재 질문 내용"),
+                        fieldWithPath("data.currentQuestionS3AudioUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("현재 질문 음성 파일 주소"),
                         fieldWithPath("data.nextQuestionId")
                             .type(JsonFieldType.NUMBER)
                             .description("다음 질문 식별자"),
                         fieldWithPath("data.nextQuestionText")
                             .type(JsonFieldType.STRING)
                             .description("다음 질문 내용"),
+                        fieldWithPath("data.nextQuestionS3AudioUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("다음 질문 음성 파일 주소"),
                         fieldWithPath("data.hasNext")
                             .type(JsonFieldType.BOOLEAN)
                             .description("다음 질문 존재 여부"))
@@ -422,8 +438,10 @@ public class QuestionControllerTest {
                         .build()),
                 1L,
                 "리액트와 스프링 간의 연동 경험을 설명해 주세요.",
+                "",
                 2L,
                 "협업 과정에서 가장 힘들었던 일이 있다면 무엇이었나요?",
+                "",
                 true));
 
     // when
@@ -524,12 +542,18 @@ public class QuestionControllerTest {
                         fieldWithPath("data.currentQuestionText")
                             .type(JsonFieldType.STRING)
                             .description("현재 질문 내용"),
+                        fieldWithPath("data.currentQuestionS3AudioUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("현재 질문 음성 파일 주소"),
                         fieldWithPath("data.nextQuestionId")
                             .type(JsonFieldType.NUMBER)
                             .description("다음 질문 식별자"),
                         fieldWithPath("data.nextQuestionText")
                             .type(JsonFieldType.STRING)
                             .description("다음 질문 내용"),
+                        fieldWithPath("data.nextQuestionS3AudioUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("다음 질문 음성 파일 주소"),
                         fieldWithPath("data.hasNext")
                             .type(JsonFieldType.BOOLEAN)
                             .description("다음 질문 존재 여부"))
