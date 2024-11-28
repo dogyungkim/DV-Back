@@ -83,8 +83,10 @@ public class QuestionConverter {
         interviewQuestionResponseDto,
         firstQuestionDomain == null ? null : firstQuestionDomain.getQuestionId(),
         firstQuestionDomain == null ? null : firstQuestionDomain.getQuestionText(),
+        firstQuestionDomain == null ? null : firstQuestionDomain.getS3AudioUrl(),
         secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionId(),
         secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionText(),
+        secondQuestionDomain == null ? null : secondQuestionDomain.getS3AudioUrl(),
         hasNext);
   }
 

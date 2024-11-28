@@ -7,6 +7,8 @@ public record QuestionResponseDto(
     @NotNull InterviewQuestionResponseDto interview,
     @NotNull Long currentQuestionId,
     @NotNull String currentQuestionText,
+    String currentQuestionS3AudioUrl,
     Long nextQuestionId,
     String nextQuestionText,
+    String nextQuestionS3AudioUrl,
     @NotNull Boolean hasNext) {}
