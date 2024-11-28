@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.client.python;
 
 import java.net.URI;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.response.EvaluationExternalResponseDto;
@@ -18,11 +19,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class PythonServiceImpl implements PythonService {
 
   private final RestTemplate restTemplate = new RestTemplate();
 
-  @Value("${python.server.url}")
+  @Value("${python.server.url}/interview")
   private String pythonServerUrl;
 
   @Value("${python.server.question-path}")
@@ -32,7 +34,8 @@ public class PythonServiceImpl implements PythonService {
   private String pythonServerEvaluationPath;
 
   @Override
-  public QuestionExternalResponseDto getInterviewQuestions(QuestionExternalRequestDto requestDto) {
+  public QuestionExternalResponseDto getInterviewQuestions(
+      QuestionExternalRequestDto requestDto, Long interviewId) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -40,7 +43,7 @@ public class PythonServiceImpl implements PythonService {
 
     URI uri =
         UriComponentsBuilder.fromUriString(pythonServerUrl)
-            .path(pythonServerQuestionPath)
+            .path(String.format("/%d%s", interviewId, pythonServerQuestionPath))
             .build()
             .toUri();
 

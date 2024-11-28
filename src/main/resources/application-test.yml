@@ -16,7 +16,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   config:
-    import: classpath:/initial_data.yml, optional:file:.env[.properties], classpath:/welcome_coupon.yml
+    import: classpath:/properties/test/initial_data.yml, optional:file:.env[.properties], classpath:/properties/test/welcome_coupon.yml
   data:
     redis:
       host: ${REDIS_HOST}
@@ -50,8 +50,8 @@ spring:
 python:
   server:
     url: ${PYTHON_SERVER_URL}
-    question-path: /interview/questions
-    evaluation-path: /interview/evaluation
+    question-path: /questions-test
+    evaluation-path: /evaluation-test
 
 cloud:
   aws:

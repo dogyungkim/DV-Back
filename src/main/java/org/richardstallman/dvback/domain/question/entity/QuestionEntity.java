@@ -36,11 +36,14 @@ public class QuestionEntity extends BaseEntity {
   @JoinColumn(name = "interview_id", nullable = false)
   private InterviewEntity interview;
 
-  @Column(columnDefinition = "TEXT")
-  private String questionExcerpt;
-
   @NotNull(message = "Question Text is required") @Column(columnDefinition = "TEXT")
   private String questionText;
+
+  private String s3AudioUrl;
+  private String s3VideoUrl;
+
+  @Column(columnDefinition = "TEXT")
+  private String questionExcerpt;
 
   @NotNull(message = "Question Intent is required") @Column(columnDefinition = "TEXT")
   private String questionIntent;
@@ -49,7 +52,5 @@ public class QuestionEntity extends BaseEntity {
   @JdbcTypeCode(SqlTypes.JSON)
   private List<String> keyTerms;
 
-  private String s3AudioUrl;
-  private String s3VideoUrl;
   private String questionType;
 }

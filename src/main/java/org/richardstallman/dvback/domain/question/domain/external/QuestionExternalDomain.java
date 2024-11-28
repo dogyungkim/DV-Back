@@ -11,13 +11,13 @@ import lombok.Getter;
 public class QuestionExternalDomain {
 
   @NotNull @JsonProperty("question_id")
-  int questionId;
+  Long questionId;
 
-  @NotNull @JsonProperty("question_excerpt")
+  @NotNull @JsonProperty("question")
+  QuestionExternalContentDomain question;
+
+  @JsonProperty("question_excerpt")
   String questionExcerpt;
-
-  @NotNull @JsonProperty("question_text")
-  String questionText;
 
   @NotNull @JsonProperty("question_intent")
   String questionIntent;

@@ -7,6 +7,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 
 public record QuestionExternalRequestDto(
+    @JsonProperty("user_id") @NotNull Long userId,
     @JsonProperty("interview_mode") @NotNull String interviewMode,
     @JsonProperty("interview_type") @NotNull String interviewType,
     @JsonProperty("interview_method") @NotNull String interviewMethod,
@@ -15,6 +16,7 @@ public record QuestionExternalRequestDto(
     @JsonProperty("file_paths") String[] filePaths) {
 
   public QuestionExternalRequestDto(
+      Long userId,
       InterviewMode interviewMode,
       InterviewType interviewType,
       InterviewMethod interviewMethod,
@@ -22,6 +24,7 @@ public record QuestionExternalRequestDto(
       String jobName,
       String[] filePaths) {
     this(
+        userId,
         interviewMode.getPythonFormat(),
         interviewType.getPythonFormat(),
         interviewMethod.getPythonFormat(),

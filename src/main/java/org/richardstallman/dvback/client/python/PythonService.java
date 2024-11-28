@@ -7,7 +7,8 @@ import org.richardstallman.dvback.domain.question.domain.external.response.Quest
 
 public interface PythonService {
 
-  QuestionExternalResponseDto getInterviewQuestions(QuestionExternalRequestDto requestDto);
+  QuestionExternalResponseDto getInterviewQuestions(
+      QuestionExternalRequestDto requestDto, Long interviewId);
 
   EvaluationExternalResponseDto getOverallEvaluations(EvaluationExternalRequestDto requestDto);
 }

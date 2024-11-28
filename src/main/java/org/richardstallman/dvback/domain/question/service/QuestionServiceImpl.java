@@ -59,10 +59,11 @@ public class QuestionServiceImpl implements QuestionService {
             .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, userId + " is not found"));
     QuestionExternalRequestDto questionExternalRequestDto =
         questionConverter.reactRequestToPythonRequest(
-            questionInitialRequestDto, jobDomain.getJobName());
+            userId, questionInitialRequestDto, jobDomain.getJobName());
 
     QuestionExternalResponseDto questionResponse =
-        pythonService.getInterviewQuestions(questionExternalRequestDto);
+        pythonService.getInterviewQuestions(
+            questionExternalRequestDto, questionInitialRequestDto.interviewId());
 
     if (questionResponse == null || questionResponse.getQuestions().isEmpty()) {
       throw new IllegalStateException(
