@@ -38,7 +38,9 @@ public class CommentRepositoryImpl implements CommentRepository {
 
   @Override
   public List<CommentDomain> findByCommentAuthorId(Long commentAuthorId) {
-    return commentJpaRepository.findByCommentAuthorIdOrderByCommentIdDesc(commentAuthorId).stream()
+    return commentJpaRepository
+        .findByCommentAuthorUserIdOrderByCommentIdDesc(commentAuthorId)
+        .stream()
         .map(commentConverter::fromEntityToDomain)
         .toList();
   }

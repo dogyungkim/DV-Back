@@ -75,7 +75,7 @@ public class CouponConverter {
   public CouponInfoResponseDto fromDomainToInfoResponseDto(CouponDomain couponDomain) {
     return new CouponInfoResponseDto(
         couponDomain.getCouponId(),
-        couponDomain.getUserDomain().getId(),
+        couponDomain.getUserDomain().getUserId(),
         couponDomain.getChargeAmount(),
         couponDomain.getCouponName(),
         couponDomain.getInterviewMode(),

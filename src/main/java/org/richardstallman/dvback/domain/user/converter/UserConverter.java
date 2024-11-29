@@ -14,7 +14,7 @@ public class UserConverter {
 
   public UserEntity fromDomainToEntity(UserDomain userDomain) {
     return new UserEntity(
-        userDomain.getId(),
+        userDomain.getUserId(),
         userDomain.getSocialId(),
         userDomain.getEmail(),
         userDomain.getUsername(),
@@ -28,7 +28,7 @@ public class UserConverter {
 
   public UserDomain fromEntityToDomain(UserEntity userEntity) {
     return UserDomain.builder()
-        .id(userEntity.getId())
+        .userId(userEntity.getUserId())
         .socialId(userEntity.getSocialId())
         .email(userEntity.getEmail())
         .username(userEntity.getUsername())
@@ -48,7 +48,7 @@ public class UserConverter {
   public UserResponseDto fromDomainWithPreSignedUrlToDto(
       UserDomain userDomain, String preSignedUrl) {
     return new UserResponseDto(
-        userDomain.getId(),
+        userDomain.getUserId(),
         userDomain.getSocialId(),
         userDomain.getEmail(),
         userDomain.getUsername(),
@@ -62,7 +62,7 @@ public class UserConverter {
 
   public UserDomain fromResponseDtoToDomain(UserResponseDto userResponseDto) {
     return UserDomain.builder()
-        .id(userResponseDto.userId())
+        .userId(userResponseDto.userId())
         .socialId(userResponseDto.socialId())
         .email(userResponseDto.email())
         .username(userResponseDto.username())

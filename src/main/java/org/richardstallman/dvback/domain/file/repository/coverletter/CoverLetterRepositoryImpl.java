@@ -27,7 +27,7 @@ public class CoverLetterRepositoryImpl implements CoverLetterRepository {
 
   @Override
   public List<CoverLetterDomain> findCoverLetterListByUserId(Long userId) {
-    return coverLetterJpaRepository.findByUserId(userId).stream()
+    return coverLetterJpaRepository.findByUserUserId(userId).stream()
         .map(coverLetterConverter::fromEntityToDomain)
         .toList();
   }

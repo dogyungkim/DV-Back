@@ -47,7 +47,7 @@ public class TokenService {
             .orElseThrow(() -> new EntityNotFoundException("User not found."));
 
     UserEntity userEntity = userConverter.fromDomainToEntity(userDomain);
-    return jwtUtil.generateAccessToken(userEntity.getId());
+    return jwtUtil.generateAccessToken(userEntity.getUserId());
   }
 
   public void saveRefreshToken(String refreshToken, Long userId) {

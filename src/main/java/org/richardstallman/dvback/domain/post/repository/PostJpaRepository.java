@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostJpaRepository extends JpaRepository<PostEntity, Long> {
 
-  List<PostEntity> findByAuthorIdOrderByPostIdDesc(Long authorId);
+  List<PostEntity> findByAuthorUserIdOrderByPostIdDesc(Long authorId);
 }

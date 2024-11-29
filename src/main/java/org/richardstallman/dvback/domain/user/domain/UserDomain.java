@@ -10,7 +10,7 @@ import org.richardstallman.dvback.domain.job.domain.JobDomain;
 @Builder
 public class UserDomain {
 
-  private Long id;
+  private Long userId;
   private String socialId;
   private String email;
   private String username;

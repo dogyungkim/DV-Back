@@ -23,7 +23,7 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
 
   @Override
   public List<SubscriptionDomain> findByUserId(Long userId) {
-    return subscriptionJpaRepository.findByUserIdOrderBySubscriptionIdDesc(userId).stream()
+    return subscriptionJpaRepository.findByUserUserIdOrderBySubscriptionIdDesc(userId).stream()
         .map(subscriptionConverter::fromEntityToDomain)
         .toList();
   }
@@ -32,7 +32,7 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
   public Optional<SubscriptionDomain> findBySubscriptionIdAndUserId(
       Long subscriptionId, Long userId) {
     return subscriptionJpaRepository
-        .findBySubscriptionIdAndUserId(subscriptionId, userId)
+        .findBySubscriptionIdAndUserUserId(subscriptionId, userId)
         .map(subscriptionConverter::fromEntityToDomain);
   }
 
@@ -43,6 +43,6 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
 
   @Override
   public boolean existsByUserIdAndJobId(Long userId, Long jobId) {
-    return subscriptionJpaRepository.existsByUserIdAndJobJobId(userId, jobId);
+    return subscriptionJpaRepository.existsByUserUserIdAndJobJobId(userId, jobId);
   }
 }

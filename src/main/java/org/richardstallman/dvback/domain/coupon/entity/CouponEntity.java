@@ -33,7 +33,7 @@ public class CouponEntity extends BaseEntity {
   private Long couponId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id", nullable = false)
+  @JoinColumn(name = "user_id", nullable = false)
   private UserEntity user;
 
   private int chargeAmount;

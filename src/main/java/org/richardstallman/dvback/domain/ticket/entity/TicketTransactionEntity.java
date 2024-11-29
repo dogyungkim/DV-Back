@@ -38,7 +38,7 @@ public class TicketTransactionEntity extends BaseEntity {
   private Long ticketTransactionId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id", nullable = false)
+  @JoinColumn(name = "user_id", nullable = false)
   private UserEntity user;
 
   private int amount;

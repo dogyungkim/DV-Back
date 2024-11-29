@@ -8,9 +8,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CouponJpaRepository extends JpaRepository<CouponEntity, Long> {
 
-  List<CouponEntity> findByUserIdAndIsUsedFalseAndIsExpiredFalseOrderByCouponIdDesc(Long userId);
+  List<CouponEntity> findByUserUserIdAndIsUsedFalseAndIsExpiredFalseOrderByCouponIdDesc(
+      Long userId);
 
-  List<CouponEntity> findByUserIdAndIsUsedTrueOrderByCouponIdDesc(Long userId);
+  List<CouponEntity> findByUserUserIdAndIsUsedTrueOrderByCouponIdDesc(Long userId);
 
-  List<CouponEntity> findByUserIdAndIsExpiredTrueOrderByCouponIdDesc(Long userId);
+  List<CouponEntity> findByUserUserIdAndIsExpiredTrueOrderByCouponIdDesc(Long userId);
 }

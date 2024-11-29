@@ -21,7 +21,7 @@ public class TicketRepositoryImpl implements TicketRepository {
 
   @Override
   public TicketDomain findByUserId(Long userId) {
-    TicketEntity ticketEntity = ticketJpaRepository.findByUserId(userId);
+    TicketEntity ticketEntity = ticketJpaRepository.findByUserUserId(userId);
     if (ticketEntity == null) {
       return null;
     }

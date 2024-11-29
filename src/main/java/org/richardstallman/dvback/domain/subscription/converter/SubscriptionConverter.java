@@ -46,7 +46,7 @@ public class SubscriptionConverter {
   public SubscriptionResponseDto fromDomainToResponseDto(SubscriptionDomain subscriptionDomain) {
     return new SubscriptionResponseDto(
         subscriptionDomain.getSubscriptionId(),
-        subscriptionDomain.getUser().getId(),
+        subscriptionDomain.getUser().getUserId(),
         subscriptionDomain.getJob().getJobId(),
         subscriptionDomain.getSubscribedAt());
   }

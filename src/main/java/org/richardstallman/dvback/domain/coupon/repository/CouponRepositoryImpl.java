@@ -32,7 +32,7 @@ public class CouponRepositoryImpl implements CouponRepository {
   @Override
   public List<CouponDomain> findSimpleListByUserId(Long userId) {
     return couponJpaRepository
-        .findByUserIdAndIsUsedFalseAndIsExpiredFalseOrderByCouponIdDesc(userId)
+        .findByUserUserIdAndIsUsedFalseAndIsExpiredFalseOrderByCouponIdDesc(userId)
         .stream()
         .map(couponConverter::fromEntityToDomain)
         .toList();
@@ -40,14 +40,14 @@ public class CouponRepositoryImpl implements CouponRepository {
 
   @Override
   public List<CouponDomain> findUsedListByUserId(Long userId) {
-    return couponJpaRepository.findByUserIdAndIsUsedTrueOrderByCouponIdDesc(userId).stream()
+    return couponJpaRepository.findByUserUserIdAndIsUsedTrueOrderByCouponIdDesc(userId).stream()
         .map(couponConverter::fromEntityToDomain)
         .toList();
   }
 
   @Override
   public List<CouponDomain> findExpiredListByUserId(Long userId) {
-    return couponJpaRepository.findByUserIdAndIsExpiredTrueOrderByCouponIdDesc(userId).stream()
+    return couponJpaRepository.findByUserUserIdAndIsExpiredTrueOrderByCouponIdDesc(userId).stream()
         .map(couponConverter::fromEntityToDomain)
         .toList();
   }

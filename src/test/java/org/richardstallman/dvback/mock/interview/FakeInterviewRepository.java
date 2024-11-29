@@ -46,7 +46,7 @@ public class FakeInterviewRepository implements InterviewRepository {
   @Override
   public List<InterviewDomain> findInterviewsByUserId(Long userId) {
     return data.stream()
-        .filter(item -> Objects.equals(item.getUserDomain().getId(), userId))
+        .filter(item -> Objects.equals(item.getUserDomain().getUserId(), userId))
         .toList();
   }
 
@@ -55,8 +55,8 @@ public class FakeInterviewRepository implements InterviewRepository {
     return data.stream()
         .filter(
             item ->
-                Objects.nonNull(item.getUserDomain().getId())
-                    && item.getUserDomain().getId().equals(userId))
+                Objects.nonNull(item.getUserDomain().getUserId())
+                    && item.getUserDomain().getUserId().equals(userId))
         .toList();
   }
 }

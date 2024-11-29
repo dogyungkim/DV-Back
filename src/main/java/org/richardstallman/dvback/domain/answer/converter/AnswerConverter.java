@@ -63,7 +63,7 @@ public class AnswerConverter {
       @NotNull InterviewDomain interviewDomain, @NotNull AnswerPreviousRequestDto answer) {
     return new QuestionExternalSttRequestDto(
         interviewDomain.getInterviewMethod().getPythonFormat(),
-        interviewDomain.getUserDomain().getId(),
+        interviewDomain.getUserDomain().getUserId(),
         new QuestionExternalSttAnswerRequestDomain(
             answer.answerText(), answer.s3AudioUrl(), answer.s3VideoUrl()));
   }

@@ -10,5 +10,5 @@ public interface CommentJpaRepository extends JpaRepository<CommentEntity, Long>
 
   List<CommentEntity> findByCommentPostPostIdOrderByCommentId(Long commentPostId);
 
-  List<CommentEntity> findByCommentAuthorIdOrderByCommentIdDesc(Long commentAuthorId);
+  List<CommentEntity> findByCommentAuthorUserIdOrderByCommentIdDesc(Long commentAuthorId);
 }
