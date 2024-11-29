@@ -23,7 +23,7 @@ public class TicketTransactionRepositoryImpl implements TicketTransactionReposit
   @Override
   public List<TicketTransactionDomain> findTicketsByUserId(Long userId) {
     return ticketTransactionJpaRepository
-        .findByUserIdOrderByTicketTransactionIdDesc(userId)
+        .findByUserUserIdOrderByTicketTransactionIdDesc(userId)
         .stream()
         .map(ticketTransactionConverter::fromEntityToDomain)
         .toList();

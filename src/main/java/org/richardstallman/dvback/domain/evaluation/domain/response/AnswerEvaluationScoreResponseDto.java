@@ -6,4 +6,5 @@ public record AnswerEvaluationScoreResponseDto(
     @NotNull Long answerEvaluationScoreId,
     @NotNull String answerEvaluationScoreName,
     @NotNull int score,
-    @NotNull String rationale) {}
+    @NotNull String rationale,
+    @NotNull String answerEvaluationType) {}

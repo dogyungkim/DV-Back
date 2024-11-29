@@ -22,7 +22,7 @@ public class PostRepositoryImpl implements PostRepository {
 
   @Override
   public List<PostDomain> findByAuthorId(Long authorId) {
-    return postJpaRepository.findByAuthorIdOrderByPostIdDesc(authorId).stream()
+    return postJpaRepository.findByAuthorUserIdOrderByPostIdDesc(authorId).stream()
         .map(postConverter::fromEntityToDomain)
         .toList();
   }

@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluationScore;
+import org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluationType;
 import org.richardstallman.dvback.global.entity.BaseEntity;
 
 @Getter
@@ -45,4 +46,7 @@ public class AnswerEvaluationScoreEntity extends BaseEntity {
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "answer_evaluation_id")
   private AnswerEvaluationEntity answerEvaluationEntity;
+
+  @Enumerated(EnumType.STRING)
+  private AnswerEvaluationType answerEvaluationType;
 }

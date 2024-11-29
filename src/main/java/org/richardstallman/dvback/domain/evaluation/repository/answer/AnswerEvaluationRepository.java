@@ -10,4 +10,6 @@ public interface AnswerEvaluationRepository {
   List<AnswerEvaluationDomain> saveAll(List<AnswerEvaluationDomain> answerEvaluationDomains);
 
   List<AnswerEvaluationDomain> findByInterviewId(Long interviewId);
+
+  AnswerEvaluationDomain findByQuestionId(Long questionId);
 }

@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.domain.question.converter;
 
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionRequestDto;
 import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
@@ -24,12 +25,12 @@ public class QuestionConverter {
     return new QuestionEntity(
         questionDomain.getQuestionId(),
         interviewConverter.fromDomainToEntity(questionDomain.getInterviewDomain()),
-        questionDomain.getQuestionExcerpt(),
         questionDomain.getQuestionText(),
-        questionDomain.getQuestionIntent(),
-        questionDomain.getKeyTerms(),
         questionDomain.getS3AudioUrl(),
         questionDomain.getS3VideoUrl(),
+        questionDomain.getQuestionExcerpt(),
+        questionDomain.getQuestionIntent(),
+        questionDomain.getKeyTerms(),
         questionDomain.getQuestionType());
   }
 
@@ -37,12 +38,12 @@ public class QuestionConverter {
     return QuestionDomain.builder()
         .questionId(questionEntity.getQuestionId())
         .interviewDomain(interviewConverter.fromEntityToDomain(questionEntity.getInterview()))
-        .questionExcerpt(questionEntity.getQuestionExcerpt())
         .questionText(questionEntity.getQuestionText())
-        .questionIntent(questionEntity.getQuestionIntent())
-        .keyTerms(questionEntity.getKeyTerms())
         .s3AudioUrl(questionEntity.getS3AudioUrl())
         .s3VideoUrl(questionEntity.getS3VideoUrl())
+        .questionExcerpt(questionEntity.getQuestionExcerpt())
+        .questionIntent(questionEntity.getQuestionIntent())
+        .keyTerms(questionEntity.getKeyTerms())
         .questionType(questionEntity.getQuestionType())
         .build();
   }
@@ -51,16 +52,19 @@ public class QuestionConverter {
       QuestionExternalDomain questionExternalDomain, InterviewDomain interviewDomain) {
     return QuestionDomain.builder()
         .interviewDomain(interviewDomain)
+        .questionText(questionExternalDomain.getQuestion().getQuestionText())
+        .s3AudioUrl(questionExternalDomain.getQuestion().getS3AudioUrl())
+        .s3VideoUrl(questionExternalDomain.getQuestion().getS3VideoUrl())
         .questionExcerpt(questionExternalDomain.getQuestionExcerpt())
-        .questionText(questionExternalDomain.getQuestionText())
         .questionIntent(questionExternalDomain.getQuestionIntent())
         .keyTerms(questionExternalDomain.getKeyTerms())
         .build();
   }
 
   public QuestionExternalRequestDto reactRequestToPythonRequest(
-      QuestionInitialRequestDto questionInitialRequestDto, String jobName) {
+      Long userId, QuestionInitialRequestDto questionInitialRequestDto, String jobName) {
     return new QuestionExternalRequestDto(
+        userId,
         questionInitialRequestDto.interviewMode(),
         questionInitialRequestDto.interviewType(),
         questionInitialRequestDto.interviewMethod(),
@@ -80,8 +84,10 @@ public class QuestionConverter {
         interviewQuestionResponseDto,
         firstQuestionDomain == null ? null : firstQuestionDomain.getQuestionId(),
         firstQuestionDomain == null ? null : firstQuestionDomain.getQuestionText(),
+        firstQuestionDomain == null ? null : firstQuestionDomain.getS3AudioUrl(),
         secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionId(),
         secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionText(),
+        secondQuestionDomain == null ? null : secondQuestionDomain.getS3AudioUrl(),
         hasNext);
   }
 
@@ -89,8 +95,11 @@ public class QuestionConverter {
       QuestionDomain questionDomain) {
     return new EvaluationExternalQuestionRequestDto(
         questionDomain.getQuestionId(),
+        new EvaluationExternalQuestionDto(
+            questionDomain.getQuestionText(),
+            questionDomain.getS3AudioUrl(),
+            questionDomain.getS3VideoUrl()),
         questionDomain.getQuestionExcerpt(),
-        questionDomain.getQuestionText(),
         questionDomain.getQuestionIntent(),
         questionDomain.getKeyTerms());
   }

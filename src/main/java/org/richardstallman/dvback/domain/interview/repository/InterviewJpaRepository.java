@@ -10,13 +10,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InterviewJpaRepository extends JpaRepository<InterviewEntity, Long> {
 
-  List<InterviewEntity> findByUserIdOrderByInterviewIdDesc(Long userId);
+  List<InterviewEntity> findByUserUserIdOrderByInterviewIdDesc(Long userId);
 
   @Query(
       "SELECT i FROM InterviewEntity i "
           + "JOIN i.user u "
           + "JOIN OverallEvaluationEntity oe ON oe.interview = i "
-          + "WHERE u.id = :userId")
-  List<InterviewEntity> findByUserIdWithEvaluationsOrderByInterviewIdDesc(
+          + "WHERE u.userId = :userId")
+  List<InterviewEntity> findByUserUserIdWithEvaluationsOrderByInterviewIdDesc(
       @Param("userId") Long userId);
 }

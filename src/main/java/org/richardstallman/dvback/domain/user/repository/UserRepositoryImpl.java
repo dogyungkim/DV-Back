@@ -36,6 +36,6 @@ public class UserRepositoryImpl implements UserRepository {
 
   @Override
   public Optional<String> findProfileImageUrlById(Long userId) {
-    return userJpaRepository.findProfileImageUrlById(userId);
+    return userJpaRepository.findProfileImageUrlByUserId(userId);
   }
 }

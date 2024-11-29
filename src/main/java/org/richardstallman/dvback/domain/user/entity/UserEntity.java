@@ -17,7 +17,7 @@ public class UserEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @SequenceGenerator(name = "user_seq", sequenceName = "user_id_seq", allocationSize = 1)
-  private Long id;
+  private Long userId;
 
   @Column(nullable = false, unique = true)
   private String socialId;
@@ -59,7 +59,7 @@ public class UserEntity {
       LocalDate birthdate,
       CommonConstants.Gender gender) {
     return new UserEntity(
-        this.id,
+        this.userId,
         this.socialId,
         this.email,
         username,

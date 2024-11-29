@@ -39,4 +39,10 @@ public class AnswerEvaluationRepositoryImpl implements AnswerEvaluationRepositor
         .map(answerEvaluationConverter::fromEntityToDomain)
         .toList();
   }
+
+  @Override
+  public AnswerEvaluationDomain findByQuestionId(Long questionId) {
+    return answerEvaluationConverter.fromEntityToDomain(
+        answerEvaluationJpaRepository.findByQuestionQuestionId(questionId));
+  }
 }

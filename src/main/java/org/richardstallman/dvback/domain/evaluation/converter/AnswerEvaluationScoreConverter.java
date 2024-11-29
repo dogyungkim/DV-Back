@@ -27,6 +27,7 @@ public class AnswerEvaluationScoreConverter {
         .answerEvaluationDomain(
             answerEvaluationConverter.fromEntityToDomain(
                 answerEvaluationScoreEntity.getAnswerEvaluationEntity()))
+        .answerEvaluationType(answerEvaluationScoreEntity.getAnswerEvaluationType())
         .build();
   }
 
@@ -38,7 +39,8 @@ public class AnswerEvaluationScoreConverter {
         answerEvaluationScoreDomain.getScore(),
         answerEvaluationScoreDomain.getRationale(),
         answerEvaluationConverter.fromDomainToEntity(
-            answerEvaluationScoreDomain.getAnswerEvaluationDomain()));
+            answerEvaluationScoreDomain.getAnswerEvaluationDomain()),
+        answerEvaluationScoreDomain.getAnswerEvaluationType());
   }
 
   public AnswerEvaluationScoreResponseDto fromDomainToResponseDto(
@@ -47,6 +49,7 @@ public class AnswerEvaluationScoreConverter {
         answerEvaluationScoreDomain.getAnswerEvaluationScoreId(),
         answerEvaluationScoreDomain.getAnswerEvaluationScoreName().name(),
         answerEvaluationScoreDomain.getScore(),
-        answerEvaluationScoreDomain.getRationale());
+        answerEvaluationScoreDomain.getRationale(),
+        answerEvaluationScoreDomain.getAnswerEvaluationType().name());
   }
 }

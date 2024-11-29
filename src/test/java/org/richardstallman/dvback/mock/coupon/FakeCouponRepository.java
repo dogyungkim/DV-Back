@@ -51,7 +51,7 @@ public class FakeCouponRepository implements CouponRepository {
   @Override
   public List<CouponDomain> findSimpleListByUserId(Long userId) {
     return data.stream()
-        .filter(item -> Objects.equals(item.getUserDomain().getId(), userId))
+        .filter(item -> Objects.equals(item.getUserDomain().getUserId(), userId))
         .filter(item -> Objects.equals(item.isExpired(), false))
         .filter(item -> Objects.equals(item.isUsed(), false))
         .toList();
@@ -60,7 +60,7 @@ public class FakeCouponRepository implements CouponRepository {
   @Override
   public List<CouponDomain> findUsedListByUserId(Long userId) {
     return data.stream()
-        .filter(item -> Objects.equals(item.getUserDomain().getId(), userId))
+        .filter(item -> Objects.equals(item.getUserDomain().getUserId(), userId))
         .filter(item -> Objects.equals(item.isUsed(), true))
         .toList();
   }
@@ -68,7 +68,7 @@ public class FakeCouponRepository implements CouponRepository {
   @Override
   public List<CouponDomain> findExpiredListByUserId(Long userId) {
     return data.stream()
-        .filter(item -> Objects.equals(item.getUserDomain().getId(), userId))
+        .filter(item -> Objects.equals(item.getUserDomain().getUserId(), userId))
         .filter(item -> Objects.equals(item.isExpired(), true))
         .toList();
   }

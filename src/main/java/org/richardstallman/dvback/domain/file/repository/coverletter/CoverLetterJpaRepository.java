@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CoverLetterJpaRepository extends JpaRepository<CoverLetterEntity, Long> {
 
-  List<CoverLetterEntity> findByUserId(Long userId);
+  List<CoverLetterEntity> findByUserUserId(Long userId);
 }

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 public interface TicketTransactionJpaRepository
     extends JpaRepository<TicketTransactionEntity, Long> {
 
-  List<TicketTransactionEntity> findByUserIdOrderByTicketTransactionIdDesc(Long userId);
+  List<TicketTransactionEntity> findByUserUserIdOrderByTicketTransactionIdDesc(Long userId);
 
-  List<TicketTransactionEntity> findByUserIdAndTicketTransactionType(
+  List<TicketTransactionEntity> findByUserUserIdAndTicketTransactionType(
       Long userId, TicketTransactionType ticketTransactionType);
 }

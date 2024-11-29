@@ -22,6 +22,6 @@ public class OAuth2CustomUser extends DefaultOAuth2User {
   }
 
   public Long getUserId() {
-    return userEntity.getId();
+    return userEntity.getUserId();
   }
 }

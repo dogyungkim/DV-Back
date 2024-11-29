@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
         s3Service.getPreSignedUrlForImage(updatedUser.getS3ProfileImageObjectKey(), userId);
 
     return new UserResponseDto(
-        updatedUser.getId(),
+        updatedUser.getUserId(),
         updatedUser.getSocialId(),
         updatedUser.getEmail(),
         updatedUser.getUsername(),

@@ -32,7 +32,7 @@ public class CoverLetterEntity extends BaseEntity {
   private Long coverLetterId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id", nullable = false)
+  @JoinColumn(name = "user_id", nullable = false)
   private UserEntity user;
 
   @NotNull(message = "File Name is required") private String fileName;

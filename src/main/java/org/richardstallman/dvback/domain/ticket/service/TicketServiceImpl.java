@@ -176,7 +176,7 @@ public class TicketServiceImpl implements TicketService {
   }
 
   private TicketDomain getUserTicket(UserDomain userDomain) {
-    TicketDomain ticketDomain = ticketRepository.findByUserId(userDomain.getId());
+    TicketDomain ticketDomain = ticketRepository.findByUserId(userDomain.getUserId());
     if (ticketDomain == null) {
       ticketDomain =
           ticketRepository.save(

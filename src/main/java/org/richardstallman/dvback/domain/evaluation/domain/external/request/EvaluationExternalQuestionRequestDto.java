@@ -6,7 +6,7 @@ import java.util.List;
 
 public record EvaluationExternalQuestionRequestDto(
     @JsonProperty("question_id") @NotNull Long questionId,
-    @JsonProperty("question_excerpt") @NotNull String questionExcerpt,
-    @JsonProperty("question_text") @NotNull String questionText,
+    @JsonProperty("question") @NotNull EvaluationExternalQuestionDto question,
+    @JsonProperty("question_excerpt") String questionExcerpt,
     @JsonProperty("question_intent") @NotNull String questionIntent,
     @JsonProperty("key_terms") @NotNull List<String> keyTerms) {}

@@ -37,7 +37,7 @@ public class InterviewEntity extends BaseEntity {
   private Long interviewId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id", nullable = false)
+  @JoinColumn(name = "user_id", nullable = false)
   private UserEntity user;
 
   @NotNull(message = "Interview Title is required") private String interviewTitle;

@@ -27,16 +27,16 @@ public class EvaluationController {
 
   @PostMapping
   public ResponseEntity<DvApiResponse<OverallEvaluationResponseDto>> getOverallEvaluationFromPython(
+      @AuthenticationPrincipal final Long userId,
       @Valid @RequestBody final OverallEvaluationRequestDto overallEvaluationRequestDto) {
     final OverallEvaluationResponseDto overallEvaluationResponseDto =
-        evaluationService.getOverallEvaluation(overallEvaluationRequestDto);
+        evaluationService.getOverallEvaluation(overallEvaluationRequestDto, userId);
     return ResponseEntity.ok(DvApiResponse.of(overallEvaluationResponseDto));
   }
 
   @GetMapping("/{interviewId}")
   public ResponseEntity<DvApiResponse<OverallEvaluationResponseDto>>
-      getOverallEvaluationByInterviewId(
-          @AuthenticationPrincipal final Long userId, @PathVariable final Long interviewId) {
+      getOverallEvaluationByInterviewId(@PathVariable final Long interviewId) {
     final OverallEvaluationResponseDto overallEvaluationResponseDto =
         evaluationService.getOverallEvaluationByInterviewId(interviewId);
     return ResponseEntity.ok(DvApiResponse.of(overallEvaluationResponseDto));

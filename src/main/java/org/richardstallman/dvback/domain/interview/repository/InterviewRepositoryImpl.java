@@ -28,14 +28,16 @@ public class InterviewRepositoryImpl implements InterviewRepository {
 
   @Override
   public List<InterviewDomain> findInterviewsByUserId(Long userId) {
-    return interviewJpaRepository.findByUserIdOrderByInterviewIdDesc(userId).stream()
+    return interviewJpaRepository.findByUserUserIdOrderByInterviewIdDesc(userId).stream()
         .map(interviewConverter::fromEntityToDomain)
         .toList();
   }
 
   @Override
   public List<InterviewDomain> findInterviewsByUserIdWithEvaluation(Long userId) {
-    return interviewJpaRepository.findByUserIdWithEvaluationsOrderByInterviewIdDesc(userId).stream()
+    return interviewJpaRepository
+        .findByUserUserIdWithEvaluationsOrderByInterviewIdDesc(userId)
+        .stream()
         .map(interviewConverter::fromEntityToDomain)
         .toList();
   }

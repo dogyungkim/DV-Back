@@ -28,7 +28,7 @@ public class TicketEntity extends BaseEntity {
   private Long ticketId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id", nullable = false)
+  @JoinColumn(name = "user_id", nullable = false)
   private UserEntity user;
 
   private int realChatBalance;

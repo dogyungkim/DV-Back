@@ -11,4 +11,6 @@ public interface AnswerEvaluationScoreRepository {
       List<AnswerEvaluationScoreDomain> answerEvaluationScoreDomains);
 
   List<AnswerEvaluationScoreDomain> findByAnswerEvaluationId(Long answerEvaluationId);
+
+  List<AnswerEvaluationScoreDomain> findByQuestionId(Long questionId);
 }
