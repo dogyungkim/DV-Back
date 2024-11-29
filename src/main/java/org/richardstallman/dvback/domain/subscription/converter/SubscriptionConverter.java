@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.job.converter.JobConverter;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
 import org.richardstallman.dvback.domain.subscription.domain.SubscriptionDomain;
-import org.richardstallman.dvback.domain.subscription.domain.request.SubscriptionCreateRequestDto;
 import org.richardstallman.dvback.domain.subscription.domain.response.SubscriptionResponseDto;
 import org.richardstallman.dvback.domain.subscription.entity.SubscriptionEntity;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
@@ -36,9 +35,7 @@ public class SubscriptionConverter {
   }
 
   public SubscriptionDomain createDomain(
-      UserDomain userDomain,
-      JobDomain jobDomain,
-      LocalDateTime subscribedAt) {
+      UserDomain userDomain, JobDomain jobDomain, LocalDateTime subscribedAt) {
     return SubscriptionDomain.builder()
         .user(userDomain)
         .job(jobDomain)
