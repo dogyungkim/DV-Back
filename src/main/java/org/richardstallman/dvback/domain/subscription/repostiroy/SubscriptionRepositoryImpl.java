@@ -40,4 +40,9 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
   public void deleteById(Long subscriptionId) {
     subscriptionJpaRepository.deleteById(subscriptionId);
   }
+
+  @Override
+  public boolean existsByUserIdAndJobId(Long userId, Long jobId) {
+    return subscriptionJpaRepository.existsByUserUserIdAndJobJobId(userId, jobId);
+  }
 }

@@ -39,10 +39,10 @@ public class SubscriptionController {
     return ResponseEntity.ok(DvApiResponse.of(subscriptions));
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<DvApiResponse<Void>> deactivateSubscription(
-      @PathVariable final Long id, @AuthenticationPrincipal final Long userId) {
-    subscriptionService.deactivateSubscription(id, userId);
+  @DeleteMapping("/{subscriptionId}")
+  public ResponseEntity<DvApiResponse<SubscriptionResponseDto>> deactivateSubscription(
+      @PathVariable final Long subscriptionId, @AuthenticationPrincipal final Long userId) {
+    subscriptionService.deleteSubscription(subscriptionId, userId);
     return ResponseEntity.noContent().build();
   }
 }

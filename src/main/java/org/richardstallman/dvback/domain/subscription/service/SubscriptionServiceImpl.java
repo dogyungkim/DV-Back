@@ -27,6 +27,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
   @Override
   public SubscriptionResponseDto createSubscription(
       SubscriptionCreateRequestDto requestDto, Long userId) {
+
+    if (subscriptionRepository.existsByUserIdAndJobId(userId, requestDto.jobId())) {
+      throw new ApiException(
+          HttpStatus.BAD_REQUEST,
+          String.format("User %d has already subscribed to job %d", userId, requestDto.jobId()));
+    }
+
     UserDomain userDomain =
         userRepository
             .findById(userId)
@@ -48,7 +55,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
   }
 
   @Override
-  public void deactivateSubscription(Long subscriptionId, Long userId) {
+  public void deleteSubscription(Long subscriptionId, Long userId) {
     SubscriptionDomain subscriptionDomain =
         subscriptionRepository
             .findBySubscriptionIdAndUserId(subscriptionId, userId)

@@ -9,5 +9,5 @@ public interface SubscriptionService {
 
   List<SubscriptionResponseDto> getSubscriptionsByUserId(Long userId);
 
-  void deactivateSubscription(Long subscriptionId, Long userId);
+  void deleteSubscription(Long subscriptionId, Long userId);
 }

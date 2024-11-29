@@ -12,4 +12,6 @@ public interface SubscriptionRepository {
   Optional<SubscriptionDomain> findBySubscriptionIdAndUserId(Long subscriptionId, Long userId);
 
   void deleteById(Long subscriptionId);
+
+  boolean existsByUserIdAndJobId(Long userId, Long jobId);
 }

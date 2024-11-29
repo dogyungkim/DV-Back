@@ -12,5 +12,5 @@ public interface SubscriptionJpaRepository extends JpaRepository<SubscriptionEnt
 
   Optional<SubscriptionEntity> findBySubscriptionIdAndUserUserId(Long subscriptionId, Long userId);
 
-  void deleteBySubscriptionId(Long subscriptionId);
+  boolean existsByUserUserIdAndJobJobId(Long userId, Long jobId);
 }
