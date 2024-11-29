@@ -41,4 +41,13 @@ public class AnswerEvaluationScoreRepositoryImpl implements AnswerEvaluationScor
         .map(answerEvaluationScoreConverter::fromEntityToDomain)
         .toList();
   }
+
+  @Override
+  public List<AnswerEvaluationScoreDomain> findByQuestionId(Long questionId) {
+    return answerEvaluationScoreJpaRepository
+        .findByAnswerEvaluationEntityQuestionQuestionId(questionId)
+        .stream()
+        .map(answerEvaluationScoreConverter::fromEntityToDomain)
+        .toList();
+  }
 }

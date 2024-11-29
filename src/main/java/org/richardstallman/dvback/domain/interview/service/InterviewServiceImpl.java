@@ -66,8 +66,7 @@ public class InterviewServiceImpl implements InterviewService {
     JobDomain jobDomain = jobService.findJobById(interviewCreateRequestDto.jobId());
 
     TicketResponseDto ticketResponseDto =
-        confirmInterviewMode(
-            interviewCreateRequestDto, userId, interviewCreateRequestDto.questionCount());
+        confirmTicket(interviewCreateRequestDto, userId, interviewCreateRequestDto.questionCount());
 
     InterviewDomain interviewDomain =
         initializeInterviewDomain(interviewCreateRequestDto, jobDomain, userId);
@@ -86,7 +85,7 @@ public class InterviewServiceImpl implements InterviewService {
         createdInterviewDomain, fileResponseDtos, ticketResponseDto);
   }
 
-  private TicketResponseDto confirmInterviewMode(
+  private TicketResponseDto confirmTicket(
       InterviewCreateRequestDto interviewCreateRequestDto, Long userId, int questionCount) {
     validateUserTicket(interviewCreateRequestDto, userId, questionCount);
     TicketTransactionRequestDto ticketTransactionRequestDto =

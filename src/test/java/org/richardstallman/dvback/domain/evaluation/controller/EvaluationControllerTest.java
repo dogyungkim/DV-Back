@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluationType;
 import org.richardstallman.dvback.common.constant.CommonConstants.EvaluationCriteria;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
@@ -110,7 +111,11 @@ public class EvaluationControllerTest {
     String rationale = "Excellent, thorough response.";
     answerEvaluationScoreResponseDtos.add(
         new AnswerEvaluationScoreResponseDto(
-            answerEvaluationScoreId, answerEvaluationScoreName, answerEvaluationScore, rationale));
+            answerEvaluationScoreId,
+            answerEvaluationScoreName,
+            answerEvaluationScore,
+            rationale,
+            AnswerEvaluationType.TEXT.name()));
 
     List<AnswerEvaluationResponseDto> answerEvaluationResponseDtos = new ArrayList<>();
     answerEvaluationResponseDtos.add(
@@ -242,7 +247,10 @@ public class EvaluationControllerTest {
                             .description("점수"),
                         fieldWithPath(
                                 "data.answerEvaluations[0].answerEvaluationScores[0].rationale")
-                            .description("평가 근거"))
+                            .description("평가 근거"),
+                        fieldWithPath(
+                                "data.answerEvaluations[0].answerEvaluationScores[0].answerEvaluationType")
+                            .description("평가 유형(TEXT, VOICE)"))
                     .build())));
   }
 }

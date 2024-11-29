@@ -78,7 +78,10 @@ public class CommonConstants {
     LOGICAL_FLOW,
     KEY_TERMS,
     CONSISTENCY,
-    GRAMMATICAL_ERRORS
+    GRAMMATICAL_ERRORS,
+    WPM,
+    STUTTER,
+    PRONUNCIATION
   }
 
   public enum PointTransactionType {
@@ -146,5 +149,11 @@ public class CommonConstants {
     POST("게시글");
 
     private final String koreanName;
+  }
+
+  public enum AnswerEvaluationType {
+    TEXT,
+    VOICE,
+    VIDEO
   }
 }

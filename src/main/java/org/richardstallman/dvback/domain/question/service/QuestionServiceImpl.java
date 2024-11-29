@@ -1,11 +1,14 @@
 package org.richardstallman.dvback.domain.question.service;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.client.python.PythonService;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.answer.converter.AnswerConverter;
+import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
+import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousRequestDto;
 import org.richardstallman.dvback.domain.answer.repository.AnswerRepository;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
@@ -123,6 +126,8 @@ public class QuestionServiceImpl implements QuestionService {
     List<QuestionDomain> questions =
         questionRepository.findQuestionsByInterviewId(questionNextRequestDto.interviewId());
 
+    InterviewDomain interviewDomain = getInterviewDomain(questionNextRequestDto.interviewId());
+
     QuestionDomain previousQuestion =
         findQuestionById(questions, questionNextRequestDto.answerQuestionId());
     QuestionDomain currentQuestion =
@@ -135,15 +140,29 @@ public class QuestionServiceImpl implements QuestionService {
             : findNextQuestion(questions, currentQuestion);
     boolean hasNext = nextQuestion != null;
 
-    answerRepository.save(
-        answerConverter.fromPreviousRequestDtoToDomain(
-            questionNextRequestDto.answer(), previousQuestion));
+    AnswerDomain answerDomain =
+        answerRepository.save(
+            answerConverter.fromPreviousRequestDtoToDomain(
+                questionNextRequestDto.answer(), previousQuestion));
+
+    checkAnswer(interviewDomain, answerDomain.getAnswerId(), questionNextRequestDto.answer());
 
     return questionConverter.fromQuestionExternalDomainToQuestionResponseDto(
         currentQuestion,
         interviewConverter.fromDomainToQuestionResponseDto(previousQuestion.getInterviewDomain()),
         nextQuestion,
         hasNext);
+  }
+
+  private void checkAnswer(
+      @NotNull InterviewDomain interviewDomain,
+      Long answerId,
+      @NotNull AnswerPreviousRequestDto answer) {
+    pythonService.sendAnswer(
+        answerConverter.fromPreviousRequestDtoToQuestionExternalSttRequestDto(
+            interviewDomain, answer),
+        interviewDomain.getInterviewId(),
+        answerId);
   }
 
   private QuestionDomain getCreatedQuestionDomain(
@@ -175,5 +194,9 @@ public class QuestionServiceImpl implements QuestionService {
       List<QuestionDomain> questions, QuestionDomain currentQuestion) {
     int currentIndex = questions.indexOf(currentQuestion);
     return (currentIndex < questions.size() - 1) ? questions.get(currentIndex + 1) : null;
+  }
+
+  private InterviewDomain getInterviewDomain(Long interviewId) {
+    return interviewRepository.findById(interviewId);
   }
 }

@@ -7,7 +7,7 @@ import org.richardstallman.dvback.domain.evaluation.domain.overall.response.Over
 public interface EvaluationService {
 
   OverallEvaluationResponseDto getOverallEvaluation(
-      OverallEvaluationRequestDto overallEvaluationRequestDto);
+      OverallEvaluationRequestDto overallEvaluationRequestDto, Long userId);
 
   OverallEvaluationResponseDto getOverallEvaluationByInterviewId(Long interviewId);
 

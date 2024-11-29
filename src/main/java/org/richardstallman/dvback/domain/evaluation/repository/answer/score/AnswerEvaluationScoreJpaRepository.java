@@ -11,4 +11,6 @@ public interface AnswerEvaluationScoreJpaRepository
 
   List<AnswerEvaluationScoreEntity> findByAnswerEvaluationEntityAnswerEvaluationId(
       Long answerEvaluationId);
+
+  List<AnswerEvaluationScoreEntity> findByAnswerEvaluationEntityQuestionQuestionId(Long questionId);
 }

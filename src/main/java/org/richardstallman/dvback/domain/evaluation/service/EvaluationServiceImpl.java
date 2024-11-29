@@ -3,12 +3,15 @@ package org.richardstallman.dvback.domain.evaluation.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.client.python.PythonService;
 import org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluationScore;
 import org.richardstallman.dvback.common.constant.CommonConstants.EvaluationCriteria;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
+import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
+import org.richardstallman.dvback.domain.answer.domain.request.evaluation.AnswerEvaluationDto;
 import org.richardstallman.dvback.domain.answer.repository.AnswerRepository;
 import org.richardstallman.dvback.domain.evaluation.converter.AnswerEvaluationConverter;
 import org.richardstallman.dvback.domain.evaluation.converter.AnswerEvaluationScoreConverter;
@@ -72,7 +75,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
   @Override
   public OverallEvaluationResponseDto getOverallEvaluation(
-      OverallEvaluationRequestDto overallEvaluationRequestDto) {
+      OverallEvaluationRequestDto overallEvaluationRequestDto, Long userId) {
     List<QuestionDomain> questions = retrieveQuestions(overallEvaluationRequestDto.interviewId());
     InterviewDomain interviewDomain = questions.get(0).getInterviewDomain();
 
@@ -82,7 +85,7 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     EvaluationExternalResponseDto evaluationExternalResponseDto =
-        callPythonEvaluationService(questions, filePaths);
+        callPythonEvaluationService(userId, questions, filePaths);
 
     OverallEvaluationDomain createdOverallEvaluationDomain = saveOverallEvaluation(interviewDomain);
 
@@ -122,32 +125,59 @@ public class EvaluationServiceImpl implements EvaluationService {
   }
 
   private EvaluationExternalResponseDto callPythonEvaluationService(
-      List<QuestionDomain> questions, List<String> filePaths) {
+      Long userId, List<QuestionDomain> questions, List<String> filePaths) {
     List<EvaluationExternalQuestionRequestDto> questionTexts =
         questions.stream()
             .map(questionConverter::fromDomainToEvaluationExternalRequestDto)
             .toList();
 
-    List<EvaluationExternalAnswerRequestDto> answerTexts =
+    List<AnswerDomain> answerDomains =
         questions.stream()
+            .map(question -> answerRepository.findByQuestionId(question.getQuestionId()))
+            .toList();
+
+    List<AnswerEvaluationDto> answerTexts =
+        answerDomains.stream()
             .map(
-                question ->
+                answer ->
+                    answerEvaluationConverter.fromDomainToDto(
+                        answer,
+                        answerEvaluationRepository.findByQuestionId(
+                            answer.getQuestionDomain().getQuestionId()),
+                        answerEvaluationScoreRepository.findByQuestionId(
+                            answer.getQuestionDomain().getQuestionId())))
+            .toList();
+    Map<AnswerDomain, AnswerEvaluationDto> answerMap =
+        answerDomains.stream()
+            .collect(
+                Collectors.toMap(
+                    answer -> answer,
+                    answer ->
+                        answerEvaluationConverter.fromDomainToDto(
+                            answer,
+                            answerEvaluationRepository.findByQuestionId(
+                                answer.getQuestionDomain().getQuestionId()),
+                            answerEvaluationScoreRepository.findByQuestionId(
+                                answer.getQuestionDomain().getQuestionId()))));
+
+    List<EvaluationExternalAnswerRequestDto> answerRequestDtos =
+        answerDomains.stream()
+            .map(
+                e ->
                     new EvaluationExternalAnswerRequestDto(
-                        question.getQuestionId(),
-                        answerRepository
-                            .findByQuestionId(question.getQuestionId())
-                            .getAnswerText()))
+                        e.getQuestionDomain().getQuestionId(), answerMap.get(e)))
             .toList();
 
     InterviewDomain interviewDomain = questions.get(0).getInterviewDomain();
     EvaluationExternalRequestDto requestDto =
         new EvaluationExternalRequestDto(
+            userId,
             interviewDomain.getInterviewMode(),
             interviewDomain.getInterviewType(),
             interviewDomain.getInterviewMethod(),
             interviewDomain.getJob().getJobName(),
             new EvaluationExternalQuestionsRequestDto(questionTexts),
-            new EvaluationExternalAnswersRequestDto(answerTexts),
+            new EvaluationExternalAnswersRequestDto(answerRequestDtos),
             filePaths);
 
     return pythonService.getOverallEvaluations(requestDto);

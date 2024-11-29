@@ -60,7 +60,7 @@ public class PostServiceImpl implements PostService {
                 generatedAt));
     InterviewResponseDto interviewResponseDto = getInterviewResponseDtoByDomain(interviewDomain);
     OverallEvaluationResponseDto overallEvaluationResponseDto =
-        getOverallEvaluationResponseDtoByDomain(overallEvaluationDomain);
+        getOverallEvaluationResponseDtoByDomain(overallEvaluationDomain, userId);
 
     return postConverter.fromDomainToCreateResponseDto(
         postDomain, interviewResponseDto, overallEvaluationResponseDto);
@@ -75,7 +75,8 @@ public class PostServiceImpl implements PostService {
                 postConverter.fromDomainToCreateResponseDto(
                     e,
                     getInterviewResponseDtoByDomain(e.getInterviewDomain()),
-                    getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain())))
+                    getOverallEvaluationResponseDtoByDomain(
+                        e.getOverallEvaluationDomain(), userId)))
         .toList();
   }
 
@@ -97,13 +98,14 @@ public class PostServiceImpl implements PostService {
   }
 
   private OverallEvaluationResponseDto getOverallEvaluationResponseDtoByDomain(
-      OverallEvaluationDomain overallEvaluationDomain) {
+      OverallEvaluationDomain overallEvaluationDomain, Long userId) {
     if (overallEvaluationDomain == null) {
       return null;
     }
     return evaluationService.getOverallEvaluation(
         new OverallEvaluationRequestDto(
-            overallEvaluationDomain.getInterviewDomain().getInterviewId()));
+            overallEvaluationDomain.getInterviewDomain().getInterviewId()),
+        userId);
   }
 
   private UserDomain getUser(Long userId) {

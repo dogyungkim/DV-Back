@@ -1,10 +1,15 @@
 package org.richardstallman.dvback.domain.answer.converter;
 
+import jakarta.validation.constraints.NotNull;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
+import org.richardstallman.dvback.domain.answer.domain.request.AnswerEvaluationRequestDto;
 import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousRequestDto;
 import org.richardstallman.dvback.domain.answer.entity.AnswerEntity;
+import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.question.converter.QuestionConverter;
 import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
+import org.richardstallman.dvback.domain.question.domain.external.QuestionExternalSttAnswerRequestDomain;
+import org.richardstallman.dvback.domain.question.domain.external.request.QuestionExternalSttRequestDto;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -51,6 +56,26 @@ public class AnswerConverter {
         .answerText(answerPreviousRequestDto.answerText())
         .s3AudioUrl(answerPreviousRequestDto.s3AudioUrl())
         .s3VideoUrl(answerPreviousRequestDto.s3VideoUrl())
+        .build();
+  }
+
+  public QuestionExternalSttRequestDto fromPreviousRequestDtoToQuestionExternalSttRequestDto(
+      @NotNull InterviewDomain interviewDomain, @NotNull AnswerPreviousRequestDto answer) {
+    return new QuestionExternalSttRequestDto(
+        interviewDomain.getInterviewMethod().getPythonFormat(),
+        interviewDomain.getUserDomain().getId(),
+        new QuestionExternalSttAnswerRequestDomain(
+            answer.answerText(), answer.s3AudioUrl(), answer.s3VideoUrl()));
+  }
+
+  public AnswerDomain fromSttEvaluationRequestDtoToDomain(
+      AnswerEvaluationRequestDto answerEvaluationRequestDto, AnswerDomain previousAnswer) {
+    return AnswerDomain.builder()
+        .answerId(previousAnswer.getAnswerId())
+        .questionDomain(previousAnswer.getQuestionDomain())
+        .answerText(answerEvaluationRequestDto.answer().answerText())
+        .s3AudioUrl(answerEvaluationRequestDto.answer().s3AudioUrl())
+        .s3VideoUrl(answerEvaluationRequestDto.answer().s3VideoUrl())
         .build();
   }
 }

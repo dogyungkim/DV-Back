@@ -20,6 +20,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.richardstallman.dvback.common.constant.CommonConstants;
+import org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluationType;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
@@ -374,8 +375,10 @@ public class PostControllerTest {
 
     List<AnswerEvaluationScoreResponseDto> answerEvaluationScores =
         List.of(
-            new AnswerEvaluationScoreResponseDto(1L, "Clarity", 8, "Clear explanation"),
-            new AnswerEvaluationScoreResponseDto(2L, "Conciseness", 7, "Could be more concise"));
+            new AnswerEvaluationScoreResponseDto(
+                1L, "Clarity", 8, "Clear explanation", AnswerEvaluationType.TEXT.name()),
+            new AnswerEvaluationScoreResponseDto(
+                2L, "Conciseness", 7, "Could be more concise", AnswerEvaluationType.TEXT.name()));
 
     List<AnswerEvaluationResponseDto> answerEvaluations =
         List.of(
@@ -608,7 +611,11 @@ public class PostControllerTest {
                         fieldWithPath(
                                 "data.evaluation.answerEvaluations[0].answerEvaluationScores[0].rationale")
                             .type(JsonFieldType.STRING)
-                            .description("답변 평가 점수 근거"))
+                            .description("답변 평가 점수 근거"),
+                        fieldWithPath(
+                                "data.evaluation.answerEvaluations[0].answerEvaluationScores[0].answerEvaluationType")
+                            .type(JsonFieldType.STRING)
+                            .description("답변 평가 유형(TEXT, VOICE, VIDEO"))
                     .build())));
   }
 
@@ -631,8 +638,10 @@ public class PostControllerTest {
 
     List<AnswerEvaluationScoreResponseDto> answerEvaluationScores =
         List.of(
-            new AnswerEvaluationScoreResponseDto(1L, "Clarity", 8, "Clear explanation"),
-            new AnswerEvaluationScoreResponseDto(2L, "Conciseness", 7, "Could be more concise"));
+            new AnswerEvaluationScoreResponseDto(
+                1L, "Clarity", 8, "Clear explanation", AnswerEvaluationType.TEXT.name()),
+            new AnswerEvaluationScoreResponseDto(
+                2L, "Conciseness", 7, "Could be more concise", AnswerEvaluationType.TEXT.name()));
 
     List<AnswerEvaluationResponseDto> answerEvaluations =
         List.of(
@@ -891,7 +900,11 @@ public class PostControllerTest {
                         fieldWithPath(
                                 "data.posts[].evaluation.answerEvaluations[0].answerEvaluationScores[0].rationale")
                             .type(JsonFieldType.STRING)
-                            .description("답변 평가 점수 근거"))
+                            .description("답변 평가 점수 근거"),
+                        fieldWithPath(
+                                "data.posts[].evaluation.answerEvaluations[0].answerEvaluationScores[0].answerEvaluationType")
+                            .type(JsonFieldType.STRING)
+                            .description("답변 평가 유형(TEXT, VOICE, VIDEO"))
                     .build())));
   }
 }
