@@ -55,7 +55,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     if (userEntity == null) {
       log.error("UserEntity가 null입니다. 사용자 정보가 제대로 로드되지 않았습니다.");
     } else {
-      log.info("UserEntity가 성공적으로 로드되었습니다. userId: " + userEntity.getId());
+      log.info("UserEntity가 성공적으로 로드되었습니다. userId: " + userEntity.getUserId());
     }
 
     return new OAuth2CustomUser(
