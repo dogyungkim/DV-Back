@@ -41,8 +41,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     JobDomain jobDomain = jobService.findJobById(requestDto.jobId());
     LocalDateTime subscribedAt = LocalDateTime.now();
     SubscriptionDomain subscriptionDomain =
-        subscriptionConverter.fromCreateRequestDtoToDomain(
-            requestDto, userDomain, jobDomain, subscribedAt);
+        subscriptionConverter.createDomain(
+            userDomain, jobDomain, subscribedAt);
     subscriptionDomain = subscriptionRepository.save(subscriptionDomain);
     return subscriptionConverter.fromDomainToResponseDto(subscriptionDomain);
   }

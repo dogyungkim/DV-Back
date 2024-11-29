@@ -35,8 +35,7 @@ public class SubscriptionConverter {
         subscriptionDomain.getSubscribedAt());
   }
 
-  public SubscriptionDomain fromCreateRequestDtoToDomain(
-      SubscriptionCreateRequestDto requestDto,
+  public SubscriptionDomain createDomain(
       UserDomain userDomain,
       JobDomain jobDomain,
       LocalDateTime subscribedAt) {
