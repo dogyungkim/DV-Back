@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluationScore.APPROPRIATE_RESPONSE;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -14,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +28,11 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewStatus;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.response.AnswerEvaluationResponseDto;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationResultCriteriaDto;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationResultDto;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationResultRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationResultTextDto;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationResultVoiceDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.response.AnswerEvaluationScoreResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.response.EvaluationCriteriaResponseDto;
@@ -39,17 +47,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockCookie;
+import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 @SpringBootTest
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class EvaluationControllerTest {
 
   @Autowired MockMvc mockMvc;
 
   @Autowired JwtUtil jwtUtil;
+
+  @Autowired ObjectMapper objectMapper;
 
   @MockBean private EvaluationService evaluationService;
 
@@ -251,6 +264,89 @@ public class EvaluationControllerTest {
                         fieldWithPath(
                                 "data.answerEvaluations[0].answerEvaluationScores[0].answerEvaluationType")
                             .description("평가 유형(TEXT, VOICE)"))
+                    .build())));
+  }
+
+  @Test
+  @DisplayName("파이썬 요청 - 면접 평가 완료 - 성공")
+  void save_evaluation_results() throws Exception {
+    // given
+    Long userId = 1L;
+    Long interviewId = 1L;
+    OverallEvaluationResultRequestDto overallEvaluationResultRequestDto =
+        new OverallEvaluationResultRequestDto(
+            userId,
+            interviewId,
+            new OverallEvaluationResultDto(
+                new OverallEvaluationResultTextDto(
+                    new OverallEvaluationResultCriteriaDto(1, "11"),
+                    new OverallEvaluationResultCriteriaDto(1, "11"),
+                    new OverallEvaluationResultCriteriaDto(1, "11"),
+                    new OverallEvaluationResultCriteriaDto(1, "11")),
+                new OverallEvaluationResultVoiceDto(
+                    new OverallEvaluationResultCriteriaDto(1, "11"),
+                    new OverallEvaluationResultCriteriaDto(1, "11"),
+                    new OverallEvaluationResultCriteriaDto(1, "11"))));
+
+    String result = "Evaluations have been successfully saved.";
+
+    ResultActions resultActions =
+        mockMvc.perform(
+            post("/evaluation/completion")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(overallEvaluationResultRequestDto)));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("code").value(200))
+        .andExpect(jsonPath("message").value("Evaluations have been successfully saved."));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "파이썬 요청 - 면접 평가 완료 - 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Evaluation API")
+                    .summary("평가 API")
+                    .requestFields(
+                        fieldWithPath("userId").description(""),
+                        fieldWithPath("interviewId").description(""),
+                        fieldWithPath("overallEvaluation.text_overall.job_fit.score")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.text_overall.job_fit.rationale")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.text_overall.growth_potential.score")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.text_overall.growth_potential.rationale")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.text_overall.work_attitude.score")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.text_overall.work_attitude.rationale")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.text_overall.technical_depth.score")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.text_overall.technical_depth.rationale")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.voice_overall.fluency.score")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.voice_overall.fluency.rationale")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.voice_overall.clarity.score")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.voice_overall.clarity.rationale")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.voice_overall.word_repetition.score")
+                            .description(""),
+                        fieldWithPath("overallEvaluation.voice_overall.word_repetition.rationale")
+                            .description(""))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").description("메시지"))
                     .build())));
   }
 }
