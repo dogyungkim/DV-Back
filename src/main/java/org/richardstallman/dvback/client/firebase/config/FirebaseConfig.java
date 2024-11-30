@@ -29,19 +29,4 @@ public class FirebaseConfig {
       e.printStackTrace();
     }
   }
-
-  //  @PostConstruct
-  //  public void init() {
-  //    try {
-  //      FileInputStream serviceAccount = new FileInputStream();
-  //
-  //      FirebaseOptions options = FirebaseOptions.builder()
-  //          .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-  //          .build();
-  //
-  //      FirebaseApp.initializeApp(options);
-  //    } catch (IOException e) {
-  //      e.printStackTrace();
-  //    }
-  //  }
 }
