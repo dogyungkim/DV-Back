@@ -25,7 +25,7 @@ public class FcmTokenRepositoryImpl implements FcmTokenRepository {
     if (fcmTokenEntity == null) {
       return null;
     }
-    return fcmTokenConverter.fromEntityToDomain(fcmTokenJpaRepository.findByUserUserId(userId));
+    return fcmTokenConverter.fromEntityToDomain(fcmTokenEntity);
   }
 
   @Override

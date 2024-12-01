@@ -37,7 +37,10 @@ public class FirebaseMessagingServiceImpl implements FirebaseMessagingService {
         log.error("Failed to send message: {}", e.getMessage());
       }
     } catch (Exception e) {
-      e.getStackTrace();
+      log.error(
+          "Unexpected error occurred while sending FCM message for userId: {}. Stacktrace: ",
+          userId,
+          e);
     }
   }
 }
