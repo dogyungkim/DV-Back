@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
+import org.richardstallman.dvback.common.constant.CommonConstants.ResponseCode;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationResultRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationResponseDto;
 import org.richardstallman.dvback.domain.evaluation.service.EvaluationService;
 import org.springframework.http.MediaType;
@@ -26,19 +28,33 @@ public class EvaluationController {
   private final EvaluationService evaluationService;
 
   @PostMapping
-  public ResponseEntity<DvApiResponse<OverallEvaluationResponseDto>> getOverallEvaluationFromPython(
+  public ResponseEntity<DvApiResponse<?>> requestOverallEvaluation(
       @AuthenticationPrincipal final Long userId,
       @Valid @RequestBody final OverallEvaluationRequestDto overallEvaluationRequestDto) {
-    final OverallEvaluationResponseDto overallEvaluationResponseDto =
-        evaluationService.getOverallEvaluation(overallEvaluationRequestDto, userId);
-    return ResponseEntity.ok(DvApiResponse.of(overallEvaluationResponseDto));
+    log.info("Received evaluation request for user: ({})", userId);
+    evaluationService.getOverallEvaluation(overallEvaluationRequestDto, userId);
+    return ResponseEntity.accepted()
+        .body(
+            DvApiResponse.of(
+                ResponseCode.ACCEPTED,
+                "Request sent successfully!",
+                String.format(
+                    "interview id for tracking: (%d)", overallEvaluationRequestDto.interviewId())));
   }
 
   @GetMapping("/{interviewId}")
   public ResponseEntity<DvApiResponse<OverallEvaluationResponseDto>>
-      getOverallEvaluationByInterviewId(@PathVariable final Long interviewId) {
+      getOverallEvaluationByInterviewId(@Valid @PathVariable final Long interviewId) {
     final OverallEvaluationResponseDto overallEvaluationResponseDto =
         evaluationService.getOverallEvaluationByInterviewId(interviewId);
     return ResponseEntity.ok(DvApiResponse.of(overallEvaluationResponseDto));
+  }
+
+  @PostMapping("/completion")
+  public ResponseEntity<DvApiResponse<?>> saveEvaluationResults(
+      @RequestBody @Valid OverallEvaluationResultRequestDto evaluationResult) {
+    evaluationService.saveCompletedEvaluation(evaluationResult);
+    return ResponseEntity.ok(
+        DvApiResponse.of(ResponseCode.SUCCESS, "Evaluations have been successfully saved."));
   }
 }
