@@ -1,7 +1,5 @@
 package org.richardstallman.dvback.domain.post.controller;
 
-import static org.richardstallman.dvback.common.constant.CommonConstants.*;
-
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
 import org.richardstallman.dvback.domain.post.domain.request.PostCreateRequestDto;
 import org.richardstallman.dvback.domain.post.domain.response.PostCreateResponseDto;
-import org.richardstallman.dvback.domain.post.domain.response.PostSubscriptionSliceListResponse;
+import org.richardstallman.dvback.domain.post.domain.response.PostSliceListResponse;
 import org.richardstallman.dvback.domain.post.domain.response.PostUserListResponseDto;
 import org.richardstallman.dvback.domain.post.service.PostService;
 import org.springframework.data.domain.Pageable;
@@ -45,12 +43,20 @@ public class PostController {
   }
 
   @GetMapping("/subscription")
-  public ResponseEntity<DvApiResponse<PostSubscriptionSliceListResponse>> getSubscribedPostsByPage(
+  public ResponseEntity<DvApiResponse<PostSliceListResponse>> getSubscribedPostsByPage(
       @AuthenticationPrincipal final Long userId, Pageable pageable) {
     final Slice<PostCreateResponseDto> posts = postService.getPostBySubscription(userId, pageable);
     return ResponseEntity.ok(
         DvApiResponse.of(
-            new PostSubscriptionSliceListResponse(
-                posts.getContent(), posts.getNumber(), posts.isLast())));
+            new PostSliceListResponse(posts.getContent(), posts.getNumber(), posts.isLast())));
+  }
+
+  @GetMapping("/search")
+  public ResponseEntity<DvApiResponse<PostSliceListResponse>> searchPostByJob(
+      @AuthenticationPrincipal final Long userId, @RequestParam String keyword, Pageable pageable) {
+    Slice<PostCreateResponseDto> posts = postService.searchPostByContent(userId, keyword, pageable);
+    return ResponseEntity.ok(
+        DvApiResponse.of(
+            new PostSliceListResponse(posts.getContent(), posts.getNumber(), posts.isLast())));
   }
 }

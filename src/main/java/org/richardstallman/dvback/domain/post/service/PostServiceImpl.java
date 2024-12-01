@@ -140,4 +140,16 @@ public class PostServiceImpl implements PostService {
                 getInterviewResponseDtoByDomain(e.getInterviewDomain()),
                 getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain(), userId)));
   }
+
+  @Override
+  public Slice<PostCreateResponseDto> searchPostByContent(
+      Long userId, String keyword, Pageable pageable) {
+    Slice<PostDomain> postDomains = postRepository.searchByContentPageable(keyword, pageable);
+    return postDomains.map(
+        (e) ->
+            postConverter.fromDomainToCreateResponseDto(
+                e,
+                getInterviewResponseDtoByDomain(e.getInterviewDomain()),
+                getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain(), userId)));
+  }
 }

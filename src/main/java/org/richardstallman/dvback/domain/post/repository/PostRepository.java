@@ -15,4 +15,6 @@ public interface PostRepository {
   Optional<PostDomain> findByPostId(Long postId);
 
   Slice<PostDomain> findByJobIdsPageable(List<Long> jobIds, Pageable pageable);
+
+  Slice<PostDomain> searchByContentPageable(String keyword, Pageable pageable);
 }

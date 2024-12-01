@@ -13,4 +13,6 @@ public interface PostJpaRepository extends JpaRepository<PostEntity, Long> {
   List<PostEntity> findByAuthorUserIdOrderByPostIdDesc(Long authorId);
 
   Slice<PostEntity> findSliceByJobJobIdIn(List<Long> jobIds, Pageable pageable);
+
+  Slice<PostEntity> findSliceByContentContainingIgnoreCase(String content, Pageable pageable);
 }

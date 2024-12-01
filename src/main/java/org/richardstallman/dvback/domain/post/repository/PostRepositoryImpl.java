@@ -40,4 +40,11 @@ public class PostRepositoryImpl implements PostRepository {
     Slice<PostEntity> postEntities = postJpaRepository.findSliceByJobJobIdIn(jobIds, pageable);
     return postEntities.map(postConverter::fromEntityToDomain);
   }
+
+  @Override
+  public Slice<PostDomain> searchByContentPageable(String keyword, Pageable pageable) {
+    Slice<PostEntity> postEntities =
+        postJpaRepository.findSliceByContentContainingIgnoreCase(keyword, pageable);
+    return postEntities.map(postConverter::fromEntityToDomain);
+  }
 }

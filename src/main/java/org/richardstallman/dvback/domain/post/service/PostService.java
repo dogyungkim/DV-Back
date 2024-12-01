@@ -18,4 +18,6 @@ public interface PostService {
   PostDomain getPost(Long postId);
 
   Slice<PostCreateResponseDto> getPostBySubscription(Long userId, Pageable pageable);
+
+  Slice<PostCreateResponseDto> searchPostByContent(Long userId, String keyword, Pageable pageable);
 }
