@@ -106,15 +106,12 @@ public class UserServiceImpl implements UserService {
   public UserResponseDto updateUserInfo(Long userId, UserUpdateRequestDto userUpdateRequestDto) {
     UserDomain user = findUserById(userId);
     validateNickname(userUpdateRequestDto.nickname());
-    UserEntity userEntity = userConverter.fromDomainToEntity(user);
+
     UserDomain userDomain =
-        userRepository.save(
-            userConverter.updateUser(
-                userConverter.fromEntityToDomain(userEntity), userUpdateRequestDto));
+        userRepository.save(userConverter.updateUser(user, userUpdateRequestDto));
 
     PreSignedUrlResponseDto preSignedUrl =
-        s3Service.getPreSignedUrlForImage(
-            userConverter.fromDomainToEntity(userDomain).getS3ProfileImageObjectKey(), userId);
+        s3Service.getPreSignedUrlForImage(user.getS3ProfileImageObjectKey(), userId);
 
     return new UserResponseDto(
         userDomain.getUserId(),
