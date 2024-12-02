@@ -7,17 +7,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
 import org.richardstallman.dvback.domain.post.domain.request.PostCreateRequestDto;
 import org.richardstallman.dvback.domain.post.domain.response.PostCreateResponseDto;
+import org.richardstallman.dvback.domain.post.domain.response.PostSliceListResponse;
 import org.richardstallman.dvback.domain.post.domain.response.PostUserListResponseDto;
 import org.richardstallman.dvback.domain.post.service.PostService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -41,5 +40,23 @@ public class PostController {
       @AuthenticationPrincipal final Long userId) {
     final List<PostCreateResponseDto> posts = postService.getPostsByUserId(userId);
     return ResponseEntity.ok(DvApiResponse.of(new PostUserListResponseDto(posts)));
+  }
+
+  @GetMapping("/subscription")
+  public ResponseEntity<DvApiResponse<PostSliceListResponse>> getSubscribedPostsByPage(
+      @AuthenticationPrincipal final Long userId, Pageable pageable) {
+    final Slice<PostCreateResponseDto> posts = postService.getPostBySubscription(userId, pageable);
+    return ResponseEntity.ok(
+        DvApiResponse.of(
+            new PostSliceListResponse(posts.getContent(), posts.getNumber(), posts.isLast())));
+  }
+
+  @GetMapping("/search")
+  public ResponseEntity<DvApiResponse<PostSliceListResponse>> searchPostByJob(
+      @AuthenticationPrincipal final Long userId, @RequestParam String keyword, Pageable pageable) {
+    Slice<PostCreateResponseDto> posts = postService.searchPostByContent(userId, keyword, pageable);
+    return ResponseEntity.ok(
+        DvApiResponse.of(
+            new PostSliceListResponse(posts.getContent(), posts.getNumber(), posts.isLast())));
   }
 }
