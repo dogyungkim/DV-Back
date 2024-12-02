@@ -15,6 +15,7 @@ import org.richardstallman.dvback.domain.file.domain.response.PreSignedUrlRespon
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.richardstallman.dvback.domain.user.domain.UserDomain;
 import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
+import org.richardstallman.dvback.domain.user.domain.request.UserUpdateRequestDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.richardstallman.dvback.domain.user.entity.UserEntity;
 import org.richardstallman.dvback.domain.user.repository.UserRepository;
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserResponseDto updateUserInfo(Long userId, UserRequestDto userRequestDto) {
+  public UserResponseDto createUserInfo(Long userId, UserRequestDto userRequestDto) {
     UserDomain user = findUserById(userId);
 
     validateUsername(userRequestDto.username());
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
     UserEntity userEntity = userConverter.fromDomainToEntity(user);
 
-    UserEntity updatedUser =
+    UserEntity createdUser =
         userEntity.updatedUserEntity(
             userRequestDto.username(),
             userRequestDto.name(),
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
             userRequestDto.birthdate(),
             userRequestDto.gender());
 
-    user = userRepository.save(userConverter.fromEntityToDomain(updatedUser));
+    user = userRepository.save(userConverter.fromEntityToDomain(createdUser));
 
     LocalDateTime now = getCurrentDateTime();
     LocalDateTime expireAt = generateExpirationDateTime(now);
@@ -86,19 +87,43 @@ public class UserServiceImpl implements UserService {
     }
 
     PreSignedUrlResponseDto preSignedUrl =
-        s3Service.getPreSignedUrlForImage(updatedUser.getS3ProfileImageObjectKey(), userId);
+        s3Service.getPreSignedUrlForImage(createdUser.getS3ProfileImageObjectKey(), userId);
 
     return new UserResponseDto(
-        updatedUser.getUserId(),
-        updatedUser.getSocialId(),
-        updatedUser.getEmail(),
-        updatedUser.getUsername(),
-        updatedUser.getName(),
-        updatedUser.getNickname(),
+        createdUser.getUserId(),
+        createdUser.getSocialId(),
+        createdUser.getEmail(),
+        createdUser.getUsername(),
+        createdUser.getName(),
+        createdUser.getNickname(),
         preSignedUrl.preSignedUrl(),
-        updatedUser.getLeave(),
-        updatedUser.getGender(),
-        updatedUser.getBirthdate());
+        createdUser.getLeave(),
+        createdUser.getGender(),
+        createdUser.getBirthdate());
+  }
+
+  @Override
+  public UserResponseDto updateUserInfo(Long userId, UserUpdateRequestDto userUpdateRequestDto) {
+    UserDomain user = findUserById(userId);
+    validateNickname(userUpdateRequestDto.nickname());
+
+    UserDomain userDomain =
+        userRepository.save(userConverter.updateUser(user, userUpdateRequestDto));
+
+    PreSignedUrlResponseDto preSignedUrl =
+        s3Service.getPreSignedUrlForImage(user.getS3ProfileImageObjectKey(), userId);
+
+    return new UserResponseDto(
+        userDomain.getUserId(),
+        userDomain.getSocialId(),
+        userDomain.getEmail(),
+        userDomain.getUsername(),
+        userDomain.getName(),
+        userDomain.getNickname(),
+        preSignedUrl.preSignedUrl(),
+        userDomain.getLeave(),
+        userDomain.getGender(),
+        userDomain.getBirthdate());
   }
 
   private UserDomain findUserById(Long userId) {

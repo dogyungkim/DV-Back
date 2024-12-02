@@ -10,6 +10,7 @@ import org.richardstallman.dvback.domain.ticket.domain.TicketUserCountInfoDto;
 import org.richardstallman.dvback.domain.ticket.service.TicketService;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
 import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
+import org.richardstallman.dvback.domain.user.domain.request.UserUpdateRequestDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserLoginResponseDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserMyPageResponseDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
@@ -43,10 +44,19 @@ public class UserController {
   }
 
   @PostMapping(value = "/info")
-  public ResponseEntity<DvApiResponse<UserResponseDto>> updateUserInfo(
+  public ResponseEntity<DvApiResponse<UserResponseDto>> createUserInfo(
       @AuthenticationPrincipal Long userId,
       @RequestBody @Valid final UserRequestDto userRequestDto) {
-    final UserResponseDto userResponseDto = userService.updateUserInfo(userId, userRequestDto);
+    final UserResponseDto userResponseDto = userService.createUserInfo(userId, userRequestDto);
+    return ResponseEntity.ok(DvApiResponse.of(userResponseDto));
+  }
+
+  @PutMapping(value = "/info")
+  public ResponseEntity<DvApiResponse<UserResponseDto>> updateUserInfo(
+      @AuthenticationPrincipal Long userId,
+      @RequestBody @Valid final UserUpdateRequestDto userUpdateRequestDto) {
+    final UserResponseDto userResponseDto =
+        userService.updateUserInfo(userId, userUpdateRequestDto);
     return ResponseEntity.ok(DvApiResponse.of(userResponseDto));
   }
 
