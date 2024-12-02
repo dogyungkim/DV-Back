@@ -313,36 +313,36 @@ public class EvaluationControllerTest {
                     .tag("Evaluation API")
                     .summary("평가 API")
                     .requestFields(
-                        fieldWithPath("userId").description(""),
-                        fieldWithPath("interviewId").description(""),
+                        fieldWithPath("userId").description("유저 식별자"),
+                        fieldWithPath("interviewId").description("면접 식별자"),
                         fieldWithPath("overallEvaluation.text_overall.job_fit.score")
-                            .description(""),
+                            .description("텍스트 직무 적합도 점수"),
                         fieldWithPath("overallEvaluation.text_overall.job_fit.rationale")
-                            .description(""),
+                            .description("텍스트 직무 적합도 평가 내용"),
                         fieldWithPath("overallEvaluation.text_overall.growth_potential.score")
-                            .description(""),
+                            .description("텍스트 잠재력 점수"),
                         fieldWithPath("overallEvaluation.text_overall.growth_potential.rationale")
-                            .description(""),
+                            .description("텍스트 잠재력 평가 내용"),
                         fieldWithPath("overallEvaluation.text_overall.work_attitude.score")
-                            .description(""),
+                            .description("텍스트 업무 태도 점수"),
                         fieldWithPath("overallEvaluation.text_overall.work_attitude.rationale")
-                            .description(""),
+                            .description("텍스트 업무 태도 평가 내용"),
                         fieldWithPath("overallEvaluation.text_overall.technical_depth.score")
-                            .description(""),
+                            .description("텍스트 기술 점수"),
                         fieldWithPath("overallEvaluation.text_overall.technical_depth.rationale")
-                            .description(""),
+                            .description("텍스트 기술 평가 내용"),
                         fieldWithPath("overallEvaluation.voice_overall.fluency.score")
-                            .description(""),
+                            .description("음성 유창함 점수"),
                         fieldWithPath("overallEvaluation.voice_overall.fluency.rationale")
-                            .description(""),
+                            .description("음성 유창함 평가 내용"),
                         fieldWithPath("overallEvaluation.voice_overall.clarity.score")
-                            .description(""),
+                            .description("음성 명료함 점수"),
                         fieldWithPath("overallEvaluation.voice_overall.clarity.rationale")
-                            .description(""),
+                            .description("음성 명료함 평가 내용"),
                         fieldWithPath("overallEvaluation.voice_overall.word_repetition.score")
-                            .description(""),
+                            .description("음성 단어 반복 점수"),
                         fieldWithPath("overallEvaluation.voice_overall.word_repetition.rationale")
-                            .description(""))
+                            .description("음성 단어 반복 평가 내용"))
                     .responseFields(
                         fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
