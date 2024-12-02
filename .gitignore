@@ -38,3 +38,6 @@ out/
 
 .env
 .DS_Store
+
+### Firebase ###
+/src/main/resources/firebase/*.json

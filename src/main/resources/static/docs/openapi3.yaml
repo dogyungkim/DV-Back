@@ -46,7 +46,7 @@ paths:
                         "commentId" : 1,
                         "postId" : 1,
                         "comment" : "댓글 내용입니다.",
-                        "generatedAt" : "2024-12-01T22:37:28.167259"
+                        "generatedAt" : "2024-12-02T10:55:47.470347"
                       }
                     }
   /comment/{commentId}:
@@ -113,17 +113,17 @@ paths:
                           "commentId" : 1,
                           "postId" : 1,
                           "comment" : "댓글1",
-                          "generatedAt" : "2024-12-01T22:37:27.819398"
+                          "generatedAt" : "2024-12-02T10:55:47.434451"
                         }, {
                           "commentId" : 2,
                           "postId" : 3,
                           "comment" : "댓글2",
-                          "generatedAt" : "2024-12-01T22:37:27.819412"
+                          "generatedAt" : "2024-12-02T10:55:47.434465"
                         }, {
                           "commentId" : 3,
                           "postId" : 8,
                           "comment" : "댓글3",
-                          "generatedAt" : "2024-12-01T22:37:27.819415"
+                          "generatedAt" : "2024-12-02T10:55:47.434468"
                         } ]
                       }
                     }
@@ -159,17 +159,17 @@ paths:
                           "commentId" : 1,
                           "postId" : 1,
                           "comment" : "댓글1",
-                          "generatedAt" : "2024-12-01T22:37:28.234122"
+                          "generatedAt" : "2024-12-02T10:55:47.506364"
                         }, {
                           "commentId" : 2,
                           "postId" : 1,
                           "comment" : "댓글2",
-                          "generatedAt" : "2024-12-01T22:37:28.234132"
+                          "generatedAt" : "2024-12-02T10:55:47.506373"
                         }, {
                           "commentId" : 3,
                           "postId" : 1,
                           "comment" : "댓글3",
-                          "generatedAt" : "2024-12-01T22:37:28.234134"
+                          "generatedAt" : "2024-12-02T10:55:47.506375"
                         } ]
                       }
                     }
@@ -219,9 +219,9 @@ paths:
                         "interviewAssetTypeKorean" : "채팅",
                         "isUsed" : false,
                         "isExpired" : false,
-                        "generatedAt" : "2024-12-01T22:37:29",
+                        "generatedAt" : "2024-12-02T10:55:49",
                         "usedAt" : null,
-                        "expireAt" : "2025-01-01T23:59:59"
+                        "expireAt" : "2025-01-02T23:59:59"
                       }
                     }
   /coupon/use:
@@ -267,9 +267,9 @@ paths:
                           "interviewAssetTypeKorean" : "채팅",
                           "isUsed" : true,
                           "isExpired" : false,
-                          "generatedAt" : "2024-12-01T22:37:29",
-                          "usedAt" : "2024-12-01T22:37:29",
-                          "expireAt" : "2025-01-01T23:59:59"
+                          "generatedAt" : "2024-12-02T10:55:49",
+                          "usedAt" : "2024-12-02T10:55:49",
+                          "expireAt" : "2025-01-02T23:59:59"
                         },
                         "chargedTicketTransactionInfo" : {
                           "totalBalance" : 10,
@@ -289,7 +289,7 @@ paths:
                             "interviewAssetType" : "CHAT",
                             "interviewAssetTypeKorean" : "채팅",
                             "description" : "충전 쿠폰",
-                            "generatedAt" : "2024-12-01T22:37:29"
+                            "generatedAt" : "2024-12-02T10:55:49"
                           }
                         }
                       }
@@ -321,28 +321,28 @@ paths:
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "실전",
                           "interviewAssetTypeKorean" : "채팅",
-                          "expireAt" : "2024-12-01T22:36:29"
+                          "expireAt" : "2024-12-02T10:54:49"
                         }, {
                           "couponId" : 2,
                           "chargeAmount" : 1,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "실전",
                           "interviewAssetTypeKorean" : "음성",
-                          "expireAt" : "2024-12-01T21:37:29"
+                          "expireAt" : "2024-12-02T09:55:49"
                         }, {
                           "couponId" : 3,
                           "chargeAmount" : 5,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "모의",
                           "interviewAssetTypeKorean" : "채팅",
-                          "expireAt" : "2024-11-30T22:37:29"
+                          "expireAt" : "2024-12-01T10:55:49"
                         }, {
                           "couponId" : 4,
                           "chargeAmount" : 3,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "모의",
                           "interviewAssetTypeKorean" : "음성",
-                          "expireAt" : "2024-11-01T22:37:29"
+                          "expireAt" : "2024-11-02T10:55:49"
                         } ]
                       }
                     }
@@ -373,28 +373,28 @@ paths:
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "실전",
                           "interviewAssetTypeKorean" : "채팅",
-                          "expireAt" : "2025-01-01T23:59:59"
+                          "expireAt" : "2025-01-02T23:59:59"
                         }, {
                           "couponId" : 2,
                           "chargeAmount" : 1,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "실전",
                           "interviewAssetTypeKorean" : "음성",
-                          "expireAt" : "2025-01-01T23:59:59"
+                          "expireAt" : "2025-01-02T23:59:59"
                         }, {
                           "couponId" : 3,
                           "chargeAmount" : 5,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "모의",
                           "interviewAssetTypeKorean" : "채팅",
-                          "expireAt" : "2025-01-01T23:59:59"
+                          "expireAt" : "2025-01-02T23:59:59"
                         }, {
                           "couponId" : 4,
                           "chargeAmount" : 3,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "모의",
                           "interviewAssetTypeKorean" : "음성",
-                          "expireAt" : "2025-01-01T23:59:59"
+                          "expireAt" : "2025-01-02T23:59:59"
                         } ]
                       }
                     }
@@ -425,30 +425,98 @@ paths:
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "실전",
                           "interviewAssetTypeKorean" : "채팅",
-                          "usedAt" : "2024-12-01T19:37:29"
+                          "usedAt" : "2024-12-02T07:55:49"
                         }, {
                           "couponId" : 2,
                           "chargeAmount" : 1,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "실전",
                           "interviewAssetTypeKorean" : "음성",
-                          "usedAt" : "2024-11-30T22:37:29"
+                          "usedAt" : "2024-12-01T10:55:49"
                         }, {
                           "couponId" : 3,
                           "chargeAmount" : 5,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "모의",
                           "interviewAssetTypeKorean" : "채팅",
-                          "usedAt" : "2024-10-01T22:37:29"
+                          "usedAt" : "2024-10-02T10:55:49"
                         }, {
                           "couponId" : 4,
                           "chargeAmount" : 3,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "모의",
                           "interviewAssetTypeKorean" : "음성",
-                          "usedAt" : "2024-08-01T22:37:29"
+                          "usedAt" : "2024-08-02T10:55:49"
                         } ]
                       }
+                    }
+  /evaluation/completion:
+    post:
+      tags:
+      - Evaluation API
+      summary: 평가 API
+      description: 평가 API
+      operationId: 파이썬 요청 - 면접 평가 완료 - 성공
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/evaluation-completion217878434'
+            examples:
+              파이썬 요청 - 면접 평가 완료 - 성공:
+                value: |-
+                  {
+                    "userId" : 1,
+                    "interviewId" : 1,
+                    "overallEvaluation" : {
+                      "text_overall" : {
+                        "job_fit" : {
+                          "score" : 1,
+                          "rationale" : "11"
+                        },
+                        "growth_potential" : {
+                          "score" : 1,
+                          "rationale" : "11"
+                        },
+                        "work_attitude" : {
+                          "score" : 1,
+                          "rationale" : "11"
+                        },
+                        "technical_depth" : {
+                          "score" : 1,
+                          "rationale" : "11"
+                        }
+                      },
+                      "voice_overall" : {
+                        "fluency" : {
+                          "score" : 1,
+                          "rationale" : "11"
+                        },
+                        "clarity" : {
+                          "score" : 1,
+                          "rationale" : "11"
+                        },
+                        "word_repetition" : {
+                          "score" : 1,
+                          "rationale" : "11"
+                        }
+                      }
+                    }
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/evaluation-completion-62774813'
+              examples:
+                파이썬 요청 - 면접 평가 완료 - 성공:
+                  value: |-
+                    {
+                      "code" : 200,
+                      "message" : "Evaluations have been successfully saved.",
+                      "data" : null
                     }
   /evaluation/{interviewId}:
     get:
@@ -515,6 +583,41 @@ paths:
                             "answerEvaluationType" : "TEXT"
                           } ]
                         } ]
+                      }
+                    }
+  /fcm/token:
+    post:
+      tags:
+      - FCM API
+      summary: Firebase Cloud Messaging API
+      description: 유저의 FCM 토큰을 저장하는 API
+      operationId: FCM 토큰 저장 - 성공
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/fcm-token-973757885'
+            examples:
+              FCM 토큰 저장 - 성공:
+                value: |-
+                  {
+                    "token" : "sampleToken"
+                  }
+      responses:
+        "201":
+          description: "201"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/fcm-token-131836546'
+              examples:
+                FCM 토큰 저장 - 성공:
+                  value: |-
+                    {
+                      "code" : 200,
+                      "message" : "SUCCESS",
+                      "data" : {
+                        "message" : "Token saved successfully!"
                       }
                     }
   /file/cover-letter:
@@ -725,7 +828,7 @@ paths:
                             "fileId" : 1,
                             "type" : "COVER_LETTER",
                             "fileName" : "coverLetterName",
-                            "s3FileUrl" : "COVER_LETTER/1/1733060253343/coverLetterName"
+                            "s3FileUrl" : "COVER_LETTER/1/1733104553121/coverLetterName"
                           } ]
                         }, {
                           "interviewId" : 2,
@@ -745,7 +848,7 @@ paths:
                             "fileId" : 2,
                             "type" : "COVER_LETTER",
                             "fileName" : "coverLetterName2",
-                            "s3FileUrl" : "COVER_LETTER/1/1733060253343/coverLetterName2"
+                            "s3FileUrl" : "COVER_LETTER/1/1733104553121/coverLetterName2"
                           } ]
                         }, {
                           "interviewId" : 3,
@@ -765,7 +868,7 @@ paths:
                             "fileId" : 3,
                             "type" : "COVER_LETTER",
                             "fileName" : "coverLetterName3",
-                            "s3FileUrl" : "COVER_LETTER/1/1733060253343/coverLetterName3"
+                            "s3FileUrl" : "COVER_LETTER/1/1733104553121/coverLetterName3"
                           } ]
                         }, {
                           "interviewId" : 4,
@@ -816,7 +919,7 @@ paths:
                     "questionCount" : 5,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1733060253383/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1733104553159/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 존재하지 않는 직무 ID(500 Internal Server Error):
@@ -830,7 +933,7 @@ paths:
                     "questionCount" : 5,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1733060253331/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1733104553109/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 필수 필드 누락(400 Bad Request):
@@ -844,7 +947,7 @@ paths:
                     "questionCount" : 5,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1733060253359/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1733104553135/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 면접 저장 성공:
@@ -858,7 +961,7 @@ paths:
                     "questionCount" : 5,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1733060253280/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1733104553064/coverLetterName"
                     } ]
                   }
       responses:
@@ -941,7 +1044,7 @@ paths:
                           "fileId" : 1,
                           "type" : "COVER_LETTER",
                           "fileName" : "coverLetterName",
-                          "s3FileUrl" : "COVER_LETTER/1/1733060253280/coverLetterName"
+                          "s3FileUrl" : "COVER_LETTER/1/1733104553064/coverLetterName"
                         } ],
                         "ticket" : {
                           "totalBalance" : 10,
@@ -961,7 +1064,7 @@ paths:
                             "interviewAssetType" : "CHAT",
                             "interviewAssetTypeKorean" : "채팅",
                             "description" : "채팅 면접 사용",
-                            "generatedAt" : "2024-12-01T22:37:33.280889"
+                            "generatedAt" : "2024-12-02T10:55:53.065256"
                           }
                         }
                       }
@@ -1102,7 +1205,7 @@ paths:
                         },
                         "evaluation" : null,
                         "postType" : "INTERVIEW",
-                        "generatedAt" : "2024-12-01T22:37:36.447622"
+                        "generatedAt" : "2024-12-02T10:55:56.805762"
                       }
                     }
                 게시글 작성 테스트(일반 POST) - 성공:
@@ -1119,7 +1222,7 @@ paths:
                         "interview" : null,
                         "evaluation" : null,
                         "postType" : "POST",
-                        "generatedAt" : "2024-12-01T22:37:36.397096"
+                        "generatedAt" : "2024-12-02T10:55:56.777342"
                       }
                     }
                 게시글 작성 테스트(평가 공유 EVALUATION) - 성공:
@@ -1190,291 +1293,7 @@ paths:
                           } ]
                         },
                         "postType" : "EVALUATION",
-                        "generatedAt" : "2024-12-01T22:37:36.349022"
-                      }
-                    }
-  /post/search:
-    get:
-      tags:
-      - Post API
-      summary: 게시글 검색 API
-      description: 게시글 검색 API
-      operationId: 게시글 검색 - 성공
-      parameters:
-      - name: keyword
-        in: query
-        description: 검색 키워드
-        required: true
-        schema:
-          type: string
-      - name: page
-        in: query
-        description: 페이지 번호 (0부터 시작)
-        required: true
-        schema:
-          type: string
-      - name: size
-        in: query
-        description: 페이지당 게시글 수
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: "200"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/post-search2107435791'
-              examples:
-                게시글 검색 - 성공:
-                  value: |-
-                    {
-                      "code" : 200,
-                      "message" : "SUCCESS",
-                      "data" : {
-                        "posts" : [ {
-                          "postId" : 100,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "This is a test post about Spring Boot.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image1.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.412668"
-                        }, {
-                          "postId" : 101,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "Testing JPA and database connections.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image2.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.412673"
-                        }, {
-                          "postId" : 102,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "Unit test examples with JUnit and Mockito.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image3.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.412676"
-                        }, {
-                          "postId" : 103,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "Integration testing best practices.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image4.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.412677"
-                        }, {
-                          "postId" : 104,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "Test-driven development workflow.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image5.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.412679"
-                        }, {
-                          "postId" : 105,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "Testing RESTful APIs with Spring Boot Test.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image6.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.41268"
-                        }, {
-                          "postId" : 106,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "Performance testing using JMeter.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image7.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.412682"
-                        }, {
-                          "postId" : 107,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "End-to-end testing strategies.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image8.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.412683"
-                        }, {
-                          "postId" : 108,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "Test coverage analysis with JaCoCo.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image9.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.412685"
-                        }, {
-                          "postId" : 109,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "Automated testing pipeline setup.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image10.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.412686"
-                        } ],
-                        "currentPage" : 0,
-                        "isLastPage" : false
-                      }
-                    }
-  /post/subscription:
-    get:
-      tags:
-      - Post API
-      summary: 구독 게시글 API
-      description: 구독 게시글 API
-      operationId: 구독한 직무의 게시글 목록 페이징 조회 - 성공
-      parameters:
-      - name: page
-        in: query
-        description: 페이지 번호 (0부터 시작)
-        required: true
-        schema:
-          type: string
-      - name: size
-        in: query
-        description: 페이지당 게시글 수
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: "200"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/post-search2107435791'
-              examples:
-                구독한 직무의 게시글 목록 페이징 조회 - 성공:
-                  value: |-
-                    {
-                      "code" : 200,
-                      "message" : "SUCCESS",
-                      "data" : {
-                        "posts" : [ {
-                          "postId" : 100,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "This is test post content 1.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image1.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.375083"
-                        }, {
-                          "postId" : 101,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "This is test post content 2.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image2.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.37509"
-                        }, {
-                          "postId" : 102,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "This is test post content 3.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image3.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.375092"
-                        }, {
-                          "postId" : 103,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "This is test post content 4.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image4.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.375093"
-                        }, {
-                          "postId" : 104,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "This is test post content 5.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image5.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.375095"
-                        }, {
-                          "postId" : 105,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "This is test post content 6.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image6.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.375097"
-                        }, {
-                          "postId" : 106,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "This is test post content 7.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image7.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.3751"
-                        }, {
-                          "postId" : 107,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "This is test post content 8.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image8.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.375101"
-                        }, {
-                          "postId" : 108,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "This is test post content 9.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image9.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.375104"
-                        }, {
-                          "postId" : 109,
-                          "jobName" : "BACK_END",
-                          "jobNameKorean" : "백엔드",
-                          "content" : "This is test post content 10.",
-                          "s3ImageUrl" : "https://s3.amazonaws.com/test-image10.jpg",
-                          "interview" : null,
-                          "evaluation" : null,
-                          "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.375106"
-                        } ],
-                        "currentPage" : 0,
-                        "isLastPage" : true
+                        "generatedAt" : "2024-12-02T10:55:56.753225"
                       }
                     }
   /post/user:
@@ -1561,7 +1380,7 @@ paths:
                             } ]
                           },
                           "postType" : "EVALUATION",
-                          "generatedAt" : "2024-12-01T22:37:36.429337"
+                          "generatedAt" : "2024-12-02T10:55:56.787494"
                         }, {
                           "postId" : 108,
                           "jobName" : "BACK_END",
@@ -1591,7 +1410,7 @@ paths:
                           },
                           "evaluation" : null,
                           "postType" : "INTERVIEW",
-                          "generatedAt" : "2024-12-01T22:37:36.429344"
+                          "generatedAt" : "2024-12-02T10:55:56.787499"
                         }, {
                           "postId" : 132,
                           "jobName" : "BACK_END",
@@ -1601,7 +1420,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-01T22:37:36.429345"
+                          "generatedAt" : "2024-12-02T10:55:56.7875"
                         } ]
                       }
                     }
@@ -1813,7 +1632,7 @@ paths:
                         "subscriptionId" : 1,
                         "userId" : 1,
                         "jobId" : 2,
-                        "subscribedAt" : "2024-12-01T22:37:38.473652"
+                        "subscribedAt" : "2024-12-02T10:55:58.845016"
                       }
                     }
   /subscription/user:
@@ -1840,12 +1659,12 @@ paths:
                         "subscriptionId" : 1,
                         "userId" : 1,
                         "jobId" : 2,
-                        "subscribedAt" : "2024-12-01T22:37:38.462093"
+                        "subscribedAt" : "2024-12-02T10:55:58.833357"
                       }, {
                         "subscriptionId" : 2,
                         "userId" : 1,
                         "jobId" : 3,
-                        "subscribedAt" : "2024-12-01T22:37:38.462101"
+                        "subscribedAt" : "2024-12-02T10:55:58.833366"
                       } ]
                     }
   /subscription/{subscriptionId}:
@@ -1905,7 +1724,7 @@ paths:
                           "interviewAssetType" : "CHAT",
                           "interviewAssetTypeKorean" : "채팅",
                           "description" : "실전 채팅 면접 충전",
-                          "generatedAt" : "2024-12-01T22:37:39.384243"
+                          "generatedAt" : "2024-12-02T10:55:59.791406"
                         }, {
                           "ticketTransactionId" : 2,
                           "amount" : 1,
@@ -1918,7 +1737,7 @@ paths:
                           "interviewAssetType" : "CHAT",
                           "interviewAssetTypeKorean" : "채팅",
                           "description" : "실전 채팅 면접 사용",
-                          "generatedAt" : "2024-12-01T22:37:39.384249"
+                          "generatedAt" : "2024-12-02T10:55:59.791412"
                         }, {
                           "ticketTransactionId" : 3,
                           "amount" : 1,
@@ -1931,7 +1750,7 @@ paths:
                           "interviewAssetType" : "CHAT",
                           "interviewAssetTypeKorean" : "채팅",
                           "description" : "실전 채팅 면접 충전",
-                          "generatedAt" : "2024-12-01T22:37:39.38425"
+                          "generatedAt" : "2024-12-02T10:55:59.791413"
                         }, {
                           "ticketTransactionId" : 4,
                           "amount" : 2,
@@ -1944,7 +1763,7 @@ paths:
                           "interviewAssetType" : "VOICE",
                           "interviewAssetTypeKorean" : "음성",
                           "description" : "실전 채팅 면접 충전",
-                          "generatedAt" : "2024-12-01T22:37:39.384251"
+                          "generatedAt" : "2024-12-02T10:55:59.791414"
                         }, {
                           "ticketTransactionId" : 5,
                           "amount" : 3,
@@ -1957,7 +1776,7 @@ paths:
                           "interviewAssetType" : "CHAT",
                           "interviewAssetTypeKorean" : "채팅",
                           "description" : "모의 채팅 면접 충전",
-                          "generatedAt" : "2024-12-01T22:37:39.384252"
+                          "generatedAt" : "2024-12-02T10:55:59.791415"
                         }, {
                           "ticketTransactionId" : 6,
                           "amount" : 4,
@@ -1970,7 +1789,7 @@ paths:
                           "interviewAssetType" : "VOICE",
                           "interviewAssetTypeKorean" : "음성",
                           "description" : "모의 음성 면접 충전",
-                          "generatedAt" : "2024-12-01T22:37:39.384254"
+                          "generatedAt" : "2024-12-02T10:55:59.791417"
                         } ]
                       }
                     }
@@ -2414,6 +2233,18 @@ components:
         message:
           type: string
           description: 응답 메시지
+    interview1916977939:
+      type: object
+      properties:
+        code:
+          type: number
+          description: "응답 코드: 400"
+        data:
+          type: string
+          description: "에러 메시지: {누락된 필드}: {누락된 필드} is required"
+        message:
+          type: string
+          description: "응답 상태: BAD_REQUEST"
     comment-commentId1745625053:
       type: object
       properties:
@@ -2432,18 +2263,6 @@ components:
         message:
           type: string
           description: 응답 메시지
-    interview1916977939:
-      type: object
-      properties:
-        code:
-          type: number
-          description: "응답 코드: 400"
-        data:
-          type: string
-          description: "에러 메시지: {누락된 필드}: {누락된 필드} is required"
-        message:
-          type: string
-          description: "응답 상태: BAD_REQUEST"
     user-authenticated2056040670:
       type: object
       properties:
@@ -2453,51 +2272,6 @@ components:
         data:
           type: boolean
           description: "인증 여부 (true: 인증됨, false: 인증되지 않음)"
-        message:
-          type: string
-          description: 응답 메시지
-    post-search2107435791:
-      type: object
-      properties:
-        code:
-          type: number
-          description: 응답 코드
-        data:
-          type: object
-          properties:
-            isLastPage:
-              type: boolean
-              description: 마지막 페이지 여부
-            currentPage:
-              type: number
-              description: 현재 페이지 번호
-            posts:
-              type: array
-              description: 게시글 목록
-              items:
-                type: object
-                properties:
-                  jobName:
-                    type: string
-                    description: 직무 이름
-                  postType:
-                    type: string
-                    description: 게시글 유형
-                  generatedAt:
-                    type: string
-                    description: 작성 일시
-                  jobNameKorean:
-                    type: string
-                    description: 직무 이름 (한글)
-                  s3ImageUrl:
-                    type: string
-                    description: S3 이미지 URL
-                  postId:
-                    type: number
-                    description: 게시글 식별자
-                  content:
-                    type: string
-                    description: 게시글 내용
         message:
           type: string
           description: 응답 메시지
@@ -2645,48 +2419,6 @@ components:
         message:
           type: string
           description: 응답 메시지
-    user-info983662776:
-      type: object
-      properties:
-        code:
-          type: number
-          description: 응답 코드
-        data:
-          type: object
-          properties:
-            birthdate:
-              type: string
-              description: 생년월일
-            gender:
-              type: string
-              description: 성별
-            leave:
-              type: boolean
-              description: 탈퇴 여부
-            socialId:
-              type: string
-              description: 소셜 ID
-            nickname:
-              type: string
-              description: 유저 닉네임
-            name:
-              type: string
-              description: 유저 이름
-            s3ProfileImageUrl:
-              type: string
-              description: 프로필 이미지 URL
-            userId:
-              type: number
-              description: 유저 ID
-            email:
-              type: string
-              description: 이메일
-            username:
-              type: string
-              description: 유저 네임
-        message:
-          type: string
-          description: 응답 메시지
     coupon-1296136601:
       type: object
       properties:
@@ -2732,6 +2464,63 @@ components:
             isExpired:
               type: boolean
               description: "쿠폰 만료 여부: 만료(true), 만료 전(false)"
+        message:
+          type: string
+          description: 응답 메시지
+    user-info983662776:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 응답 코드
+        data:
+          type: object
+          properties:
+            birthdate:
+              type: string
+              description: 생년월일
+            gender:
+              type: string
+              description: 성별
+            leave:
+              type: boolean
+              description: 탈퇴 여부
+            socialId:
+              type: string
+              description: 소셜 ID
+            nickname:
+              type: string
+              description: 유저 닉네임
+            name:
+              type: string
+              description: 유저 이름
+            s3ProfileImageUrl:
+              type: string
+              description: 프로필 이미지 URL
+            userId:
+              type: number
+              description: 유저 ID
+            email:
+              type: string
+              description: 이메일
+            username:
+              type: string
+              description: 유저 네임
+        message:
+          type: string
+          description: 응답 메시지
+    fcm-token-131836546:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 응답 코드
+        data:
+          type: object
+          properties:
+            message:
+              type: string
+              description: 처리 결과 메시지
         message:
           type: string
           description: 응답 메시지
@@ -2841,6 +2630,87 @@ components:
         message:
           type: string
           description: 응답 메시지
+    evaluation-completion217878434:
+      type: object
+      properties:
+        overallEvaluation:
+          type: object
+          properties:
+            voice_overall:
+              type: object
+              properties:
+                clarity:
+                  type: object
+                  properties:
+                    score:
+                      type: number
+                      description: ""
+                    rationale:
+                      type: string
+                      description: ""
+                word_repetition:
+                  type: object
+                  properties:
+                    score:
+                      type: number
+                      description: ""
+                    rationale:
+                      type: string
+                      description: ""
+                fluency:
+                  type: object
+                  properties:
+                    score:
+                      type: number
+                      description: ""
+                    rationale:
+                      type: string
+                      description: ""
+            text_overall:
+              type: object
+              properties:
+                growth_potential:
+                  type: object
+                  properties:
+                    score:
+                      type: number
+                      description: ""
+                    rationale:
+                      type: string
+                      description: ""
+                work_attitude:
+                  type: object
+                  properties:
+                    score:
+                      type: number
+                      description: ""
+                    rationale:
+                      type: string
+                      description: ""
+                technical_depth:
+                  type: object
+                  properties:
+                    score:
+                      type: number
+                      description: ""
+                    rationale:
+                      type: string
+                      description: ""
+                job_fit:
+                  type: object
+                  properties:
+                    score:
+                      type: number
+                      description: ""
+                    rationale:
+                      type: string
+                      description: ""
+        interviewId:
+          type: number
+          description: ""
+        userId:
+          type: number
+          description: ""
     post-user-916831548:
       type: object
       properties:
@@ -3105,6 +2975,15 @@ components:
                   couponId:
                     type: number
                     description: 쿠폰 식별자
+        message:
+          type: string
+          description: 응답 메시지
+    evaluation-completion-62774813:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 응답 코드
         message:
           type: string
           description: 응답 메시지
@@ -3914,6 +3793,12 @@ components:
         message:
           type: string
           description: 응답 메시지
+    fcm-token-973757885:
+      type: object
+      properties:
+        token:
+          type: string
+          description: 유저의 FCM 토큰
     subscription-user-478901246:
       type: object
       properties:

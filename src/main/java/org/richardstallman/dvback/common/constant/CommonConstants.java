@@ -51,6 +51,7 @@ public class CommonConstants {
   @Getter
   public enum ResponseCode {
     SUCCESS(200, "SUCCESS"),
+    ACCEPTED(202, "ACCEPTED"),
     FAIL(400, "FAILED"),
     UNAUTHORIZED(401, "UNAUTHORIZED"),
     NOT_FOUND(404, "NOT FOUND"),
@@ -67,8 +68,11 @@ public class CommonConstants {
     ANSWER("answer"),
     JOB_FIT("job_fit"),
     GROWTH_POTENTIAL("growth_potential"),
+    WORK_ATTITUDE("work_attitude"),
     TECHNICAL_DEPTH("technical_depth"),
-    WORK_ATTITUDE("work_attitude");
+    FLUENCY("fluency"),
+    CLARITY("clarity"),
+    WORD_REPETITION("word_repetition");
 
     private final String pythonFormat;
   }

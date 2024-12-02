@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.richardstallman.dvback.client.firebase.service.FirebaseMessagingService;
 import org.richardstallman.dvback.client.python.PythonService;
-import org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluationScore;
 import org.richardstallman.dvback.common.constant.CommonConstants.EvaluationCriteria;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
@@ -19,20 +19,17 @@ import org.richardstallman.dvback.domain.evaluation.converter.EvaluationCriteria
 import org.richardstallman.dvback.domain.evaluation.converter.OverallEvaluationConverter;
 import org.richardstallman.dvback.domain.evaluation.domain.EvaluationCriteriaDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.AnswerEvaluationDomain;
-import org.richardstallman.dvback.domain.evaluation.domain.answer.AnswerEvaluationScoreDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.response.AnswerEvaluationResponseDto;
-import org.richardstallman.dvback.domain.evaluation.domain.external.AnswerEvaluationCriteriaExternalDomain;
-import org.richardstallman.dvback.domain.evaluation.domain.external.AnswerEvaluationExternalDomain;
-import org.richardstallman.dvback.domain.evaluation.domain.external.EvaluationCriteriaExternalDomain;
-import org.richardstallman.dvback.domain.evaluation.domain.external.OverallEvaluationExternalDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalAnswerRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalAnswersRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionsRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalRequestDto;
-import org.richardstallman.dvback.domain.evaluation.domain.external.response.EvaluationExternalResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationResultCriteriaDto;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationResultDto;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationResultRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.response.EvaluationCriteriaResponseDto;
 import org.richardstallman.dvback.domain.evaluation.repository.answer.AnswerEvaluationRepository;
@@ -48,8 +45,6 @@ import org.richardstallman.dvback.domain.interview.service.InterviewService;
 import org.richardstallman.dvback.domain.question.converter.QuestionConverter;
 import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
 import org.richardstallman.dvback.domain.question.repository.QuestionRepository;
-import org.richardstallman.dvback.global.advice.exceptions.ApiException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -72,9 +67,10 @@ public class EvaluationServiceImpl implements EvaluationService {
   private final InterviewService interviewService;
   private final QuestionConverter questionConverter;
   private final InterviewConverter interviewConverter;
+  private final FirebaseMessagingService firebaseMessagingService;
 
   @Override
-  public OverallEvaluationResponseDto getOverallEvaluation(
+  public void getOverallEvaluation(
       OverallEvaluationRequestDto overallEvaluationRequestDto, Long userId) {
     List<QuestionDomain> questions = retrieveQuestions(overallEvaluationRequestDto.interviewId());
     InterviewDomain interviewDomain = questions.get(0).getInterviewDomain();
@@ -83,31 +79,17 @@ public class EvaluationServiceImpl implements EvaluationService {
     if (interviewDomain.getInterviewMode() == InterviewMode.REAL) {
       filePaths.add(interviewDomain.getCoverLetter().getS3FileUrl());
     }
-
-    EvaluationExternalResponseDto evaluationExternalResponseDto =
-        callPythonEvaluationService(userId, questions, filePaths);
-
-    OverallEvaluationDomain createdOverallEvaluationDomain = saveOverallEvaluation(interviewDomain);
-
-    saveEvaluationCriteria(
-        createdOverallEvaluationDomain, evaluationExternalResponseDto.overallEvaluation());
-
-    List<AnswerEvaluationDomain> createdAnswerEvaluations =
-        saveAnswerEvaluations(
-            createdOverallEvaluationDomain, evaluationExternalResponseDto.answerEvaluations());
-
-    return buildResponseDto(
-        interviewDomain, createdOverallEvaluationDomain, createdAnswerEvaluations);
+    callPythonEvaluationService(userId, questions, filePaths);
+    log.info("Request Evaluation To Python: Success");
   }
 
   @Override
   public OverallEvaluationResponseDto getOverallEvaluationByInterviewId(Long interviewId) {
     InterviewDomain interviewDomain = interviewService.getInterviewById(interviewId);
-
     OverallEvaluationDomain overallEvaluationDomain =
         OverallEvaluationDomain.builder()
             .overallEvaluationId(
-                overallEvaluationRepository.findByInterviewId(interviewId).getOverallEvaluationId())
+                getOverallEvaluationDomainByInterviewId(interviewId).getOverallEvaluationId())
             .interviewDomain(interviewDomain)
             .build();
     List<AnswerEvaluationDomain> answerEvaluationDomains =
@@ -120,11 +102,60 @@ public class EvaluationServiceImpl implements EvaluationService {
     return overallEvaluationRepository.findById(overallEvaluationId);
   }
 
+  @Override
+  public void saveCompletedEvaluation(OverallEvaluationResultRequestDto evaluationResult) {
+    Long userId = evaluationResult.userId();
+    Long interviewId = evaluationResult.interviewId();
+    OverallEvaluationResultDto overallEvaluationResultDto = evaluationResult.overallEvaluation();
+
+    OverallEvaluationDomain overallEvaluationDomain =
+        getOverallEvaluationDomainByInterviewId(interviewId);
+    saveEvaluationCriteriaResult(overallEvaluationDomain, overallEvaluationResultDto);
+
+    firebaseMessagingService.sendNotification(
+        userId, "평가가 완료되었습니다.", evaluationResult.interviewId().toString());
+  }
+
+  private void saveEvaluationCriteriaResult(
+      OverallEvaluationDomain overallEvaluationDomain,
+      OverallEvaluationResultDto overallEvaluationResultDto) {
+    Map<EvaluationCriteria, OverallEvaluationResultCriteriaDto> criteriaMap =
+        Map.of(
+            EvaluationCriteria.JOB_FIT, overallEvaluationResultDto.textOverall().jobFit(),
+            EvaluationCriteria.GROWTH_POTENTIAL,
+                overallEvaluationResultDto.textOverall().growthPotential(),
+            EvaluationCriteria.WORK_ATTITUDE,
+                overallEvaluationResultDto.textOverall().workAttitude(),
+            EvaluationCriteria.TECHNICAL_DEPTH,
+                overallEvaluationResultDto.textOverall().technicalDepth(),
+            EvaluationCriteria.FLUENCY, overallEvaluationResultDto.voiceOverall().fluency(),
+            EvaluationCriteria.CLARITY, overallEvaluationResultDto.voiceOverall().clarity(),
+            EvaluationCriteria.WORD_REPETITION,
+                overallEvaluationResultDto.voiceOverall().wordRepetition());
+
+    List<EvaluationCriteriaDomain> criteriaDomains =
+        criteriaMap.entrySet().stream()
+            .map(
+                entry ->
+                    EvaluationCriteriaDomain.builder()
+                        .evaluationCriteria(entry.getKey())
+                        .overallEvaluationDomain(overallEvaluationDomain)
+                        .feedbackText(entry.getValue().rationale())
+                        .score(entry.getValue().score())
+                        .build())
+            .toList();
+    evaluationCriteriaRepository.saveAll(criteriaDomains);
+  }
+
+  private OverallEvaluationDomain getOverallEvaluationDomainByInterviewId(Long interviewId) {
+    return overallEvaluationRepository.findByInterviewId(interviewId);
+  }
+
   private List<QuestionDomain> retrieveQuestions(Long interviewId) {
     return questionRepository.findQuestionsByInterviewId(interviewId);
   }
 
-  private EvaluationExternalResponseDto callPythonEvaluationService(
+  private void callPythonEvaluationService(
       Long userId, List<QuestionDomain> questions, List<String> filePaths) {
     List<EvaluationExternalQuestionRequestDto> questionTexts =
         questions.stream()
@@ -136,17 +167,6 @@ public class EvaluationServiceImpl implements EvaluationService {
             .map(question -> answerRepository.findByQuestionId(question.getQuestionId()))
             .toList();
 
-    List<AnswerEvaluationDto> answerTexts =
-        answerDomains.stream()
-            .map(
-                answer ->
-                    answerEvaluationConverter.fromDomainToDto(
-                        answer,
-                        answerEvaluationRepository.findByQuestionId(
-                            answer.getQuestionDomain().getQuestionId()),
-                        answerEvaluationScoreRepository.findByQuestionId(
-                            answer.getQuestionDomain().getQuestionId())))
-            .toList();
     Map<AnswerDomain, AnswerEvaluationDto> answerMap =
         answerDomains.stream()
             .collect(
@@ -180,96 +200,7 @@ public class EvaluationServiceImpl implements EvaluationService {
             new EvaluationExternalAnswersRequestDto(answerRequestDtos),
             filePaths);
 
-    return pythonService.getOverallEvaluations(requestDto);
-  }
-
-  private OverallEvaluationDomain saveOverallEvaluation(InterviewDomain interviewDomain) {
-    return overallEvaluationRepository.save(
-        OverallEvaluationDomain.builder().interviewDomain(interviewDomain).build());
-  }
-
-  private void saveEvaluationCriteria(
-      OverallEvaluationDomain overallEvaluation,
-      OverallEvaluationExternalDomain externalEvaluation) {
-    Map<EvaluationCriteria, EvaluationCriteriaExternalDomain> criteriaMap =
-        Map.of(
-            EvaluationCriteria.JOB_FIT, externalEvaluation.getJobFit(),
-            EvaluationCriteria.GROWTH_POTENTIAL, externalEvaluation.getGrowthPotential(),
-            EvaluationCriteria.WORK_ATTITUDE, externalEvaluation.getWorkAttitude(),
-            EvaluationCriteria.TECHNICAL_DEPTH, externalEvaluation.getTechnicalDepth());
-
-    List<EvaluationCriteriaDomain> criteriaDomains =
-        criteriaMap.entrySet().stream()
-            .map(
-                entry ->
-                    EvaluationCriteriaDomain.builder()
-                        .evaluationCriteria(entry.getKey())
-                        .overallEvaluationDomain(overallEvaluation)
-                        .feedbackText(entry.getValue().getFeedbackText())
-                        .score(entry.getValue().getScore())
-                        .build())
-            .toList();
-
-    evaluationCriteriaRepository.saveAll(criteriaDomains);
-  }
-
-  private List<AnswerEvaluationDomain> saveAnswerEvaluations(
-      OverallEvaluationDomain overallEvaluation,
-      List<AnswerEvaluationExternalDomain> answerEvaluations) {
-    List<AnswerEvaluationDomain> createdAnswerEvaluations = new ArrayList<>();
-
-    for (AnswerEvaluationExternalDomain answerEvaluation : answerEvaluations) {
-      AnswerEvaluationDomain answerEvaluationDomain =
-          answerEvaluationRepository.save(
-              answerEvaluationConverter.externalDomainToDomain(
-                  answerEvaluation,
-                  questionRepository
-                      .findById(answerEvaluation.getQuestionId())
-                      .orElseThrow(
-                          () ->
-                              new ApiException(
-                                  HttpStatus.NOT_FOUND,
-                                  "Question "
-                                      + answerEvaluation.getQuestionId()
-                                      + " does not exist")),
-                  overallEvaluation));
-
-      saveAnswerEvaluationScores(answerEvaluationDomain, answerEvaluation);
-      createdAnswerEvaluations.add(answerEvaluationDomain);
-    }
-
-    return createdAnswerEvaluations;
-  }
-
-  private void saveAnswerEvaluationScores(
-      AnswerEvaluationDomain answerEvaluationDomain,
-      AnswerEvaluationExternalDomain answerEvaluation) {
-    Map<AnswerEvaluationScore, AnswerEvaluationCriteriaExternalDomain> scoreMap =
-        Map.of(
-            AnswerEvaluationScore.APPROPRIATE_RESPONSE,
-            answerEvaluation.getAnswerEvaluationScoreExternalDomain().getAppropriateResponse(),
-            AnswerEvaluationScore.LOGICAL_FLOW,
-            answerEvaluation.getAnswerEvaluationScoreExternalDomain().getLogicalFlow(),
-            AnswerEvaluationScore.KEY_TERMS,
-            answerEvaluation.getAnswerEvaluationScoreExternalDomain().getKeyTerms(),
-            AnswerEvaluationScore.CONSISTENCY,
-            answerEvaluation.getAnswerEvaluationScoreExternalDomain().getConsistency(),
-            AnswerEvaluationScore.GRAMMATICAL_ERRORS,
-            answerEvaluation.getAnswerEvaluationScoreExternalDomain().getGrammaticalErrors());
-
-    List<AnswerEvaluationScoreDomain> scoreDomains =
-        scoreMap.entrySet().stream()
-            .map(
-                entry ->
-                    AnswerEvaluationScoreDomain.builder()
-                        .answerEvaluationScoreName(entry.getKey())
-                        .score(entry.getValue().getScore())
-                        .rationale(entry.getValue().getRationale())
-                        .answerEvaluationDomain(answerEvaluationDomain)
-                        .build())
-            .toList();
-
-    answerEvaluationScoreRepository.saveAll(scoreDomains);
+    pythonService.getOverallEvaluations(requestDto);
   }
 
   private OverallEvaluationResponseDto buildResponseDto(

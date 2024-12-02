@@ -96,3 +96,6 @@ logging:
     name: /var/log/spring.log  # 로그 파일 이름
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss} %level %logger --- %msg%n" # 로그 파일 출력 포맷
+
+firebase:
+  config-path: firebase/ikdk-55b6f-firebase-adminsdk-xwlmi-6121debed2.json
