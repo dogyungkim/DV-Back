@@ -42,8 +42,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     if (accessToken == null || jwtUtil.validateToken(accessToken)) {
       log.info("Access token is missing or invalid, attempting to renew with refresh token.");
-      if (refreshToken != null && jwtUtil.validateToken(refreshToken)) {
-        accessToken = tokenService.renewToken(response, refreshToken);
+      if (refreshToken != null && !jwtUtil.validateToken(refreshToken)) {
+        refreshToken = tokenService.renewRefreshToken(response, refreshToken);
+        if (jwtUtil.validateToken(refreshToken)) {
+          throw new IllegalStateException("Refresh Token has expired.");
+        }
+        accessToken = tokenService.renewAccessToken(response, refreshToken);
         log.info("Access token renewed successfully.");
       } else {
         log.warn("Refresh token is missing or invalid.");
