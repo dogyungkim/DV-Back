@@ -1,5 +1,7 @@
 package org.richardstallman.dvback.domain.post.service;
 
+import static org.richardstallman.dvback.common.constant.CommonConstants.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +18,14 @@ import org.richardstallman.dvback.domain.post.domain.PostDomain;
 import org.richardstallman.dvback.domain.post.domain.request.PostCreateRequestDto;
 import org.richardstallman.dvback.domain.post.domain.response.PostCreateResponseDto;
 import org.richardstallman.dvback.domain.post.repository.PostRepository;
+import org.richardstallman.dvback.domain.subscription.domain.SubscriptionDomain;
+import org.richardstallman.dvback.domain.subscription.repostiroy.SubscriptionRepository;
 import org.richardstallman.dvback.domain.user.domain.UserDomain;
 import org.richardstallman.dvback.domain.user.repository.UserRepository;
 import org.richardstallman.dvback.global.advice.exceptions.ApiException;
 import org.richardstallman.dvback.global.util.TimeUtil;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +39,7 @@ public class PostServiceImpl implements PostService {
   private final JobService jobService;
   private final InterviewService interviewService;
   private final EvaluationService evaluationService;
+  private final SubscriptionRepository subscriptionRepository;
 
   @Override
   public PostCreateResponseDto createPost(PostCreateRequestDto postCreateRequestDto, Long userId) {
@@ -111,5 +118,34 @@ public class PostServiceImpl implements PostService {
             () ->
                 new ApiException(
                     HttpStatus.NOT_FOUND, String.format("(%d): User Not Found", userId)));
+  }
+
+  @Override
+  public Slice<PostCreateResponseDto> getPostBySubscription(Long userId, Pageable pageable) {
+    List<SubscriptionDomain> subscriptionDomains = subscriptionRepository.findByUserId(userId);
+    List<Long> subscribedJobsIds =
+        subscriptionDomains.stream().map((e) -> e.getJob().getJobId()).toList();
+
+    Slice<PostDomain> postDomains =
+        postRepository.findByJobIdsPageable(subscribedJobsIds, pageable);
+
+    return postDomains.map(
+        (e) ->
+            postConverter.fromDomainToCreateResponseDto(
+                e,
+                getInterviewResponseDtoByDomain(e.getInterviewDomain()),
+                getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain())));
+  }
+
+  @Override
+  public Slice<PostCreateResponseDto> searchPostByContent(
+      Long userId, String keyword, Pageable pageable) {
+    Slice<PostDomain> postDomains = postRepository.searchByContentPageable(keyword, pageable);
+    return postDomains.map(
+        (e) ->
+            postConverter.fromDomainToCreateResponseDto(
+                e,
+                getInterviewResponseDtoByDomain(e.getInterviewDomain()),
+                getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain())));
   }
 }

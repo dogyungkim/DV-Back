@@ -5,6 +5,9 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.domain.post.converter.PostConverter;
 import org.richardstallman.dvback.domain.post.domain.PostDomain;
+import org.richardstallman.dvback.domain.post.entity.PostEntity;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -30,5 +33,18 @@ public class PostRepositoryImpl implements PostRepository {
   @Override
   public Optional<PostDomain> findByPostId(Long postId) {
     return postJpaRepository.findById(postId).map(postConverter::fromEntityToDomain);
+  }
+
+  @Override
+  public Slice<PostDomain> findByJobIdsPageable(List<Long> jobIds, Pageable pageable) {
+    Slice<PostEntity> postEntities = postJpaRepository.findSliceByJobJobIdIn(jobIds, pageable);
+    return postEntities.map(postConverter::fromEntityToDomain);
+  }
+
+  @Override
+  public Slice<PostDomain> searchByContentPageable(String keyword, Pageable pageable) {
+    Slice<PostEntity> postEntities =
+        postJpaRepository.findSliceByContentContainingIgnoreCase(keyword, pageable);
+    return postEntities.map(postConverter::fromEntityToDomain);
   }
 }

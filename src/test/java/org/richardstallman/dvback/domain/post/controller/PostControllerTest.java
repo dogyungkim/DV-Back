@@ -9,6 +9,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,6 +45,10 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockCookie;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -905,6 +910,384 @@ public class PostControllerTest {
                                 "data.posts[].evaluation.answerEvaluations[0].answerEvaluationScores[0].answerEvaluationType")
                             .type(JsonFieldType.STRING)
                             .description("답변 평가 유형(TEXT, VOICE, VIDEO"))
+                    .build())));
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("구독한 직무의 게시글 목록 페이징 조회 - 성공")
+  void get_subscribed_posts() throws Exception {
+    // given
+    Long userId = 1L;
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    List<PostCreateResponseDto> posts =
+        List.of(
+            new PostCreateResponseDto(
+                100L,
+                "BACK_END",
+                "백엔드",
+                "This is test post content 1.",
+                "https://s3.amazonaws.com/test-image1.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                101L,
+                "BACK_END",
+                "백엔드",
+                "This is test post content 2.",
+                "https://s3.amazonaws.com/test-image2.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                102L,
+                "BACK_END",
+                "백엔드",
+                "This is test post content 3.",
+                "https://s3.amazonaws.com/test-image3.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                103L,
+                "BACK_END",
+                "백엔드",
+                "This is test post content 4.",
+                "https://s3.amazonaws.com/test-image4.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                104L,
+                "BACK_END",
+                "백엔드",
+                "This is test post content 5.",
+                "https://s3.amazonaws.com/test-image5.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                105L,
+                "BACK_END",
+                "백엔드",
+                "This is test post content 6.",
+                "https://s3.amazonaws.com/test-image6.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                106L,
+                "BACK_END",
+                "백엔드",
+                "This is test post content 7.",
+                "https://s3.amazonaws.com/test-image7.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                107L,
+                "BACK_END",
+                "백엔드",
+                "This is test post content 8.",
+                "https://s3.amazonaws.com/test-image8.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                108L,
+                "BACK_END",
+                "백엔드",
+                "This is test post content 9.",
+                "https://s3.amazonaws.com/test-image9.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                109L,
+                "BACK_END",
+                "백엔드",
+                "This is test post content 10.",
+                "https://s3.amazonaws.com/test-image10.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()));
+
+    Slice<PostCreateResponseDto> slice = new SliceImpl<>(posts, PageRequest.of(0, 10), false);
+    when(postService.getPostBySubscription(eq(userId), any(Pageable.class))).thenReturn(slice);
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            RestDocumentationRequestBuilders.get("/post/subscription")
+                .param("page", "0")
+                .param("size", "10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .cookie(authCookie));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("code").value(200))
+        .andExpect(jsonPath("message").value("SUCCESS"))
+        .andExpect(jsonPath("data.posts").isArray())
+        .andExpect(jsonPath("data.posts[0].postId").value(100L))
+        .andExpect(jsonPath("data.currentPage").value(0))
+        .andExpect(jsonPath("data.isLastPage").value(true));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "구독한 직무의 게시글 목록 페이징 조회 - 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Post API")
+                    .summary("구독 게시글 API")
+                    .queryParameters(
+                        parameterWithName("page").description("페이지 번호 (0부터 시작)"),
+                        parameterWithName("size").description("페이지당 게시글 수"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.posts").type(JsonFieldType.ARRAY).description("게시글 목록"),
+                        fieldWithPath("data.posts[].postId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("게시글 식별자"),
+                        fieldWithPath("data.posts[].jobName")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 이름"),
+                        fieldWithPath("data.posts[].jobNameKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 이름 (한글)"),
+                        fieldWithPath("data.posts[].content")
+                            .type(JsonFieldType.STRING)
+                            .description("게시글 내용"),
+                        fieldWithPath("data.posts[].s3ImageUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("S3 이미지 URL"),
+                        fieldWithPath("data.posts[].postType")
+                            .type(JsonFieldType.STRING)
+                            .description("게시글 유형"),
+                        fieldWithPath("data.posts[].generatedAt")
+                            .type(JsonFieldType.STRING)
+                            .description("작성 일시"),
+                        fieldWithPath("data.posts[].interview")
+                            .type(JsonFieldType.NULL)
+                            .description("면접 정보"),
+                        fieldWithPath("data.posts[].evaluation")
+                            .type(JsonFieldType.NULL)
+                            .description("평가 정보"),
+                        fieldWithPath("data.currentPage")
+                            .type(JsonFieldType.NUMBER)
+                            .description("현재 페이지 번호"),
+                        fieldWithPath("data.isLastPage")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("마지막 페이지 여부"))
+                    .build())));
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("게시글 검색 - 성공")
+  void search_posts() throws Exception {
+    // given
+    Long userId = 1L;
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+    String keyword = "test";
+
+    List<PostCreateResponseDto> posts =
+        List.of(
+            new PostCreateResponseDto(
+                100L,
+                "BACK_END",
+                "백엔드",
+                "This is a test post about Spring Boot.",
+                "https://s3.amazonaws.com/test-image1.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                101L,
+                "BACK_END",
+                "백엔드",
+                "Testing JPA and database connections.",
+                "https://s3.amazonaws.com/test-image2.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                102L,
+                "BACK_END",
+                "백엔드",
+                "Unit test examples with JUnit and Mockito.",
+                "https://s3.amazonaws.com/test-image3.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                103L,
+                "BACK_END",
+                "백엔드",
+                "Integration testing best practices.",
+                "https://s3.amazonaws.com/test-image4.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                104L,
+                "BACK_END",
+                "백엔드",
+                "Test-driven development workflow.",
+                "https://s3.amazonaws.com/test-image5.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                105L,
+                "BACK_END",
+                "백엔드",
+                "Testing RESTful APIs with Spring Boot Test.",
+                "https://s3.amazonaws.com/test-image6.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                106L,
+                "BACK_END",
+                "백엔드",
+                "Performance testing using JMeter.",
+                "https://s3.amazonaws.com/test-image7.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                107L,
+                "BACK_END",
+                "백엔드",
+                "End-to-end testing strategies.",
+                "https://s3.amazonaws.com/test-image8.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                108L,
+                "BACK_END",
+                "백엔드",
+                "Test coverage analysis with JaCoCo.",
+                "https://s3.amazonaws.com/test-image9.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()),
+            new PostCreateResponseDto(
+                109L,
+                "BACK_END",
+                "백엔드",
+                "Automated testing pipeline setup.",
+                "https://s3.amazonaws.com/test-image10.jpg",
+                null,
+                null,
+                PostType.POST,
+                LocalDateTime.now()));
+
+    Slice<PostCreateResponseDto> slice = new SliceImpl<>(posts, PageRequest.of(0, 10), true);
+    when(postService.searchPostByContent(eq(userId), eq(keyword), any(Pageable.class)))
+        .thenReturn(slice);
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            RestDocumentationRequestBuilders.get("/post/search")
+                .param("keyword", keyword)
+                .param("page", "0")
+                .param("size", "10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .cookie(authCookie));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("code").value(200))
+        .andExpect(jsonPath("message").value("SUCCESS"))
+        .andExpect(jsonPath("data.posts").isArray())
+        .andExpect(jsonPath("data.posts[0].postId").value(100L))
+        .andExpect(jsonPath("data.currentPage").value(0))
+        .andExpect(jsonPath("data.isLastPage").value(false));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "게시글 검색 - 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Post API")
+                    .summary("게시글 검색 API")
+                    .queryParameters(
+                        parameterWithName("keyword").description("검색 키워드"),
+                        parameterWithName("page").description("페이지 번호 (0부터 시작)"),
+                        parameterWithName("size").description("페이지당 게시글 수"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.posts").type(JsonFieldType.ARRAY).description("게시글 목록"),
+                        fieldWithPath("data.posts[].postId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("게시글 식별자"),
+                        fieldWithPath("data.posts[].jobName")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 이름"),
+                        fieldWithPath("data.posts[].jobNameKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 이름 (한글)"),
+                        fieldWithPath("data.posts[].content")
+                            .type(JsonFieldType.STRING)
+                            .description("게시글 내용"),
+                        fieldWithPath("data.posts[].s3ImageUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("S3 이미지 URL"),
+                        fieldWithPath("data.posts[].postType")
+                            .type(JsonFieldType.STRING)
+                            .description("게시글 유형"),
+                        fieldWithPath("data.posts[].generatedAt")
+                            .type(JsonFieldType.STRING)
+                            .description("작성 일시"),
+                        fieldWithPath("data.posts[].interview")
+                            .type(JsonFieldType.NULL)
+                            .description("면접 정보"),
+                        fieldWithPath("data.posts[].evaluation")
+                            .type(JsonFieldType.NULL)
+                            .description("평가 정보"),
+                        fieldWithPath("data.currentPage")
+                            .type(JsonFieldType.NUMBER)
+                            .description("현재 페이지 번호"),
+                        fieldWithPath("data.isLastPage")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("마지막 페이지 여부"))
                     .build())));
   }
 }
