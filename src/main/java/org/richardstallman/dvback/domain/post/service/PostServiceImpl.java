@@ -134,7 +134,7 @@ public class PostServiceImpl implements PostService {
             postConverter.fromDomainToCreateResponseDto(
                 e,
                 getInterviewResponseDtoByDomain(e.getInterviewDomain()),
-                getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain(), userId)));
+                getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain())));
   }
 
   @Override
@@ -146,6 +146,6 @@ public class PostServiceImpl implements PostService {
             postConverter.fromDomainToCreateResponseDto(
                 e,
                 getInterviewResponseDtoByDomain(e.getInterviewDomain()),
-                getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain(), userId)));
+                getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain())));
   }
 }
