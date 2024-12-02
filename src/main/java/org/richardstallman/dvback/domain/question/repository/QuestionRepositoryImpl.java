@@ -33,4 +33,13 @@ public class QuestionRepositoryImpl implements QuestionRepository {
         .map(questionConverter::fromEntityToDomain)
         .toList();
   }
+
+  @Override
+  public List<QuestionDomain> saveAll(List<QuestionDomain> questionDomains) {
+    return questionJpaRepository
+        .saveAll(questionDomains.stream().map(questionConverter::fromDomainToEntity).toList())
+        .stream()
+        .map(questionConverter::fromEntityToDomain)
+        .toList();
+  }
 }

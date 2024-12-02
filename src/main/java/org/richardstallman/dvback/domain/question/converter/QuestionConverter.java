@@ -8,9 +8,9 @@ import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewQuestionResponseDto;
 import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
-import org.richardstallman.dvback.domain.question.domain.external.QuestionExternalDomain;
 import org.richardstallman.dvback.domain.question.domain.external.request.QuestionExternalRequestDto;
-import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
+import org.richardstallman.dvback.domain.question.domain.request.QuestionRequestListDto;
+import org.richardstallman.dvback.domain.question.domain.request.QuestionResultDto;
 import org.richardstallman.dvback.domain.question.domain.response.QuestionResponseDto;
 import org.richardstallman.dvback.domain.question.entity.QuestionEntity;
 import org.springframework.stereotype.Component;
@@ -48,31 +48,34 @@ public class QuestionConverter {
         .build();
   }
 
-  public QuestionDomain fromQuestionExternalDomainToDomain(
-      QuestionExternalDomain questionExternalDomain, InterviewDomain interviewDomain) {
-    return QuestionDomain.builder()
-        .interviewDomain(interviewDomain)
-        .questionText(questionExternalDomain.getQuestion().getQuestionText())
-        .s3AudioUrl(questionExternalDomain.getQuestion().getS3AudioUrl())
-        .s3VideoUrl(questionExternalDomain.getQuestion().getS3VideoUrl())
-        .questionExcerpt(questionExternalDomain.getQuestionExcerpt())
-        .questionIntent(questionExternalDomain.getQuestionIntent())
-        .keyTerms(questionExternalDomain.getKeyTerms())
-        .build();
-  }
-
   public QuestionExternalRequestDto reactRequestToPythonRequest(
-      Long userId, QuestionInitialRequestDto questionInitialRequestDto, String jobName) {
+      Long userId, QuestionRequestListDto questionRequestListDto, String jobName) {
     return new QuestionExternalRequestDto(
         userId,
-        questionInitialRequestDto.interviewMode(),
-        questionInitialRequestDto.interviewType(),
-        questionInitialRequestDto.interviewMethod(),
-        questionInitialRequestDto.questionCount(),
+        questionRequestListDto.interviewMode(),
+        questionRequestListDto.interviewType(),
+        questionRequestListDto.interviewMethod(),
+        questionRequestListDto.questionCount(),
         jobName,
-        questionInitialRequestDto.files().stream()
+        questionRequestListDto.files().stream()
             .map(FileRequestDto::getFilePath)
             .toArray(String[]::new));
+  }
+
+  public QuestionResponseDto generateResponseDto(
+      InterviewQuestionResponseDto interviewQuestionResponseDto,
+      QuestionDomain firstQuestion,
+      QuestionDomain secondQuestion,
+      Boolean hasNext) {
+    return new QuestionResponseDto(
+        interviewQuestionResponseDto,
+        firstQuestion == null ? null : firstQuestion.getQuestionId(),
+        firstQuestion == null ? null : firstQuestion.getQuestionText(),
+        firstQuestion == null ? null : firstQuestion.getS3AudioUrl(),
+        secondQuestion == null ? null : secondQuestion.getQuestionId(),
+        secondQuestion == null ? null : secondQuestion.getQuestionText(),
+        secondQuestion == null ? null : secondQuestion.getS3AudioUrl(),
+        hasNext);
   }
 
   public QuestionResponseDto fromQuestionExternalDomainToQuestionResponseDto(
@@ -102,5 +105,18 @@ public class QuestionConverter {
         questionDomain.getQuestionExcerpt(),
         questionDomain.getQuestionIntent(),
         questionDomain.getKeyTerms());
+  }
+
+  public QuestionDomain fromResultDtoToDomain(
+      QuestionResultDto questionResultDto, InterviewDomain interviewDomain) {
+    return QuestionDomain.builder()
+        .interviewDomain(interviewDomain)
+        .questionText(questionResultDto.question().questionText())
+        .s3AudioUrl(questionResultDto.question().s3AudioUrl())
+        .s3VideoUrl(questionResultDto.question().s3VideoUrl())
+        .questionExcerpt(questionResultDto.questionExcerpt())
+        .questionIntent(questionResultDto.questionIntent())
+        .keyTerms(questionResultDto.keyTerms())
+        .build();
   }
 }
