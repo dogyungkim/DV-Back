@@ -20,6 +20,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants;
 import org.richardstallman.dvback.domain.ticket.domain.TicketUserCountInfoDto;
 import org.richardstallman.dvback.domain.ticket.service.TicketService;
 import org.richardstallman.dvback.domain.user.domain.request.UserRequestDto;
+import org.richardstallman.dvback.domain.user.domain.request.UserUpdateRequestDto;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.richardstallman.dvback.domain.user.service.UserService;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
@@ -52,8 +53,8 @@ public class UserControllerTest {
 
   @Test
   @WithMockUser
-  @DisplayName("유저 정보 업데이트 - 성공")
-  void update_user_info_success() throws Exception {
+  @DisplayName("유저 정보 생성 - 성공")
+  void create_user_info_success() throws Exception {
     // given
     UserRequestDto userRequestDto =
         new UserRequestDto(
@@ -79,7 +80,7 @@ public class UserControllerTest {
             CommonConstants.Gender.WOMAN,
             LocalDate.of(1990, 1, 1));
 
-    when(userService.updateUserInfo(any(Long.class), any(UserRequestDto.class)))
+    when(userService.createUserInfo(any(Long.class), any(UserRequestDto.class)))
         .thenReturn(userResponseDto);
 
     String accessToken = jwtUtil.generateAccessToken(1L);
@@ -105,7 +106,7 @@ public class UserControllerTest {
     // restdocs
     resultActions.andDo(
         document(
-            "유저 정보 업데이트 - 성공",
+            "유저 정보 생성 - 성공",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
             resource(
@@ -116,6 +117,89 @@ public class UserControllerTest {
                         fieldWithPath("s3ProfileImageObjectKey").description("프로필 이미지 오브젝트 키"),
                         fieldWithPath("name").description("유저 이름"),
                         fieldWithPath("username").description("유저네임"),
+                        fieldWithPath("nickname").description("유저 닉네임"),
+                        fieldWithPath("birthdate").description("생년월일"),
+                        fieldWithPath("gender").description("성별"))
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data.userId").description("유저 ID"),
+                        fieldWithPath("data.socialId").description("소셜 ID"),
+                        fieldWithPath("data.email").description("이메일"),
+                        fieldWithPath("data.username").description("유저네임"),
+                        fieldWithPath("data.name").description("유저 이름"),
+                        fieldWithPath("data.nickname").description("유저 닉네임"),
+                        fieldWithPath("data.s3ProfileImageUrl").description("프로필 이미지 URL"),
+                        fieldWithPath("data.leave").description("탈퇴 여부"),
+                        fieldWithPath("data.gender").description("성별"),
+                        fieldWithPath("data.birthdate").description("생년월일"))
+                    .build())));
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("유저 정보 수정 - 성공")
+  void update_user_info_success() throws Exception {
+    // given
+    UserUpdateRequestDto userUpdateRequestDto =
+        new UserUpdateRequestDto(
+            "https://example.com/image.jpg",
+            "김수현",
+            "ddodam",
+            LocalDate.of(1990, 1, 1),
+            CommonConstants.Gender.WOMAN);
+
+    String userInfoJson = objectMapper.writeValueAsString(userUpdateRequestDto);
+
+    UserResponseDto userResponseDto =
+        new UserResponseDto(
+            1L,
+            "12345",
+            "example@test.com",
+            "suhyun",
+            "김수현",
+            "ddodam",
+            "https://example.com/image.jpg",
+            false,
+            CommonConstants.Gender.WOMAN,
+            LocalDate.of(1990, 1, 1));
+
+    when(userService.updateUserInfo(any(Long.class), any(UserUpdateRequestDto.class)))
+        .thenReturn(userResponseDto);
+
+    String accessToken = jwtUtil.generateAccessToken(1L);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            put("/user/info")
+                .cookie(authCookie)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userInfoJson));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code").value(200))
+        .andExpect(jsonPath("$.message").value("SUCCESS"))
+        .andExpect(jsonPath("$.data.userId").value(1L))
+        .andExpect(jsonPath("$.data.nickname").value("ddodam"))
+        .andExpect(jsonPath("$.data.email").value("example@test.com"));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "유저 정보 수정 - 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("User API")
+                    .summary("유저 API")
+                    .requestFields(
+                        fieldWithPath("s3ProfileImageObjectKey").description("프로필 이미지 오브젝트 키"),
+                        fieldWithPath("name").description("유저 이름"),
                         fieldWithPath("nickname").description("유저 닉네임"),
                         fieldWithPath("birthdate").description("생년월일"),
                         fieldWithPath("gender").description("성별"))
