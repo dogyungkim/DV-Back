@@ -59,7 +59,17 @@ public class SecurityConfig {
         .httpBasic(AbstractHttpConfigurer::disable)
         .formLogin(AbstractHttpConfigurer::disable)
         .logout(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        .authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers(
+                        "/docs/**",
+                        "favicon.ico",
+                        "/evaluation/completion",
+                        "/question/completion",
+                        "/answer/evaluations")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .exceptionHandling(ex -> ex.authenticationEntryPoint(new Http403ForbiddenEntryPoint()))
         .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
         .oauth2Login(

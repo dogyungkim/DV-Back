@@ -24,6 +24,31 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   private final JwtUtil jwtUtil;
   private final TokenService tokenService;
 
+  private static final String[] EXCLUDED_PATHS = {
+    "/docs/**",
+    "favicon.ico",
+    "/evaluation/completion",
+    "/question/completion",
+    "/answer/evaluations"
+  };
+
+  @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) {
+    String requestPath = request.getRequestURI();
+    log.info("Request path: {}", requestPath);
+
+    return Arrays.stream(EXCLUDED_PATHS)
+        .anyMatch(excludedPath -> matchPath(requestPath, excludedPath));
+  }
+
+  private boolean matchPath(String requestPath, String excludedPath) {
+    if (excludedPath.endsWith("/**")) {
+      String prefix = excludedPath.substring(0, excludedPath.length() - 2);
+      return requestPath.startsWith(prefix);
+    }
+    return requestPath.equals(excludedPath);
+  }
+
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -44,9 +69,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
       log.info("Access token is missing or invalid, attempting to renew with refresh token.");
       if (refreshToken != null && !jwtUtil.validateToken(refreshToken)) {
         refreshToken = tokenService.renewRefreshToken(response, refreshToken);
-        if (jwtUtil.validateToken(refreshToken)) {
-          throw new IllegalStateException("Refresh Token has expired.");
-        }
         accessToken = tokenService.renewAccessToken(response, refreshToken);
         log.info("Access token renewed successfully.");
       } else {
