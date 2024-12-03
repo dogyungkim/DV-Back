@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.domain.question.converter;
 
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionRequestDto;
 import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
@@ -57,9 +58,11 @@ public class QuestionConverter {
         questionRequestListDto.interviewMethod(),
         questionRequestListDto.questionCount(),
         jobName,
-        questionRequestListDto.files().stream()
-            .map(FileRequestDto::getFilePath)
-            .toArray(String[]::new));
+        questionRequestListDto.interviewMode() == InterviewMode.REAL
+            ? questionRequestListDto.files().stream()
+                .map(FileRequestDto::getFilePath)
+                .toArray(String[]::new)
+            : null);
   }
 
   public QuestionResponseDto generateResponseDto(
