@@ -491,6 +491,7 @@ public class InterviewControllerTest {
   }
 
   @Test
+  @WithMockUser
   @DisplayName("잘못된 데이터 형식 - 400 Bad Request")
   void create_interview_with_invalid_data_format() throws Exception {
     // given

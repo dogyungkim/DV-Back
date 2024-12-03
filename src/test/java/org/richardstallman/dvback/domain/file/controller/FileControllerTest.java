@@ -54,6 +54,7 @@ public class FileControllerTest {
   @MockBean private CoverLetterService coverLetterService;
 
   @Test
+  @WithMockUser
   public void testMyEndpoint() throws Exception {
     mockMvc.perform(get("/ping-pong")).andExpect(status().isOk()).andDo(document("ping-pong"));
   }

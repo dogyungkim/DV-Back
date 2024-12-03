@@ -24,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -37,6 +38,7 @@ public class PointControllerTest {
   @MockBean private PointService pointService;
 
   @Test
+  @WithMockUser
   @DisplayName("포인트 조회 테스트")
   void getPointByUserIdTest() throws Exception {
     // given
