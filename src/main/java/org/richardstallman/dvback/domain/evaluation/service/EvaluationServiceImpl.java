@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.client.firebase.service.FirebaseMessagingService;
 import org.richardstallman.dvback.client.python.PythonService;
 import org.richardstallman.dvback.common.constant.CommonConstants.EvaluationCriteria;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
 import org.richardstallman.dvback.domain.answer.domain.request.evaluation.AnswerEvaluationDto;
@@ -121,17 +122,34 @@ public class EvaluationServiceImpl implements EvaluationService {
       OverallEvaluationResultDto overallEvaluationResultDto) {
     Map<EvaluationCriteria, OverallEvaluationResultCriteriaDto> criteriaMap =
         Map.of(
-            EvaluationCriteria.JOB_FIT, overallEvaluationResultDto.textOverall().jobFit(),
+            EvaluationCriteria.JOB_FIT,
+            overallEvaluationResultDto.textOverall().jobFit(),
             EvaluationCriteria.GROWTH_POTENTIAL,
-                overallEvaluationResultDto.textOverall().growthPotential(),
+            overallEvaluationResultDto.textOverall().growthPotential(),
             EvaluationCriteria.WORK_ATTITUDE,
-                overallEvaluationResultDto.textOverall().workAttitude(),
+            overallEvaluationResultDto.textOverall().workAttitude(),
             EvaluationCriteria.TECHNICAL_DEPTH,
-                overallEvaluationResultDto.textOverall().technicalDepth(),
-            EvaluationCriteria.FLUENCY, overallEvaluationResultDto.voiceOverall().fluency(),
-            EvaluationCriteria.CLARITY, overallEvaluationResultDto.voiceOverall().clarity(),
-            EvaluationCriteria.WORD_REPETITION,
-                overallEvaluationResultDto.voiceOverall().wordRepetition());
+            overallEvaluationResultDto.textOverall().technicalDepth());
+
+    if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
+        == InterviewMethod.VOICE) {
+      criteriaMap =
+          Map.of(
+              EvaluationCriteria.JOB_FIT,
+              overallEvaluationResultDto.textOverall().jobFit(),
+              EvaluationCriteria.GROWTH_POTENTIAL,
+              overallEvaluationResultDto.textOverall().growthPotential(),
+              EvaluationCriteria.WORK_ATTITUDE,
+              overallEvaluationResultDto.textOverall().workAttitude(),
+              EvaluationCriteria.TECHNICAL_DEPTH,
+              overallEvaluationResultDto.textOverall().technicalDepth(),
+              EvaluationCriteria.FLUENCY,
+              overallEvaluationResultDto.voiceOverall().fluency(),
+              EvaluationCriteria.CLARITY,
+              overallEvaluationResultDto.voiceOverall().clarity(),
+              EvaluationCriteria.WORD_REPETITION,
+              overallEvaluationResultDto.voiceOverall().wordRepetition());
+    }
 
     List<EvaluationCriteriaDomain> criteriaDomains =
         criteriaMap.entrySet().stream()
