@@ -49,7 +49,7 @@ public class FirebaseConfig {
                 "type", "service_account",
                 "project_id", projectId,
                 "private_key_id", privateKeyId,
-                "private_key", privateKey,
+                "private_key", privateKey.replace("\\n", "\n"),
                 "client_email", clientEmail,
                 "client_id", clientId,
                 "auth_uri", authUri,
