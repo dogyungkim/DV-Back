@@ -7,10 +7,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.global.jwt.domain.response.JwtClaimResponseDto;
 import org.richardstallman.dvback.global.oauth.service.TokenService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -21,24 +23,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
+  @Value("#{T(java.util.Arrays).asList('${security.excluded-paths}'.split(','))}")
+  private List<String> excludedPaths;
+
   private final JwtUtil jwtUtil;
   private final TokenService tokenService;
-
-  private static final String[] EXCLUDED_PATHS = {
-    "/docs/**",
-    "favicon.ico",
-    "/evaluation/completion",
-    "/question/completion",
-    "/answer/evaluations"
-  };
 
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
     String requestPath = request.getRequestURI();
     log.info("Request path: {}", requestPath);
 
-    return Arrays.stream(EXCLUDED_PATHS)
-        .anyMatch(excludedPath -> matchPath(requestPath, excludedPath));
+    return excludedPaths.stream().anyMatch(excludedPath -> matchPath(requestPath, excludedPath));
   }
 
   private boolean matchPath(String requestPath, String excludedPath) {
