@@ -11,4 +11,6 @@ public interface QuestionRepository {
   Optional<QuestionDomain> findById(Long questionId);
 
   List<QuestionDomain> findQuestionsByInterviewId(Long interviewId);
+
+  List<QuestionDomain> saveAll(List<QuestionDomain> questionDomains);
 }

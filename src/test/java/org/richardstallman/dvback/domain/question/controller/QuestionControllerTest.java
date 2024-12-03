@@ -28,8 +28,12 @@ import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousReq
 import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewQuestionResponseDto;
 import org.richardstallman.dvback.domain.job.domain.JobDomain;
+import org.richardstallman.dvback.domain.question.domain.request.QuestionDto;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionInitialRequestDto;
 import org.richardstallman.dvback.domain.question.domain.request.QuestionNextRequestDto;
+import org.richardstallman.dvback.domain.question.domain.request.QuestionRequestListDto;
+import org.richardstallman.dvback.domain.question.domain.request.QuestionResultDto;
+import org.richardstallman.dvback.domain.question.domain.request.QuestionResultRequestDto;
 import org.richardstallman.dvback.domain.question.domain.response.QuestionResponseDto;
 import org.richardstallman.dvback.domain.question.service.QuestionService;
 import org.richardstallman.dvback.global.jwt.JwtUtil;
@@ -62,13 +66,13 @@ public class QuestionControllerTest {
 
   @Test
   @WithMockUser
-  @DisplayName("질문 생성 - 최초 요청(모의 면접 성공) 테스트")
-  void get_question_by_request_python_server_general() throws Exception {
+  @DisplayName("질문 목록 생성 요청(모의 면접 성공) 테스트")
+  void request_question_list_general() throws Exception {
     // given
     Long userId = 1L;
     String accessToken = jwtUtil.generateAccessToken(userId);
-    QuestionInitialRequestDto questionInitialRequestDto =
-        new QuestionInitialRequestDto(
+    QuestionRequestListDto questionRequestListDto =
+        new QuestionRequestListDto(
             1L,
             "면접 제목",
             InterviewStatus.FILE_UPLOADED,
@@ -78,6 +82,151 @@ public class QuestionControllerTest {
             3,
             new ArrayList<>(),
             1L);
+    String content = objectMapper.writeValueAsString(questionRequestListDto);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+    ResultActions resultActions =
+        mockMvc.perform(
+            post("/question")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content)
+                .cookie(authCookie));
+
+    // then
+    resultActions.andExpect(status().isAccepted());
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "질문 목록 생성 요청(모의 면접 성공) 테스트",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Question API")
+                    .summary("질문 API")
+                    .requestFields(
+                        fieldWithPath("interviewId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("interviewTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 제목"),
+                        fieldWithPath("interviewStatus")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 상태"),
+                        fieldWithPath("interviewType")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 유형"),
+                        fieldWithPath("interviewMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 방식"),
+                        fieldWithPath("interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 모드"),
+                        fieldWithPath("questionCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description(
+                                "질문 개수: 모의(3개 고정. 다르게 보내줘도 3으로 저장됨.), 실전(5 / 10 / 15 중 유저가 선택)"),
+                        fieldWithPath("files")
+                            .type(JsonFieldType.ARRAY)
+                            .description("모의 면접이므로 파일 정보 없어야 함."),
+                        fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").description("응답 데이터"))
+                    .build())));
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("질문 목록 생성 요청(실전 면접 성공) 테스트")
+  void request_question_list_real() throws Exception {
+    // given
+    Long userId = 1L;
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    FileType fileType = FileType.COVER_LETTER;
+    String file = "cover_letter_s3_url/file_name";
+    List<FileRequestDto> files = new ArrayList<>();
+    files.add(new FileRequestDto(fileType, file));
+    QuestionRequestListDto questionRequestListDto =
+        new QuestionRequestListDto(
+            1L,
+            "면접 제목",
+            InterviewStatus.FILE_UPLOADED,
+            InterviewType.TECHNICAL,
+            InterviewMethod.CHAT,
+            InterviewMode.GENERAL,
+            3,
+            files,
+            1L);
+    String content = objectMapper.writeValueAsString(questionRequestListDto);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+    ResultActions resultActions =
+        mockMvc.perform(
+            post("/question")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content)
+                .cookie(authCookie));
+
+    // then
+    resultActions.andExpect(status().isAccepted());
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "질문 목록 생성 요청(실전 면접 성공) 테스트",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Question API")
+                    .summary("질문 API")
+                    .requestFields(
+                        fieldWithPath("interviewId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("interviewTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 제목"),
+                        fieldWithPath("interviewStatus")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 상태"),
+                        fieldWithPath("interviewType")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 유형"),
+                        fieldWithPath("interviewMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 방식"),
+                        fieldWithPath("interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 모드"),
+                        fieldWithPath("questionCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description(
+                                "질문 개수: 모의(3개 고정. 다르게 보내줘도 3으로 저장됨.), 실전(5 / 10 / 15 중 유저가 선택)"),
+                        fieldWithPath("files[0].filePath")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 s3 url"),
+                        fieldWithPath("files[0].type")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 유형: COVER_LETTER(자소서), RESUME(이력서), PORTFOLIO(포트폴리오)"),
+                        fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").description("응답 데이터"))
+                    .build())));
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("질문 요청 - 최초 요청(모의 면접 성공) 테스트")
+  void get_question_by_request_python_server_general() throws Exception {
+    // given
+    Long userId = 1L;
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    QuestionInitialRequestDto questionInitialRequestDto = new QuestionInitialRequestDto(1L);
     String content = objectMapper.writeValueAsString(questionInitialRequestDto);
 
     MockCookie authCookie = new MockCookie("access_token", accessToken);
@@ -137,7 +286,7 @@ public class QuestionControllerTest {
     // restdocs
     resultActions.andDo(
         document(
-            "질문 생성 - 최초 요청(모의 면접 성공)",
+            "질문 요청 - 최초 요청(모의 면접 성공)",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
             resource(
@@ -147,30 +296,7 @@ public class QuestionControllerTest {
                     .requestFields(
                         fieldWithPath("interviewId")
                             .type(JsonFieldType.NUMBER)
-                            .description("면접 식별자"),
-                        fieldWithPath("interviewTitle")
-                            .type(JsonFieldType.STRING)
-                            .description("면접 제목"),
-                        fieldWithPath("interviewStatus")
-                            .type(JsonFieldType.STRING)
-                            .description("면접 상태"),
-                        fieldWithPath("interviewType")
-                            .type(JsonFieldType.STRING)
-                            .description("면접 유형"),
-                        fieldWithPath("interviewMethod")
-                            .type(JsonFieldType.STRING)
-                            .description("면접 방식"),
-                        fieldWithPath("interviewMode")
-                            .type(JsonFieldType.STRING)
-                            .description("면접 모드"),
-                        fieldWithPath("questionCount")
-                            .type(JsonFieldType.NUMBER)
-                            .description(
-                                "질문 개수: 모의(3개 고정. 다르게 보내줘도 3으로 저장됨.), 실전(5 / 10 / 15 중 유저가 선택)"),
-                        fieldWithPath("files")
-                            .type(JsonFieldType.ARRAY)
-                            .description("모의 면접이므로 파일 정보 없어야 함."),
-                        fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자"))
+                            .description("면접 식별자"))
                     .responseFields(
                         fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
@@ -233,7 +359,7 @@ public class QuestionControllerTest {
 
   @Test
   @WithMockUser
-  @DisplayName("질문 생성 - 최초 요청(실전 면접 성공) 테스트")
+  @DisplayName("질문 요청 - 최초 요청(실전 면접 성공) 테스트")
   void get_question_by_request_python_server_real() throws Exception {
     // given
     Long userId = 1L;
@@ -242,17 +368,7 @@ public class QuestionControllerTest {
     String file = "cover_letter_s3_url/file_name";
     List<FileRequestDto> files = new ArrayList<>();
     files.add(new FileRequestDto(fileType, file));
-    QuestionInitialRequestDto questionInitialRequestDto =
-        new QuestionInitialRequestDto(
-            1L,
-            "면접 제목",
-            InterviewStatus.FILE_UPLOADED,
-            InterviewType.TECHNICAL,
-            InterviewMethod.CHAT,
-            InterviewMode.REAL,
-            5,
-            files,
-            1L);
+    QuestionInitialRequestDto questionInitialRequestDto = new QuestionInitialRequestDto(1L);
     String content = objectMapper.writeValueAsString(questionInitialRequestDto);
 
     MockCookie authCookie = new MockCookie("access_token", accessToken);
@@ -312,7 +428,7 @@ public class QuestionControllerTest {
     // restdocs
     resultActions.andDo(
         document(
-            "질문 생성 - 최초 요청(실전 면접 성공)",
+            "질문 요청 - 최초 요청(실전 면접 성공)",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint()),
             resource(
@@ -322,33 +438,7 @@ public class QuestionControllerTest {
                     .requestFields(
                         fieldWithPath("interviewId")
                             .type(JsonFieldType.NUMBER)
-                            .description("면접 식별자"),
-                        fieldWithPath("interviewTitle")
-                            .type(JsonFieldType.STRING)
-                            .description("면접 제목"),
-                        fieldWithPath("interviewStatus")
-                            .type(JsonFieldType.STRING)
-                            .description("면접 상태"),
-                        fieldWithPath("interviewType")
-                            .type(JsonFieldType.STRING)
-                            .description("면접 유형"),
-                        fieldWithPath("interviewMethod")
-                            .type(JsonFieldType.STRING)
-                            .description("면접 방식"),
-                        fieldWithPath("interviewMode")
-                            .type(JsonFieldType.STRING)
-                            .description("면접 모드"),
-                        fieldWithPath("questionCount")
-                            .type(JsonFieldType.NUMBER)
-                            .description(
-                                "질문 개수: 모의(3개 고정. 다르게 보내줘도 3으로 저장됨.), 실전(5 / 10 / 15 중 유저가 선택)"),
-                        fieldWithPath("files[0].filePath")
-                            .type(JsonFieldType.STRING)
-                            .description("파일 s3 url"),
-                        fieldWithPath("files[0].type")
-                            .type(JsonFieldType.STRING)
-                            .description("파일 유형: COVER_LETTER(자소서), RESUME(이력서), PORTFOLIO(포트폴리오)"),
-                        fieldWithPath("jobId").type(JsonFieldType.NUMBER).description("직무 식별자"))
+                            .description("면접 식별자"))
                     .responseFields(
                         fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
@@ -557,6 +647,97 @@ public class QuestionControllerTest {
                         fieldWithPath("data.hasNext")
                             .type(JsonFieldType.BOOLEAN)
                             .description("다음 질문 존재 여부"))
+                    .build())));
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("파이썬 요청 - 질문 목록 생성 완료 - 성공")
+  void save_question_list() throws Exception {
+    // given
+    Long userId = 1L;
+    Long interviewId = 1L;
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    List<QuestionResultDto> list = new ArrayList<>();
+    QuestionResultDto questionResultDto1 =
+        new QuestionResultDto(
+            1L,
+            new QuestionDto("question_text", "s3_audio_url", null),
+            "question_excerpt",
+            "question_intent",
+            new ArrayList<>());
+    QuestionResultDto questionResultDto2 =
+        new QuestionResultDto(
+            2L,
+            new QuestionDto("question_text", "s3_audio_url", null),
+            "question_excerpt",
+            "question_intent",
+            new ArrayList<>());
+    QuestionResultDto questionResultDto3 =
+        new QuestionResultDto(
+            3L,
+            new QuestionDto("question_text", "s3_audio_url", null),
+            "question_excerpt",
+            "question_intent",
+            new ArrayList<>());
+    list.add(questionResultDto1);
+    list.add(questionResultDto2);
+    list.add(questionResultDto3);
+    QuestionResultRequestDto questionResultRequestDto =
+        new QuestionResultRequestDto(userId, interviewId, list);
+
+    String content = objectMapper.writeValueAsString(questionResultRequestDto);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+    ResultActions resultActions =
+        mockMvc.perform(
+            post("/question/completion")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content)
+                .cookie(authCookie));
+
+    // then
+    resultActions.andExpect(status().isOk());
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "파이썬 요청 - 질문 목록 생성 완료 - 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Question API")
+                    .summary("질문 API")
+                    .requestFields(
+                        fieldWithPath("user_id").type(JsonFieldType.NUMBER).description("유저 식별자"),
+                        fieldWithPath("interview_id")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("questions[].question_id")
+                            .type(JsonFieldType.NUMBER)
+                            .description("질문 식별자"),
+                        fieldWithPath("questions[].question.question_text")
+                            .type(JsonFieldType.STRING)
+                            .description("질문 내용"),
+                        fieldWithPath("questions[].question.s3_audio_url")
+                            .type(JsonFieldType.STRING)
+                            .description("질문 url"),
+                        fieldWithPath("questions[].question.s3_video_url")
+                            .type(JsonFieldType.NULL)
+                            .description("질문 url"),
+                        fieldWithPath("questions[].question_excerpt")
+                            .type(JsonFieldType.STRING)
+                            .description("질문 출처"),
+                        fieldWithPath("questions[].question_intent")
+                            .type(JsonFieldType.STRING)
+                            .description("질문 의도"),
+                        fieldWithPath("questions[].key_terms")
+                            .type(JsonFieldType.ARRAY)
+                            .description("핵심 단어"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data").description("응답 데이터"))
                     .build())));
   }
 }

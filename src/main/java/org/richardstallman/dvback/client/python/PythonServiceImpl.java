@@ -8,7 +8,6 @@ import org.richardstallman.dvback.domain.evaluation.domain.external.request.Eval
 import org.richardstallman.dvback.domain.evaluation.domain.external.response.EvaluationExternalResponseDto;
 import org.richardstallman.dvback.domain.question.domain.external.request.QuestionExternalRequestDto;
 import org.richardstallman.dvback.domain.question.domain.external.request.QuestionExternalSttRequestDto;
-import org.richardstallman.dvback.domain.question.domain.external.response.QuestionExternalResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -37,8 +36,7 @@ public class PythonServiceImpl implements PythonService {
   private String pythonServerEvaluationPath;
 
   @Override
-  public QuestionExternalResponseDto getInterviewQuestions(
-      QuestionExternalRequestDto requestDto, Long interviewId) {
+  public void requestQuestionList(QuestionExternalRequestDto requestDto, Long interviewId) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -50,20 +48,17 @@ public class PythonServiceImpl implements PythonService {
             .build()
             .toUri();
 
-    ResponseEntity<QuestionExternalResponseDto> response =
-        restTemplate.exchange(
-            uri, HttpMethod.POST, requestEntity, QuestionExternalResponseDto.class);
+    ResponseEntity<Object> response =
+        restTemplate.exchange(uri, HttpMethod.POST, requestEntity, Object.class);
 
-    if (response.getStatusCode().is2xxSuccessful()) {
-      return response.getBody();
-    } else {
-      throw new RuntimeException("Failed to connect to Python server");
+    if (!response.getStatusCode().is2xxSuccessful()) {
+      throw new RuntimeException(
+          "Failed to connect to Python server when Send Interview Info For Question List");
     }
   }
 
   @Override
-  public EvaluationExternalResponseDto getOverallEvaluations(
-      EvaluationExternalRequestDto requestDto) {
+  public void getOverallEvaluations(EvaluationExternalRequestDto requestDto) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -80,7 +75,7 @@ public class PythonServiceImpl implements PythonService {
             uri, HttpMethod.POST, requestEntity, EvaluationExternalResponseDto.class);
 
     if (response.getStatusCode().is2xxSuccessful()) {
-      return response.getBody();
+      response.getBody();
     } else {
       throw new RuntimeException("Failed to connect to Python server");
     }
