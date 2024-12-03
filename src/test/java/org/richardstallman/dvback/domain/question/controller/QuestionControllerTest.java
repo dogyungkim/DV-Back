@@ -500,6 +500,7 @@ public class QuestionControllerTest {
   }
 
   @Test
+  @WithMockUser
   @DisplayName("다음 질문 요청(텍스트 성공) 테스트")
   void get_next_question_test() throws Exception {
     // given

@@ -30,6 +30,9 @@ public class SecurityConfig {
   @Value("${cors.allowed-origins.list}")
   private List<String> allowedOrigins;
 
+  @Value("#{T(java.util.Arrays).asList('${security.excluded-paths}'.split(','))}")
+  private List<String> excludedPaths;
+
   private final JwtAuthorizationFilter jwtAuthorizationFilter;
   private final CustomOAuth2UserService principalOauth2UserService;
   private final OAuth2SuccessHandler oAuth2SuccessHandler;
@@ -59,7 +62,11 @@ public class SecurityConfig {
         .httpBasic(AbstractHttpConfigurer::disable)
         .formLogin(AbstractHttpConfigurer::disable)
         .logout(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        .authorizeHttpRequests(
+            auth -> {
+              excludedPaths.forEach(path -> auth.requestMatchers(path).permitAll());
+              auth.anyRequest().authenticated();
+            })
         .exceptionHandling(ex -> ex.authenticationEntryPoint(new Http403ForbiddenEntryPoint()))
         .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
         .oauth2Login(

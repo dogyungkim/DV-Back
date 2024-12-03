@@ -7,10 +7,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.global.jwt.domain.response.JwtClaimResponseDto;
 import org.richardstallman.dvback.global.oauth.service.TokenService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -21,8 +23,27 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
+  @Value("#{T(java.util.Arrays).asList('${security.excluded-paths}'.split(','))}")
+  private List<String> excludedPaths;
+
   private final JwtUtil jwtUtil;
   private final TokenService tokenService;
+
+  @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) {
+    String requestPath = request.getRequestURI();
+    log.info("Request path: {}", requestPath);
+
+    return excludedPaths.stream().anyMatch(excludedPath -> matchPath(requestPath, excludedPath));
+  }
+
+  private boolean matchPath(String requestPath, String excludedPath) {
+    if (excludedPath.endsWith("/**")) {
+      String prefix = excludedPath.substring(0, excludedPath.length() - 2);
+      return requestPath.startsWith(prefix);
+    }
+    return requestPath.equals(excludedPath);
+  }
 
   @Override
   protected void doFilterInternal(
@@ -44,9 +65,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
       log.info("Access token is missing or invalid, attempting to renew with refresh token.");
       if (refreshToken != null && !jwtUtil.validateToken(refreshToken)) {
         refreshToken = tokenService.renewRefreshToken(response, refreshToken);
-        if (jwtUtil.validateToken(refreshToken)) {
-          throw new IllegalStateException("Refresh Token has expired.");
-        }
         accessToken = tokenService.renewAccessToken(response, refreshToken);
         log.info("Access token renewed successfully.");
       } else {
