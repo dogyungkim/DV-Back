@@ -72,9 +72,9 @@ app:
   properties:
     mainDomain: ${MAIN_DOMAIN}
     frontendDomain: ${FRONT_DOMAIN}
-    secure: false
+    secure: true
     cookie:
-      sameSite: "Lax"
+      sameSite: "None"
 cors:
   allowed-origins:
     list:
