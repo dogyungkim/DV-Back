@@ -1,9 +1,8 @@
 spring:
   datasource:
-    url: ${POSTGRESQL_URL}
-    username: ${POSTGRESQL_USERNAME}
-    password: ${POSTGRESQL_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:h2:~/test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password:
     hikari:
       maximum-pool-size: 10   # Pool에서 동시에 사용할 수 있는 최대 Connection 수
       minimum-idle: 2        # 최소 유지할 Connection 수

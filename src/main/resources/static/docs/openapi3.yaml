@@ -46,7 +46,7 @@ paths:
                         "commentId" : 1,
                         "postId" : 1,
                         "comment" : "댓글 내용입니다.",
-                        "generatedAt" : "2024-12-02T14:16:04.93122"
+                        "generatedAt" : "2024-12-05T17:13:33.259103"
                       }
                     }
   /comment/{commentId}:
@@ -101,7 +101,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/comment-post-postId-1237191268'
+                $ref: '#/components/schemas/comment-author-commentAuthorId-1237191268'
               examples:
                 댓글 목록 조회(유저가 작성한 댓글 목록 최신순) - 성공:
                   value: |-
@@ -113,17 +113,17 @@ paths:
                           "commentId" : 1,
                           "postId" : 1,
                           "comment" : "댓글1",
-                          "generatedAt" : "2024-12-02T14:16:04.891815"
+                          "generatedAt" : "2024-12-05T17:13:33.219495"
                         }, {
                           "commentId" : 2,
                           "postId" : 3,
                           "comment" : "댓글2",
-                          "generatedAt" : "2024-12-02T14:16:04.891828"
+                          "generatedAt" : "2024-12-05T17:13:33.219507"
                         }, {
                           "commentId" : 3,
                           "postId" : 8,
                           "comment" : "댓글3",
-                          "generatedAt" : "2024-12-02T14:16:04.891831"
+                          "generatedAt" : "2024-12-05T17:13:33.21951"
                         } ]
                       }
                     }
@@ -147,7 +147,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/comment-post-postId-1237191268'
+                $ref: '#/components/schemas/comment-author-commentAuthorId-1237191268'
               examples:
                 댓글 목록 조회(게시글 작성순) - 성공:
                   value: |-
@@ -159,17 +159,17 @@ paths:
                           "commentId" : 1,
                           "postId" : 1,
                           "comment" : "댓글1",
-                          "generatedAt" : "2024-12-02T14:16:04.975481"
+                          "generatedAt" : "2024-12-05T17:13:33.297112"
                         }, {
                           "commentId" : 2,
                           "postId" : 1,
                           "comment" : "댓글2",
-                          "generatedAt" : "2024-12-02T14:16:04.975492"
+                          "generatedAt" : "2024-12-05T17:13:33.297122"
                         }, {
                           "commentId" : 3,
                           "postId" : 1,
                           "comment" : "댓글3",
-                          "generatedAt" : "2024-12-02T14:16:04.975494"
+                          "generatedAt" : "2024-12-05T17:13:33.297124"
                         } ]
                       }
                     }
@@ -219,9 +219,9 @@ paths:
                         "interviewAssetTypeKorean" : "채팅",
                         "isUsed" : false,
                         "isExpired" : false,
-                        "generatedAt" : "2024-12-02T14:16:06",
+                        "generatedAt" : "2024-12-05T17:13:35",
                         "usedAt" : null,
-                        "expireAt" : "2025-01-02T23:59:59"
+                        "expireAt" : "2025-01-05T23:59:59"
                       }
                     }
   /coupon/use:
@@ -267,9 +267,9 @@ paths:
                           "interviewAssetTypeKorean" : "채팅",
                           "isUsed" : true,
                           "isExpired" : false,
-                          "generatedAt" : "2024-12-02T14:16:06",
-                          "usedAt" : "2024-12-02T14:16:06",
-                          "expireAt" : "2025-01-02T23:59:59"
+                          "generatedAt" : "2024-12-05T17:13:35",
+                          "usedAt" : "2024-12-05T17:13:35",
+                          "expireAt" : "2025-01-05T23:59:59"
                         },
                         "chargedTicketTransactionInfo" : {
                           "totalBalance" : 10,
@@ -289,7 +289,7 @@ paths:
                             "interviewAssetType" : "CHAT",
                             "interviewAssetTypeKorean" : "채팅",
                             "description" : "충전 쿠폰",
-                            "generatedAt" : "2024-12-02T14:16:06"
+                            "generatedAt" : "2024-12-05T17:13:35"
                           }
                         }
                       }
@@ -307,7 +307,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/coupon-user-simple-776800366'
+                $ref: '#/components/schemas/coupon-user-expired-776800366'
               examples:
                 유저 만료 쿠폰 목록 조회 - 성공:
                   value: |-
@@ -321,28 +321,28 @@ paths:
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "실전",
                           "interviewAssetTypeKorean" : "채팅",
-                          "expireAt" : "2024-12-02T14:15:06"
+                          "expireAt" : "2024-12-05T17:12:35"
                         }, {
                           "couponId" : 2,
                           "chargeAmount" : 1,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "실전",
                           "interviewAssetTypeKorean" : "음성",
-                          "expireAt" : "2024-12-02T13:16:06"
+                          "expireAt" : "2024-12-05T16:13:35"
                         }, {
                           "couponId" : 3,
                           "chargeAmount" : 5,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "모의",
                           "interviewAssetTypeKorean" : "채팅",
-                          "expireAt" : "2024-12-01T14:16:06"
+                          "expireAt" : "2024-12-04T17:13:35"
                         }, {
                           "couponId" : 4,
                           "chargeAmount" : 3,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "모의",
                           "interviewAssetTypeKorean" : "음성",
-                          "expireAt" : "2024-11-02T14:16:06"
+                          "expireAt" : "2024-11-05T17:13:35"
                         } ]
                       }
                     }
@@ -359,7 +359,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/coupon-user-simple-776800366'
+                $ref: '#/components/schemas/coupon-user-expired-776800366'
               examples:
                 유저 보유 쿠폰 목록 조회 - 성공:
                   value: |-
@@ -373,28 +373,28 @@ paths:
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "실전",
                           "interviewAssetTypeKorean" : "채팅",
-                          "expireAt" : "2025-01-02T23:59:59"
+                          "expireAt" : "2025-01-05T23:59:59"
                         }, {
                           "couponId" : 2,
                           "chargeAmount" : 1,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "실전",
                           "interviewAssetTypeKorean" : "음성",
-                          "expireAt" : "2025-01-02T23:59:59"
+                          "expireAt" : "2025-01-05T23:59:59"
                         }, {
                           "couponId" : 3,
                           "chargeAmount" : 5,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "모의",
                           "interviewAssetTypeKorean" : "채팅",
-                          "expireAt" : "2025-01-02T23:59:59"
+                          "expireAt" : "2025-01-05T23:59:59"
                         }, {
                           "couponId" : 4,
                           "chargeAmount" : 3,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "모의",
                           "interviewAssetTypeKorean" : "음성",
-                          "expireAt" : "2025-01-02T23:59:59"
+                          "expireAt" : "2025-01-05T23:59:59"
                         } ]
                       }
                     }
@@ -425,28 +425,28 @@ paths:
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "실전",
                           "interviewAssetTypeKorean" : "채팅",
-                          "usedAt" : "2024-12-02T11:16:06"
+                          "usedAt" : "2024-12-05T14:13:35"
                         }, {
                           "couponId" : 2,
                           "chargeAmount" : 1,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "실전",
                           "interviewAssetTypeKorean" : "음성",
-                          "usedAt" : "2024-12-01T14:16:06"
+                          "usedAt" : "2024-12-04T17:13:35"
                         }, {
                           "couponId" : 3,
                           "chargeAmount" : 5,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "모의",
                           "interviewAssetTypeKorean" : "채팅",
-                          "usedAt" : "2024-10-02T14:16:06"
+                          "usedAt" : "2024-10-05T17:13:35"
                         }, {
                           "couponId" : 4,
                           "chargeAmount" : 3,
                           "couponName" : "웰컴 쿠폰",
                           "interviewModeKorean" : "모의",
                           "interviewAssetTypeKorean" : "음성",
-                          "usedAt" : "2024-08-02T14:16:06"
+                          "usedAt" : "2024-08-05T17:13:35"
                         } ]
                       }
                     }
@@ -793,7 +793,7 @@ paths:
                             "fileId" : 1,
                             "type" : "COVER_LETTER",
                             "fileName" : "coverLetterName",
-                            "s3FileUrl" : "COVER_LETTER/1/1733116571794/coverLetterName"
+                            "s3FileUrl" : "COVER_LETTER/1/1733386419909/coverLetterName"
                           } ]
                         }, {
                           "interviewId" : 2,
@@ -813,7 +813,7 @@ paths:
                             "fileId" : 2,
                             "type" : "COVER_LETTER",
                             "fileName" : "coverLetterName2",
-                            "s3FileUrl" : "COVER_LETTER/1/1733116571794/coverLetterName2"
+                            "s3FileUrl" : "COVER_LETTER/1/1733386419909/coverLetterName2"
                           } ]
                         }, {
                           "interviewId" : 3,
@@ -833,7 +833,7 @@ paths:
                             "fileId" : 3,
                             "type" : "COVER_LETTER",
                             "fileName" : "coverLetterName3",
-                            "s3FileUrl" : "COVER_LETTER/1/1733116571794/coverLetterName3"
+                            "s3FileUrl" : "COVER_LETTER/1/1733386419909/coverLetterName3"
                           } ]
                         }, {
                           "interviewId" : 4,
@@ -884,7 +884,7 @@ paths:
                     "questionCount" : 5,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1733116571845/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1733386419948/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 존재하지 않는 직무 ID(500 Internal Server Error):
@@ -898,7 +898,7 @@ paths:
                     "questionCount" : 5,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1733116571768/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1733386419897/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 필수 필드 누락(400 Bad Request):
@@ -912,7 +912,7 @@ paths:
                     "questionCount" : 5,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1733116571816/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1733386419925/coverLetterName"
                     } ]
                   }
               면접 정보 입력 - 면접 저장 성공:
@@ -926,7 +926,7 @@ paths:
                     "questionCount" : 5,
                     "files" : [ {
                       "type" : "COVER_LETTER",
-                      "filePath" : "COVER_LETTER/1/1733116571642/coverLetterName"
+                      "filePath" : "COVER_LETTER/1/1733386419847/coverLetterName"
                     } ]
                   }
       responses:
@@ -1009,7 +1009,7 @@ paths:
                           "fileId" : 1,
                           "type" : "COVER_LETTER",
                           "fileName" : "coverLetterName",
-                          "s3FileUrl" : "COVER_LETTER/1/1733116571642/coverLetterName"
+                          "s3FileUrl" : "COVER_LETTER/1/1733386419847/coverLetterName"
                         } ],
                         "ticket" : {
                           "totalBalance" : 10,
@@ -1029,7 +1029,7 @@ paths:
                             "interviewAssetType" : "CHAT",
                             "interviewAssetTypeKorean" : "채팅",
                             "description" : "채팅 면접 사용",
-                            "generatedAt" : "2024-12-02T14:16:11.643392"
+                            "generatedAt" : "2024-12-05T17:13:39.847353"
                           }
                         }
                       }
@@ -1170,7 +1170,7 @@ paths:
                         },
                         "evaluation" : null,
                         "postType" : "INTERVIEW",
-                        "generatedAt" : "2024-12-02T14:16:16.096305"
+                        "generatedAt" : "2024-12-05T17:13:43.420446"
                       }
                     }
                 게시글 작성 테스트(일반 POST) - 성공:
@@ -1187,7 +1187,7 @@ paths:
                         "interview" : null,
                         "evaluation" : null,
                         "postType" : "POST",
-                        "generatedAt" : "2024-12-02T14:16:16.05759"
+                        "generatedAt" : "2024-12-05T17:13:43.377038"
                       }
                     }
                 게시글 작성 테스트(평가 공유 EVALUATION) - 성공:
@@ -1258,7 +1258,7 @@ paths:
                           } ]
                         },
                         "postType" : "EVALUATION",
-                        "generatedAt" : "2024-12-02T14:16:16.005891"
+                        "generatedAt" : "2024-12-05T17:13:43.331082"
                       }
                     }
   /post/search:
@@ -1293,7 +1293,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/post-subscription2107435791'
+                $ref: '#/components/schemas/post-search2107435791'
               examples:
                 게시글 검색 - 성공:
                   value: |-
@@ -1310,7 +1310,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.06723"
+                          "generatedAt" : "2024-12-05T17:13:43.388703"
                         }, {
                           "postId" : 101,
                           "jobName" : "BACK_END",
@@ -1320,7 +1320,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.067235"
+                          "generatedAt" : "2024-12-05T17:13:43.388709"
                         }, {
                           "postId" : 102,
                           "jobName" : "BACK_END",
@@ -1330,7 +1330,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.067237"
+                          "generatedAt" : "2024-12-05T17:13:43.388711"
                         }, {
                           "postId" : 103,
                           "jobName" : "BACK_END",
@@ -1340,7 +1340,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.067239"
+                          "generatedAt" : "2024-12-05T17:13:43.388713"
                         }, {
                           "postId" : 104,
                           "jobName" : "BACK_END",
@@ -1350,7 +1350,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.067241"
+                          "generatedAt" : "2024-12-05T17:13:43.388715"
                         }, {
                           "postId" : 105,
                           "jobName" : "BACK_END",
@@ -1360,7 +1360,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.067242"
+                          "generatedAt" : "2024-12-05T17:13:43.388716"
                         }, {
                           "postId" : 106,
                           "jobName" : "BACK_END",
@@ -1370,7 +1370,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.067244"
+                          "generatedAt" : "2024-12-05T17:13:43.388718"
                         }, {
                           "postId" : 107,
                           "jobName" : "BACK_END",
@@ -1380,7 +1380,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.067246"
+                          "generatedAt" : "2024-12-05T17:13:43.38872"
                         }, {
                           "postId" : 108,
                           "jobName" : "BACK_END",
@@ -1390,7 +1390,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.067247"
+                          "generatedAt" : "2024-12-05T17:13:43.388722"
                         }, {
                           "postId" : 109,
                           "jobName" : "BACK_END",
@@ -1400,7 +1400,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.067249"
+                          "generatedAt" : "2024-12-05T17:13:43.388723"
                         } ],
                         "currentPage" : 0,
                         "isLastPage" : false
@@ -1432,7 +1432,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/post-subscription2107435791'
+                $ref: '#/components/schemas/post-search2107435791'
               examples:
                 구독한 직무의 게시글 목록 페이징 조회 - 성공:
                   value: |-
@@ -1449,7 +1449,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.036921"
+                          "generatedAt" : "2024-12-05T17:13:43.355615"
                         }, {
                           "postId" : 101,
                           "jobName" : "BACK_END",
@@ -1459,7 +1459,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.036929"
+                          "generatedAt" : "2024-12-05T17:13:43.355624"
                         }, {
                           "postId" : 102,
                           "jobName" : "BACK_END",
@@ -1469,7 +1469,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.036931"
+                          "generatedAt" : "2024-12-05T17:13:43.355626"
                         }, {
                           "postId" : 103,
                           "jobName" : "BACK_END",
@@ -1479,7 +1479,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.036932"
+                          "generatedAt" : "2024-12-05T17:13:43.355628"
                         }, {
                           "postId" : 104,
                           "jobName" : "BACK_END",
@@ -1489,7 +1489,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.036935"
+                          "generatedAt" : "2024-12-05T17:13:43.35563"
                         }, {
                           "postId" : 105,
                           "jobName" : "BACK_END",
@@ -1499,7 +1499,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.036937"
+                          "generatedAt" : "2024-12-05T17:13:43.355633"
                         }, {
                           "postId" : 106,
                           "jobName" : "BACK_END",
@@ -1509,7 +1509,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.036939"
+                          "generatedAt" : "2024-12-05T17:13:43.355635"
                         }, {
                           "postId" : 107,
                           "jobName" : "BACK_END",
@@ -1519,7 +1519,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.03694"
+                          "generatedAt" : "2024-12-05T17:13:43.355636"
                         }, {
                           "postId" : 108,
                           "jobName" : "BACK_END",
@@ -1529,7 +1529,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.036942"
+                          "generatedAt" : "2024-12-05T17:13:43.355639"
                         }, {
                           "postId" : 109,
                           "jobName" : "BACK_END",
@@ -1539,7 +1539,7 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.036944"
+                          "generatedAt" : "2024-12-05T17:13:43.355641"
                         } ],
                         "currentPage" : 0,
                         "isLastPage" : true
@@ -1629,7 +1629,7 @@ paths:
                             } ]
                           },
                           "postType" : "EVALUATION",
-                          "generatedAt" : "2024-12-02T14:16:16.07843"
+                          "generatedAt" : "2024-12-05T17:13:43.403128"
                         }, {
                           "postId" : 108,
                           "jobName" : "BACK_END",
@@ -1659,7 +1659,7 @@ paths:
                           },
                           "evaluation" : null,
                           "postType" : "INTERVIEW",
-                          "generatedAt" : "2024-12-02T14:16:16.078434"
+                          "generatedAt" : "2024-12-05T17:13:43.403135"
                         }, {
                           "postId" : 132,
                           "jobName" : "BACK_END",
@@ -1669,24 +1669,24 @@ paths:
                           "interview" : null,
                           "evaluation" : null,
                           "postType" : "POST",
-                          "generatedAt" : "2024-12-02T14:16:16.078435"
+                          "generatedAt" : "2024-12-05T17:13:43.403137"
                         } ]
                       }
                     }
-  /question/initial-question:
+  /question:
     post:
       tags:
       - Question API
       summary: 질문 API
       description: 질문 API
-      operationId: 질문 생성 - 최초 요청(
+      operationId: 질문 목록 생성 요청(
       requestBody:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: '#/components/schemas/question-initial-question722681444'
+              $ref: '#/components/schemas/question722681444'
             examples:
-              질문 생성 - 최초 요청(모의 면접 성공):
+              질문 목록 생성 요청(모의 면접 성공) 테스트:
                 value: |-
                   {
                     "interviewId" : 1,
@@ -1699,7 +1699,7 @@ paths:
                     "files" : [ ],
                     "jobId" : 1
                   }
-              질문 생성 - 최초 요청(실전 면접 성공):
+              질문 목록 생성 요청(실전 면접 성공) 테스트:
                 value: |-
                   {
                     "interviewId" : 1,
@@ -1707,13 +1707,123 @@ paths:
                     "interviewStatus" : "FILE_UPLOADED",
                     "interviewType" : "TECHNICAL",
                     "interviewMethod" : "CHAT",
-                    "interviewMode" : "REAL",
-                    "questionCount" : 5,
+                    "interviewMode" : "GENERAL",
+                    "questionCount" : 3,
                     "files" : [ {
                       "type" : "COVER_LETTER",
                       "filePath" : "cover_letter_s3_url/file_name"
                     } ],
                     "jobId" : 1
+                  }
+      responses:
+        "202":
+          description: "202"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/question1815784598'
+              examples:
+                질문 목록 생성 요청(모의 면접 성공) 테스트:
+                  value: |-
+                    {
+                      "code" : 202,
+                      "message" : "Request sent successfully!",
+                      "data" : "interview id for tracking: (1)"
+                    }
+                질문 목록 생성 요청(실전 면접 성공) 테스트:
+                  value: |-
+                    {
+                      "code" : 202,
+                      "message" : "Request sent successfully!",
+                      "data" : "interview id for tracking: (1)"
+                    }
+  /question/completion:
+    post:
+      tags:
+      - Question API
+      summary: 질문 API
+      description: 질문 API
+      operationId: 파이썬 요청 - 질문 목록 생성 완료 - 성공
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/question-completion-1208582907'
+            examples:
+              파이썬 요청 - 질문 목록 생성 완료 - 성공:
+                value: |-
+                  {
+                    "user_id" : 1,
+                    "interview_id" : 1,
+                    "questions" : [ {
+                      "question_id" : 1,
+                      "question" : {
+                        "question_text" : "question_text",
+                        "s3_audio_url" : "s3_audio_url",
+                        "s3_video_url" : null
+                      },
+                      "question_excerpt" : "question_excerpt",
+                      "question_intent" : "question_intent",
+                      "key_terms" : [ ]
+                    }, {
+                      "question_id" : 2,
+                      "question" : {
+                        "question_text" : "question_text",
+                        "s3_audio_url" : "s3_audio_url",
+                        "s3_video_url" : null
+                      },
+                      "question_excerpt" : "question_excerpt",
+                      "question_intent" : "question_intent",
+                      "key_terms" : [ ]
+                    }, {
+                      "question_id" : 3,
+                      "question" : {
+                        "question_text" : "question_text",
+                        "s3_audio_url" : "s3_audio_url",
+                        "s3_video_url" : null
+                      },
+                      "question_excerpt" : "question_excerpt",
+                      "question_intent" : "question_intent",
+                      "key_terms" : [ ]
+                    } ]
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/evaluation-completion-62774813'
+              examples:
+                파이썬 요청 - 질문 목록 생성 완료 - 성공:
+                  value: |-
+                    {
+                      "code" : 200,
+                      "message" : "Questions have been successfully saved.",
+                      "data" : null
+                    }
+  /question/initial-question:
+    post:
+      tags:
+      - Question API
+      summary: 질문 API
+      description: 질문 API
+      operationId: 질문 요청 - 최초 요청(
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/question-initial-question-1423203476'
+            examples:
+              질문 요청 - 최초 요청(실전 면접 성공):
+                value: |-
+                  {
+                    "interviewId" : 1
+                  }
+              질문 요청 - 최초 요청(모의 면접 성공):
+                value: |-
+                  {
+                    "interviewId" : 1
                   }
       responses:
         "200":
@@ -1723,37 +1833,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/question-initial-question-1924271710'
               examples:
-                질문 생성 - 최초 요청(모의 면접 성공):
-                  value: |-
-                    {
-                      "code" : 200,
-                      "message" : "SUCCESS",
-                      "data" : {
-                        "interview" : {
-                          "interviewId" : 1,
-                          "interviewTitle" : "면접 제목",
-                          "interviewStatus" : "FILE_UPLOADED",
-                          "interviewType" : "TECHNICAL",
-                          "interviewMethod" : "CHAT",
-                          "interviewMode" : "GENERAL",
-                          "questionCount" : 3,
-                          "job" : {
-                            "jobId" : 1,
-                            "jobName" : "BACK_END",
-                            "jobNameKorean" : "백엔드",
-                            "jobDescription" : "백엔드 직무입니다."
-                          }
-                        },
-                        "currentQuestionId" : 1,
-                        "currentQuestionText" : "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
-                        "currentQuestionS3AudioUrl" : "",
-                        "nextQuestionId" : 2,
-                        "nextQuestionText" : "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요2.",
-                        "nextQuestionS3AudioUrl" : "",
-                        "hasNext" : true
-                      }
-                    }
-                질문 생성 - 최초 요청(실전 면접 성공):
+                질문 요청 - 최초 요청(실전 면접 성공):
                   value: |-
                     {
                       "code" : 200,
@@ -1779,6 +1859,36 @@ paths:
                         "currentQuestionS3AudioUrl" : "",
                         "nextQuestionId" : 2,
                         "nextQuestionText" : "다음 질문입니다.",
+                        "nextQuestionS3AudioUrl" : "",
+                        "hasNext" : true
+                      }
+                    }
+                질문 요청 - 최초 요청(모의 면접 성공):
+                  value: |-
+                    {
+                      "code" : 200,
+                      "message" : "SUCCESS",
+                      "data" : {
+                        "interview" : {
+                          "interviewId" : 1,
+                          "interviewTitle" : "면접 제목",
+                          "interviewStatus" : "FILE_UPLOADED",
+                          "interviewType" : "TECHNICAL",
+                          "interviewMethod" : "CHAT",
+                          "interviewMode" : "GENERAL",
+                          "questionCount" : 3,
+                          "job" : {
+                            "jobId" : 1,
+                            "jobName" : "BACK_END",
+                            "jobNameKorean" : "백엔드",
+                            "jobDescription" : "백엔드 직무입니다."
+                          }
+                        },
+                        "currentQuestionId" : 1,
+                        "currentQuestionText" : "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요.",
+                        "currentQuestionS3AudioUrl" : "",
+                        "nextQuestionId" : 2,
+                        "nextQuestionText" : "스타크래프트를 처음으로 접한 경험을 통해 어떻게 최고를 목표로 삼고 성취했는지 이야기해보세요2.",
                         "nextQuestionS3AudioUrl" : "",
                         "hasNext" : true
                       }
@@ -1881,7 +1991,7 @@ paths:
                         "subscriptionId" : 1,
                         "userId" : 1,
                         "jobId" : 2,
-                        "subscribedAt" : "2024-12-02T14:16:18.592603"
+                        "subscribedAt" : "2024-12-05T17:13:45.512984"
                       }
                     }
   /subscription/user:
@@ -1908,12 +2018,12 @@ paths:
                         "subscriptionId" : 1,
                         "userId" : 1,
                         "jobId" : 2,
-                        "subscribedAt" : "2024-12-02T14:16:18.581367"
+                        "subscribedAt" : "2024-12-05T17:13:45.499873"
                       }, {
                         "subscriptionId" : 2,
                         "userId" : 1,
                         "jobId" : 3,
-                        "subscribedAt" : "2024-12-02T14:16:18.581372"
+                        "subscribedAt" : "2024-12-05T17:13:45.499878"
                       } ]
                     }
   /subscription/{subscriptionId}:
@@ -1973,7 +2083,7 @@ paths:
                           "interviewAssetType" : "CHAT",
                           "interviewAssetTypeKorean" : "채팅",
                           "description" : "실전 채팅 면접 충전",
-                          "generatedAt" : "2024-12-02T14:16:19.797307"
+                          "generatedAt" : "2024-12-05T17:13:46.389476"
                         }, {
                           "ticketTransactionId" : 2,
                           "amount" : 1,
@@ -1986,7 +2096,7 @@ paths:
                           "interviewAssetType" : "CHAT",
                           "interviewAssetTypeKorean" : "채팅",
                           "description" : "실전 채팅 면접 사용",
-                          "generatedAt" : "2024-12-02T14:16:19.797313"
+                          "generatedAt" : "2024-12-05T17:13:46.389481"
                         }, {
                           "ticketTransactionId" : 3,
                           "amount" : 1,
@@ -1999,7 +2109,7 @@ paths:
                           "interviewAssetType" : "CHAT",
                           "interviewAssetTypeKorean" : "채팅",
                           "description" : "실전 채팅 면접 충전",
-                          "generatedAt" : "2024-12-02T14:16:19.797314"
+                          "generatedAt" : "2024-12-05T17:13:46.389482"
                         }, {
                           "ticketTransactionId" : 4,
                           "amount" : 2,
@@ -2012,7 +2122,7 @@ paths:
                           "interviewAssetType" : "VOICE",
                           "interviewAssetTypeKorean" : "음성",
                           "description" : "실전 채팅 면접 충전",
-                          "generatedAt" : "2024-12-02T14:16:19.797315"
+                          "generatedAt" : "2024-12-05T17:13:46.389483"
                         }, {
                           "ticketTransactionId" : 5,
                           "amount" : 3,
@@ -2025,7 +2135,7 @@ paths:
                           "interviewAssetType" : "CHAT",
                           "interviewAssetTypeKorean" : "채팅",
                           "description" : "모의 채팅 면접 충전",
-                          "generatedAt" : "2024-12-02T14:16:19.797316"
+                          "generatedAt" : "2024-12-05T17:13:46.389484"
                         }, {
                           "ticketTransactionId" : 6,
                           "amount" : 4,
@@ -2038,7 +2148,7 @@ paths:
                           "interviewAssetType" : "VOICE",
                           "interviewAssetTypeKorean" : "음성",
                           "description" : "모의 음성 면접 충전",
-                          "generatedAt" : "2024-12-02T14:16:19.797317"
+                          "generatedAt" : "2024-12-05T17:13:46.389486"
                         } ]
                       }
                     }
@@ -2132,19 +2242,66 @@ paths:
                         "birthdate" : "1990-01-01"
                       }
                     }
+    put:
+      tags:
+      - User API
+      summary: 유저 API
+      description: 유저 API
+      operationId: 유저 정보 수정 - 성공
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/user-info315043345'
+            examples:
+              유저 정보 수정 - 성공:
+                value: |-
+                  {
+                    "s3ProfileImageObjectKey" : "https://example.com/image.jpg",
+                    "name" : "김수현",
+                    "nickname" : "ddodam",
+                    "birthdate" : "1990-01-01",
+                    "gender" : "WOMAN"
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user-info-2054075560'
+              examples:
+                유저 정보 수정 - 성공:
+                  value: |-
+                    {
+                      "code" : 200,
+                      "message" : "SUCCESS",
+                      "data" : {
+                        "userId" : 1,
+                        "socialId" : "12345",
+                        "email" : "example@test.com",
+                        "username" : "suhyun",
+                        "name" : "김수현",
+                        "nickname" : "ddodam",
+                        "s3ProfileImageUrl" : "https://example.com/image.jpg",
+                        "leave" : false,
+                        "gender" : "WOMAN",
+                        "birthdate" : "1990-01-01"
+                      }
+                    }
     post:
       tags:
       - User API
       summary: 유저 API
       description: 유저 API
-      operationId: 유저 정보 업데이트 - 성공
+      operationId: 유저 정보 생성 - 성공
       requestBody:
         content:
           application/json;charset=UTF-8:
             schema:
               $ref: '#/components/schemas/user-info-1151009706'
             examples:
-              유저 정보 업데이트 - 성공:
+              유저 정보 생성 - 성공:
                 value: |-
                   {
                     "s3ProfileImageObjectKey" : "https://example.com/image.jpg",
@@ -2162,7 +2319,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/user-info-2054075560'
               examples:
-                유저 정보 업데이트 - 성공:
+                유저 정보 생성 - 성공:
                   value: |-
                     {
                       "code" : 200,
@@ -2275,6 +2432,12 @@ components:
         message:
           type: string
           description: 응답 메시지
+    question-initial-question-1423203476:
+      type: object
+      properties:
+        interviewId:
+          type: number
+          description: 면접 식별자
     question-next-question193040009:
       type: object
       properties:
@@ -2482,6 +2645,18 @@ components:
         message:
           type: string
           description: 응답 메시지
+    interview1916977939:
+      type: object
+      properties:
+        code:
+          type: number
+          description: "응답 코드: 400"
+        data:
+          type: string
+          description: "에러 메시지: {누락된 필드}: {누락된 필드} is required"
+        message:
+          type: string
+          description: "응답 상태: BAD_REQUEST"
     comment-commentId1745625053:
       type: object
       properties:
@@ -2500,18 +2675,6 @@ components:
         message:
           type: string
           description: 응답 메시지
-    interview1916977939:
-      type: object
-      properties:
-        code:
-          type: number
-          description: "응답 코드: 400"
-        data:
-          type: string
-          description: "에러 메시지: {누락된 필드}: {누락된 필드} is required"
-        message:
-          type: string
-          description: "응답 상태: BAD_REQUEST"
     user-authenticated2056040670:
       type: object
       properties:
@@ -2524,7 +2687,7 @@ components:
         message:
           type: string
           description: 응답 메시지
-    post-subscription2107435791:
+    post-search2107435791:
       type: object
       properties:
         code:
@@ -2593,6 +2756,24 @@ components:
         message:
           type: string
           description: 응답 메시지
+    user-info315043345:
+      type: object
+      properties:
+        s3ProfileImageObjectKey:
+          type: string
+          description: 프로필 이미지 오브젝트 키
+        birthdate:
+          type: string
+          description: 생년월일
+        gender:
+          type: string
+          description: 성별
+        nickname:
+          type: string
+          description: 유저 닉네임
+        name:
+          type: string
+          description: 유저 이름
     evaluation-interviewId-330994788:
       type: object
       properties:
@@ -2713,6 +2894,48 @@ components:
         message:
           type: string
           description: 응답 메시지
+    user-info983662776:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 응답 코드
+        data:
+          type: object
+          properties:
+            birthdate:
+              type: string
+              description: 생년월일
+            gender:
+              type: string
+              description: 성별
+            leave:
+              type: boolean
+              description: 탈퇴 여부
+            socialId:
+              type: string
+              description: 소셜 ID
+            nickname:
+              type: string
+              description: 유저 닉네임
+            name:
+              type: string
+              description: 유저 이름
+            s3ProfileImageUrl:
+              type: string
+              description: 프로필 이미지 URL
+            userId:
+              type: number
+              description: 유저 ID
+            email:
+              type: string
+              description: 이메일
+            username:
+              type: string
+              description: 유저 네임
+        message:
+          type: string
+          description: 응답 메시지
     coupon-1296136601:
       type: object
       properties:
@@ -2761,7 +2984,13 @@ components:
         message:
           type: string
           description: 응답 메시지
-    user-info983662776:
+    subscription-2024782262:
+      type: object
+      properties:
+        jobId:
+          type: number
+          description: 직무 ID
+    comment-author-commentAuthorId-1237191268:
       type: object
       properties:
         code:
@@ -2770,45 +2999,26 @@ components:
         data:
           type: object
           properties:
-            birthdate:
-              type: string
-              description: 생년월일
-            gender:
-              type: string
-              description: 성별
-            leave:
-              type: boolean
-              description: 탈퇴 여부
-            socialId:
-              type: string
-              description: 소셜 ID
-            nickname:
-              type: string
-              description: 유저 닉네임
-            name:
-              type: string
-              description: 유저 이름
-            s3ProfileImageUrl:
-              type: string
-              description: 프로필 이미지 URL
-            userId:
-              type: number
-              description: 유저 ID
-            email:
-              type: string
-              description: 이메일
-            username:
-              type: string
-              description: 유저 네임
+            comments:
+              type: array
+              items:
+                type: object
+                properties:
+                  generatedAt:
+                    type: string
+                    description: 댓글 작성 일시
+                  commentId:
+                    type: number
+                    description: 댓글 식별자
+                  comment:
+                    type: string
+                    description: 댓글 내용
+                  postId:
+                    type: number
+                    description: 게시글 식별자
         message:
           type: string
           description: 응답 메시지
-    subscription-2024782262:
-      type: object
-      properties:
-        jobId:
-          type: number
-          description: 직무 ID
     interview-902124313:
       type: object
       properties:
@@ -2877,35 +3087,6 @@ components:
                   interviewMode:
                     type: string
                     description: 면접 모드
-        message:
-          type: string
-          description: 응답 메시지
-    comment-post-postId-1237191268:
-      type: object
-      properties:
-        code:
-          type: number
-          description: 응답 코드
-        data:
-          type: object
-          properties:
-            comments:
-              type: array
-              items:
-                type: object
-                properties:
-                  generatedAt:
-                    type: string
-                    description: 댓글 작성 일시
-                  commentId:
-                    type: number
-                    description: 댓글 식별자
-                  comment:
-                    type: string
-                    description: 댓글 내용
-                  postId:
-                    type: number
-                    description: 게시글 식별자
         message:
           type: string
           description: 응답 메시지
@@ -3141,7 +3322,7 @@ components:
           description: 응답 메시지
     ping-pong486549215:
       type: object
-    coupon-user-simple-776800366:
+    coupon-user-expired-776800366:
       type: object
       properties:
         code:
@@ -3592,6 +3773,18 @@ components:
         interviewMode:
           type: string
           description: "쿠폰 면접 유형: REAL(실전), GENERAL(모의)"
+    question1815784598:
+      type: object
+      properties:
+        code:
+          type: number
+          description: 응답 코드
+        data:
+          type: string
+          description: 응답 데이터
+        message:
+          type: string
+          description: 응답 메시지
     question-next-question-985830319:
       type: object
       properties:
@@ -3914,6 +4107,47 @@ components:
         username:
           type: string
           description: 유저네임
+    question-completion-1208582907:
+      type: object
+      properties:
+        user_id:
+          type: number
+          description: 유저 식별자
+        questions:
+          type: array
+          items:
+            type: object
+            properties:
+              question_intent:
+                type: string
+                description: 질문 의도
+              question:
+                type: object
+                properties:
+                  question_text:
+                    type: string
+                    description: 질문 내용
+                  s3_audio_url:
+                    type: string
+                    description: 질문 url
+              key_terms:
+                type: array
+                description: 핵심 단어
+                items:
+                  oneOf:
+                  - type: object
+                  - type: boolean
+                  - type: string
+                  - type: number
+              question_excerpt:
+                type: string
+                description: 질문 출처
+              question_id:
+                type: number
+                description: 질문 식별자
+        interview_id:
+          type: number
+          description: 면접 식별자
     coupon-user-used-1865178528:
       type: object
       properties:
@@ -4098,7 +4332,7 @@ components:
         message:
           type: string
           description: 응답 메시지
-    question-initial-question722681444:
+    question722681444:
       type: object
       properties:
         questionCount:
