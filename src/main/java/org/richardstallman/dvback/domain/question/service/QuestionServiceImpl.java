@@ -10,6 +10,8 @@ import org.richardstallman.dvback.domain.answer.converter.AnswerConverter;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
 import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousRequestDto;
 import org.richardstallman.dvback.domain.answer.repository.AnswerRepository;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionRequestDto;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.repository.InterviewRepository;
@@ -108,7 +110,19 @@ public class QuestionServiceImpl implements QuestionService {
             answerConverter.fromPreviousRequestDtoToDomain(
                 questionNextRequestDto.answer(), previousQuestion));
 
-    checkAnswer(interviewDomain, answerDomain.getAnswerId(), questionNextRequestDto.answer());
+    EvaluationExternalQuestionRequestDto question =
+        new EvaluationExternalQuestionRequestDto(
+            previousQuestion.getQuestionId(),
+            new EvaluationExternalQuestionDto(
+                previousQuestion.getQuestionText(),
+                previousQuestion.getS3AudioUrl(),
+                previousQuestion.getS3VideoUrl()),
+            previousQuestion.getQuestionExcerpt(),
+            previousQuestion.getQuestionIntent(),
+            previousQuestion.getKeyTerms());
+
+    checkAnswer(
+        interviewDomain, answerDomain.getAnswerId(), questionNextRequestDto.answer(), question);
 
     return questionConverter.fromQuestionExternalDomainToQuestionResponseDto(
         currentQuestion,
@@ -145,10 +159,11 @@ public class QuestionServiceImpl implements QuestionService {
   private void checkAnswer(
       @NotNull InterviewDomain interviewDomain,
       Long answerId,
-      @NotNull AnswerPreviousRequestDto answer) {
+      @NotNull AnswerPreviousRequestDto answer,
+      @NotNull EvaluationExternalQuestionRequestDto question) {
     pythonService.sendAnswer(
         answerConverter.fromPreviousRequestDtoToQuestionExternalSttRequestDto(
-            interviewDomain, answer),
+            interviewDomain, answer, question),
         interviewDomain.getInterviewId(),
         answerId);
   }

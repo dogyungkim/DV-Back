@@ -1,10 +1,13 @@
 package org.richardstallman.dvback.domain.answer.converter;
 
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
 import org.richardstallman.dvback.domain.answer.domain.request.AnswerEvaluationRequestDto;
 import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousRequestDto;
 import org.richardstallman.dvback.domain.answer.entity.AnswerEntity;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.question.converter.QuestionConverter;
 import org.richardstallman.dvback.domain.question.domain.QuestionDomain;
@@ -60,10 +63,19 @@ public class AnswerConverter {
   }
 
   public QuestionExternalSttRequestDto fromPreviousRequestDtoToQuestionExternalSttRequestDto(
-      @NotNull InterviewDomain interviewDomain, @NotNull AnswerPreviousRequestDto answer) {
+      @NotNull InterviewDomain interviewDomain,
+      @NotNull AnswerPreviousRequestDto answer,
+      @NotNull EvaluationExternalQuestionRequestDto question) {
     return new QuestionExternalSttRequestDto(
-        interviewDomain.getInterviewMethod().getPythonFormat(),
         interviewDomain.getUserDomain().getUserId(),
+        interviewDomain.getInterviewMode(),
+        interviewDomain.getInterviewType(),
+        interviewDomain.getInterviewMethod(),
+        interviewDomain.getJob().getJobName(),
+        interviewDomain.getInterviewMode() == InterviewMode.REAL
+            ? List.of(interviewDomain.getCoverLetter().getS3FileUrl())
+            : null,
+        question,
         new QuestionExternalSttAnswerRequestDomain(
             answer.answerText(), answer.s3AudioUrl(), answer.s3VideoUrl()));
   }
