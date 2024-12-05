@@ -42,9 +42,13 @@ public class UserServiceImpl implements UserService {
   public UserResponseDto getUserInfo(Long userId) {
     log.info("getUserInfo");
     UserDomain userDomain = findUserById(userId);
-    PreSignedUrlResponseDto preSignedUrl =
-        s3Service.getPreSignedUrlForImage(userDomain.getS3ProfileImageObjectKey(), userId);
-    return userConverter.fromDomainWithPreSignedUrlToDto(userDomain, preSignedUrl.preSignedUrl());
+    PreSignedUrlResponseDto preSignedUrl = null;
+    if (userDomain != null && userDomain.getS3ProfileImageObjectKey() != null) {
+      preSignedUrl =
+          s3Service.getPreSignedUrlForImage(userDomain.getS3ProfileImageObjectKey(), userId);
+    }
+    return userConverter.fromDomainWithPreSignedUrlToDto(
+        userDomain, preSignedUrl == null ? null : preSignedUrl.preSignedUrl());
   }
 
   @Override
@@ -86,8 +90,11 @@ public class UserServiceImpl implements UserService {
           couponConverter.fromWelcomeCouponToDomain(welcomeCoupons, user, now, expireAt));
     }
 
-    PreSignedUrlResponseDto preSignedUrl =
-        s3Service.getPreSignedUrlForImage(createdUser.getS3ProfileImageObjectKey(), userId);
+    PreSignedUrlResponseDto preSignedUrl = null;
+    if (createdUser.getS3ProfileImageObjectKey() != null) {
+      preSignedUrl =
+          s3Service.getPreSignedUrlForImage(createdUser.getS3ProfileImageObjectKey(), userId);
+    }
 
     return new UserResponseDto(
         createdUser.getUserId(),
@@ -96,7 +103,7 @@ public class UserServiceImpl implements UserService {
         createdUser.getUsername(),
         createdUser.getName(),
         createdUser.getNickname(),
-        preSignedUrl.preSignedUrl(),
+        preSignedUrl == null ? null : preSignedUrl.preSignedUrl(),
         createdUser.getLeave(),
         createdUser.getGender(),
         createdUser.getBirthdate());
