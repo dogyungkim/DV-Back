@@ -114,6 +114,9 @@ public class UserConverter {
   }
 
   private String extractObjectKeyFromUrl(String s3ProfileImageUrl) {
+    if (s3ProfileImageUrl == null) {
+      return null;
+    }
     int queryIndex = s3ProfileImageUrl.indexOf('?');
     String urlWithoutQuery =
         queryIndex != -1 ? s3ProfileImageUrl.substring(0, queryIndex) : s3ProfileImageUrl;
