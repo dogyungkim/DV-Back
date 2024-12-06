@@ -92,7 +92,7 @@ public class FileController {
   }
 
   @GetMapping("/audio/{interviewId}/{questionId}/upload-url")
-  public ResponseEntity<DvApiResponse<PreSignedUrlResponseDto>> getAudioUploadUrlOnMyPage(
+  public ResponseEntity<DvApiResponse<PreSignedUrlResponseDto>> getAudioUploadUrl(
       @AuthenticationPrincipal Long userId,
       @PathVariable Long interviewId,
       @PathVariable Long questionId) {
@@ -107,5 +107,25 @@ public class FileController {
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_JSON)
         .body(DvApiResponse.of(preSignedUrl));
+  }
+
+  @GetMapping("/audio/{interviewId}/{questionId}/upload-url")
+  public ResponseEntity<DvApiResponse<PreSignedUrlResponseDto>> getAudioDownloadUrl(
+      @AuthenticationPrincipal Long userId,
+      @PathVariable Long interviewId,
+      @PathVariable Long questionId) {
+    log.info(
+        "Generating preSigned URL for file upload: interviewId={}, questionId={}",
+        interviewId,
+        questionId);
+
+    PreSignedUrlResponseDto preSignedUrlResponseDto =
+        s3Service.getDownloadURLForAudio(
+            coverLetterService.findCoverLetterByInterviewId(interviewId).getS3FileUrl(),
+            userId,
+            interviewId,
+            questionId);
+
+    return ResponseEntity.ok(DvApiResponse.of(preSignedUrlResponseDto));
   }
 }
