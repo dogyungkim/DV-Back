@@ -120,10 +120,13 @@ public class S3ServiceImpl implements S3Service {
     if (interviewId != null) {
       // 면접 정보 입력 시 업로드 경로
       return String.format(
-          "%s/%d/%d/%s/%s", fileType.getFolderName(), userId, interviewId, timestamp, fileName);
+          "users/%d/interviews/%d/docs/%s/%d-%s-%s",
+          userId, interviewId, fileType.getFolderName(), userId, timestamp, fileName);
     } else {
       // 미리 업로드 경로
-      return String.format("%s/%d/%s/%s", fileType.getFolderName(), userId, timestamp, fileName);
+      return String.format(
+          "users/%d/docs/%s/%d-%s-%s",
+          userId, fileType.getFolderName(), userId, timestamp, fileName);
     }
   }
 }
