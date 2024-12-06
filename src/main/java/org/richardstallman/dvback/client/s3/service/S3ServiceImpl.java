@@ -2,7 +2,6 @@ package org.richardstallman.dvback.client.s3.service;
 
 import jakarta.annotation.Nullable;
 import jakarta.annotation.PostConstruct;
-import java.io.IOException;
 import java.time.Duration;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +10,6 @@ import org.richardstallman.dvback.domain.file.domain.response.PreSignedUrlRespon
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -92,21 +89,35 @@ public class S3ServiceImpl implements S3Service {
   }
 
   @Override
-  public String uploadImageToS3(MultipartFile image, FileType fileType, Long userId)
-      throws IOException {
-    String filePathKey = makeS3FilePathForImage(fileType, image.getOriginalFilename(), userId);
+  public PreSignedUrlResponseDto createPreSignedURLForAudio(
+      FileType fileType,
+      Long userId,
+      @Nullable Long interviewId,
+      @Nullable Long questionId,
+      @Nullable Map<String, String> metadata) {
+    String filePathKey = makeS3FilePathForAudio(fileType, userId, interviewId, questionId);
 
     PutObjectRequest putObjectRequest =
-        PutObjectRequest.builder()
-            .bucket(bucketName)
-            .key(filePathKey)
-            .contentType(image.getContentType())
-            .build();
+        PutObjectRequest.builder().bucket(bucketName).key(filePathKey).build();
 
-    s3Client.putObject(
-        putObjectRequest, RequestBody.fromInputStream(image.getInputStream(), image.getSize()));
+    PresignedPutObjectRequest presignedPutObjectRequest =
+        s3Presigner.presignPutObject(
+            builder -> builder.signatureDuration(urlDuration).putObjectRequest(putObjectRequest));
 
-    return filePathKey;
+    return new PreSignedUrlResponseDto(presignedPutObjectRequest.url().toString());
+  }
+
+  @Override
+  public PreSignedUrlResponseDto getDownloadURLForAudio(
+      String filePath, Long userId, @Nullable Long interviewId, @Nullable Long questionId) {
+    GetObjectRequest getObjectRequest =
+        GetObjectRequest.builder().bucket(bucketName).key(filePath).build();
+
+    PresignedGetObjectRequest presignedGetObjectRequest =
+        s3Presigner.presignGetObject(
+            builder -> builder.signatureDuration(urlDuration).getObjectRequest(getObjectRequest));
+
+    return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString());
   }
 
   private String makeS3FilePathForImage(FileType fileType, String fileName, Long userId) {
@@ -128,5 +139,13 @@ public class S3ServiceImpl implements S3Service {
           "users/%d/docs/%s/%d-%s-%s",
           userId, fileType.getFolderName(), userId, timestamp, fileName);
     }
+  }
+
+  private String makeS3FilePathForAudio(
+      FileType fileType, Long userId, @Nullable Long interviewId, @Nullable Long questionId) {
+    String timestamp = String.valueOf(System.currentTimeMillis());
+    return String.format(
+        "users/%d/interviews/%d/questions/%d/%d-%d-%d-%s-%s",
+        userId, interviewId, questionId, userId, interviewId, questionId, timestamp, fileType);
   }
 }

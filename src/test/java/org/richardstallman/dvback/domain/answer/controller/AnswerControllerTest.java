@@ -1,4 +1,4 @@
-package org.richardstallman.dvback.answer.controller;
+package org.richardstallman.dvback.domain.answer.controller;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;

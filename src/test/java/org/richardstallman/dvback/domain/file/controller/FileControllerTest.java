@@ -337,4 +337,117 @@ public class FileControllerTest {
                             .description("파일 유형: COVER_LETTER"))
                     .build())));
   }
+
+  @Test
+  @DisplayName("오디오 파일 업로드를 위한 PreSigned URL 생성 - 성공")
+  @WithMockUser
+  void testGetAudioUploadUrlSuccess() throws Exception {
+    // Given
+    Long userId = 1L;
+    Long interviewId = 2L;
+    Long questionId = 3L;
+    String expectedUrl = "https://s3.aws.com/audio/1/interview/2/question/3/audio-test.mp3";
+
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    PreSignedUrlResponseDto preSignedUrlResponseDto = new PreSignedUrlResponseDto(expectedUrl);
+
+    // Mock S3Service behavior
+    when(s3Service.createPreSignedURLForAudio(
+            eq(FileType.COVER_LETTER), eq(userId), eq(interviewId), eq(questionId), isNull()))
+        .thenReturn(preSignedUrlResponseDto);
+
+    // When
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/file/audio/{interviewId}/{questionId}/upload-url", interviewId, questionId)
+                .cookie(authCookie)
+                .accept(MediaType.APPLICATION_JSON));
+
+    // Then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("data.preSignedUrl").value(expectedUrl));
+
+    // REST Docs
+    resultActions.andDo(
+        document(
+            "오디오 파일 업로드 PreSigned URL 생성",
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("File API")
+                    .summary("오디오 파일 업로드를 위한 PreSigned URL 생성")
+                    .pathParameters(
+                        parameterWithName("interviewId").description("면접 ID"),
+                        parameterWithName("questionId").description("질문 ID"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.preSignedUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("AWS S3 PreSigned URL"))
+                    .build())));
+  }
+
+  @Test
+  @DisplayName("오디오 파일 다운로드를 위한 PreSigned URL 생성 - 성공")
+  @WithMockUser
+  void testGetAudioDownloadUrlSuccess() throws Exception {
+    // Given
+    Long userId = 1L;
+    Long interviewId = 2L;
+    Long questionId = 3L;
+    String s3FileUrl = "audio/1/interview/2/question/3/audio-test.mp3";
+    String expectedUrl = "https://s3.aws.com/" + s3FileUrl;
+
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    PreSignedUrlResponseDto preSignedUrlResponseDto = new PreSignedUrlResponseDto(expectedUrl);
+
+    // Mock CoverLetterService behavior
+    when(coverLetterService.findCoverLetterByInterviewId(interviewId))
+        .thenReturn(CoverLetterDomain.builder().s3FileUrl(s3FileUrl).build());
+
+    // Mock S3Service behavior
+    when(s3Service.getDownloadURLForAudio(
+            eq(s3FileUrl), eq(userId), eq(interviewId), eq(questionId)))
+        .thenReturn(preSignedUrlResponseDto);
+
+    // When
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/file/audio/{interviewId}/{questionId}/download-url", interviewId, questionId)
+                .cookie(authCookie)
+                .accept(MediaType.APPLICATION_JSON));
+
+    // Then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("data.preSignedUrl").value(expectedUrl));
+
+    // REST Docs
+    resultActions.andDo(
+        document(
+            "오디오 파일 다운로드 PreSigned URL 생성 - 성공",
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("File API")
+                    .summary("오디오 파일 다운로드를 위한 PreSigned URL 생성")
+                    .pathParameters(
+                        parameterWithName("interviewId").description("면접 ID"),
+                        parameterWithName("questionId").description("질문 ID"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.preSignedUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("AWS S3 PreSigned URL"))
+                    .build())));
+  }
 }
