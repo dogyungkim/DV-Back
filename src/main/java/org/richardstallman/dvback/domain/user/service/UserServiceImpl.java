@@ -143,8 +143,7 @@ public class UserServiceImpl implements UserService {
 
   private void validateName(String name) {
     if (isExceedingMaxLength(name, 15)) {
-      throw new IllegalArgumentException(
-          "The name exceeds the maximum length of 15 characters.");
+      throw new IllegalArgumentException("The name exceeds the maximum length of 15 characters.");
     }
   }
 
