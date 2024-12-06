@@ -45,10 +45,28 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     return requestPath.equals(excludedPath);
   }
 
+  private String getClientIp(HttpServletRequest request) {
+    String ip = request.getHeader("X-Forwarded-For");
+    if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+      ip = request.getHeader("Proxy-Client-IP");
+    }
+    if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+      ip = request.getHeader("WL-Proxy-Client-IP");
+    }
+    if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+      ip = request.getRemoteAddr();
+    }
+    return ip;
+  }
+
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
+
+    String clientIp = getClientIp(request);
+    log.info("Incoming request from client IP: {}", clientIp);
+
     Cookie[] cookies = request.getCookies();
     if (cookies == null || !existAccessToken(cookies)) {
       log.info("cookie is null");
