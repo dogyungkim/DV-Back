@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService {
   public UserResponseDto createUserInfo(Long userId, UserRequestDto userRequestDto) {
     UserDomain user = findUserById(userId);
 
+    validateName(userRequestDto.name());
     validateUsername(userRequestDto.username());
     validateNickname(userRequestDto.nickname());
 
@@ -112,6 +113,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserResponseDto updateUserInfo(Long userId, UserUpdateRequestDto userUpdateRequestDto) {
     UserDomain user = findUserById(userId);
+    validateName(userUpdateRequestDto.name());
     validateNickname(userUpdateRequestDto.nickname());
 
     UserDomain userDomain =
@@ -139,12 +141,23 @@ public class UserServiceImpl implements UserService {
         .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
   }
 
+  private void validateName(String name) {
+    if (isExceedingMaxLength(name, 15)) {
+      throw new IllegalArgumentException(
+          "The name exceeds the maximum length of 15 characters.");
+    }
+  }
+
   private void validateUsername(String username) {
     if (!username.matches("^[a-zA-Z0-9]+$")) {
       throw new IllegalArgumentException("Username must contain only letters and numbers.");
     }
     if (containsBadWord(username)) {
       throw new IllegalArgumentException("The username contains words that are not allowed.");
+    }
+    if (isExceedingMaxLength(username, 20)) {
+      throw new IllegalArgumentException(
+          "The username exceeds the maximum length of 20 characters.");
     }
 
     boolean usernameExists = userRepository.existsByUsername(username);
@@ -160,10 +173,18 @@ public class UserServiceImpl implements UserService {
     if (containsBadWord(nickname)) {
       throw new IllegalArgumentException("The nickname contains words that are not allowed.");
     }
+    if (isExceedingMaxLength(nickname, 15)) {
+      throw new IllegalArgumentException(
+          "The nickname exceeds the maximum length of 15 characters.");
+    }
   }
 
   private boolean containsBadWord(String value) {
     BadWordFiltering badWordFiltering = new BadWordFiltering();
     return badWordFiltering.check(value);
+  }
+
+  private boolean isExceedingMaxLength(String value, int maxLength) {
+    return value.length() > maxLength;
   }
 }
