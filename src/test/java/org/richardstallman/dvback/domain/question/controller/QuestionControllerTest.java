@@ -662,21 +662,18 @@ public class QuestionControllerTest {
     List<QuestionResultDto> list = new ArrayList<>();
     QuestionResultDto questionResultDto1 =
         new QuestionResultDto(
-            1L,
             new QuestionDto("question_text", "s3_audio_url", null),
             "question_excerpt",
             "question_intent",
             new ArrayList<>());
     QuestionResultDto questionResultDto2 =
         new QuestionResultDto(
-            2L,
             new QuestionDto("question_text", "s3_audio_url", null),
             "question_excerpt",
             "question_intent",
             new ArrayList<>());
     QuestionResultDto questionResultDto3 =
         new QuestionResultDto(
-            3L,
             new QuestionDto("question_text", "s3_audio_url", null),
             "question_excerpt",
             "question_intent",
@@ -714,9 +711,6 @@ public class QuestionControllerTest {
                         fieldWithPath("interview_id")
                             .type(JsonFieldType.NUMBER)
                             .description("면접 식별자"),
-                        fieldWithPath("questions[].question_id")
-                            .type(JsonFieldType.NUMBER)
-                            .description("질문 식별자"),
                         fieldWithPath("questions[].question.question_text")
                             .type(JsonFieldType.STRING)
                             .description("질문 내용"),
