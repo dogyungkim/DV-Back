@@ -341,7 +341,7 @@ public class FileControllerTest {
   @Test
   @DisplayName("오디오 파일 업로드를 위한 PreSigned URL 생성 - 성공")
   @WithMockUser
-  void testGetAudioUploadUrlOnMyPage() throws Exception {
+  void testGetAudioUploadUrlSuccess() throws Exception {
     // Given
     Long userId = 1L;
     Long interviewId = 2L;
@@ -420,7 +420,7 @@ public class FileControllerTest {
     // When
     ResultActions resultActions =
         mockMvc.perform(
-            get("/file/audio/{interviewId}/{questionId}/upload-url", interviewId, questionId)
+            get("/file/audio/{interviewId}/{questionId}/download-url", interviewId, questionId)
                 .cookie(authCookie)
                 .accept(MediaType.APPLICATION_JSON));
 

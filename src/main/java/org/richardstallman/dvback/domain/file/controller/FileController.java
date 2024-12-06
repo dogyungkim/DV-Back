@@ -109,13 +109,13 @@ public class FileController {
         .body(DvApiResponse.of(preSignedUrl));
   }
 
-  @GetMapping("/audio/{interviewId}/{questionId}/upload-url")
+  @GetMapping("/audio/{interviewId}/{questionId}/download-url")
   public ResponseEntity<DvApiResponse<PreSignedUrlResponseDto>> getAudioDownloadUrl(
       @AuthenticationPrincipal Long userId,
       @PathVariable Long interviewId,
       @PathVariable Long questionId) {
     log.info(
-        "Generating preSigned URL for file upload: interviewId={}, questionId={}",
+        "Generating preSigned URL for file download: interviewId={}, questionId={}",
         interviewId,
         questionId);
 
