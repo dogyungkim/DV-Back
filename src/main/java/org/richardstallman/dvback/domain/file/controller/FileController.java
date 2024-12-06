@@ -90,4 +90,22 @@ public class FileController {
         new CoverLetterListResponseDto(coverLetterService.findCoverLettersByUserId(userId));
     return ResponseEntity.ok(DvApiResponse.of(coverLetterListResponseDto));
   }
+
+  @GetMapping("/audio/{interviewId}/{questionId}/upload-url")
+  public ResponseEntity<DvApiResponse<PreSignedUrlResponseDto>> getAudioUploadUrlOnMyPage(
+      @AuthenticationPrincipal Long userId,
+      @PathVariable Long interviewId,
+      @PathVariable Long questionId) {
+    log.info(
+        "Generating preSigned URL for file upload: interviewId={}, questionId={}",
+        interviewId,
+        questionId);
+    PreSignedUrlResponseDto preSignedUrl =
+        s3Service.createPreSignedURLForAudio(
+            FileType.COVER_LETTER, userId, interviewId, questionId, null);
+
+    return ResponseEntity.ok()
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(DvApiResponse.of(preSignedUrl));
+  }
 }
