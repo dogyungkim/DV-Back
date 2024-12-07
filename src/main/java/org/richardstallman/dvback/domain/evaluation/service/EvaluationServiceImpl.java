@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.domain.evaluation.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import org.richardstallman.dvback.client.python.PythonService;
 import org.richardstallman.dvback.common.constant.CommonConstants.EvaluationCriteria;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
 import org.richardstallman.dvback.domain.answer.domain.request.evaluation.AnswerEvaluationDto;
 import org.richardstallman.dvback.domain.answer.repository.AnswerRepository;
@@ -103,6 +105,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
   @Override
   public void saveCompletedEvaluation(OverallEvaluationResultRequestDto evaluationResult) {
+    log.info("EvaluationServiceImpl:: save completed evaluation requested");
     Long userId = evaluationResult.userId();
     Long interviewId = evaluationResult.interviewId();
     OverallEvaluationResultDto overallEvaluationResultDto = evaluationResult.overallEvaluation();
@@ -113,40 +116,86 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     firebaseMessagingService.sendNotification(
         userId, "평가가 완료되었습니다.", evaluationResult.interviewId().toString());
+    log.info("EvaluationServiceImpl:: save completed evaluation succeed");
   }
 
   private void saveEvaluationCriteriaResult(
       OverallEvaluationDomain overallEvaluationDomain,
       OverallEvaluationResultDto overallEvaluationResultDto) {
-    Map<EvaluationCriteria, OverallEvaluationResultCriteriaDto> criteriaMap =
-        Map.of(
-            EvaluationCriteria.JOB_FIT,
-            overallEvaluationResultDto.textOverall().jobFit(),
-            EvaluationCriteria.GROWTH_POTENTIAL,
-            overallEvaluationResultDto.textOverall().growthPotential(),
-            EvaluationCriteria.WORK_ATTITUDE,
-            overallEvaluationResultDto.textOverall().workAttitude(),
-            EvaluationCriteria.TECHNICAL_DEPTH,
-            overallEvaluationResultDto.textOverall().technicalDepth());
+    Map<EvaluationCriteria, OverallEvaluationResultCriteriaDto> criteriaMap = new HashMap<>();
+    if (overallEvaluationDomain.getInterviewDomain().getInterviewType()
+        == InterviewType.TECHNICAL) {
+      if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
+          == InterviewMethod.CHAT) {
+        criteriaMap =
+            Map.of(
+                EvaluationCriteria.JOB_FIT,
+                overallEvaluationResultDto.textOverall().jobFit(),
+                EvaluationCriteria.GROWTH_POTENTIAL,
+                overallEvaluationResultDto.textOverall().growthPotential(),
+                EvaluationCriteria.WORK_ATTITUDE,
+                overallEvaluationResultDto.textOverall().workAttitude(),
+                EvaluationCriteria.TECHNICAL_DEPTH,
+                overallEvaluationResultDto.textOverall().technicalDepth());
+      } else if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
+          == InterviewMethod.VOICE) {
+        criteriaMap =
+            Map.of(
+                EvaluationCriteria.JOB_FIT,
+                overallEvaluationResultDto.textOverall().jobFit(),
+                EvaluationCriteria.GROWTH_POTENTIAL,
+                overallEvaluationResultDto.textOverall().growthPotential(),
+                EvaluationCriteria.WORK_ATTITUDE,
+                overallEvaluationResultDto.textOverall().workAttitude(),
+                EvaluationCriteria.TECHNICAL_DEPTH,
+                overallEvaluationResultDto.textOverall().technicalDepth(),
+                EvaluationCriteria.FLUENCY,
+                overallEvaluationResultDto.voiceOverall().fluency(),
+                EvaluationCriteria.CLARITY,
+                overallEvaluationResultDto.voiceOverall().clarity(),
+                EvaluationCriteria.WORD_REPETITION,
+                overallEvaluationResultDto.voiceOverall().wordRepetition());
+      }
+    } else if (overallEvaluationDomain.getInterviewDomain().getInterviewType()
+        == InterviewType.PERSONAL) {
+      if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
+          == InterviewMethod.CHAT) {
+        criteriaMap =
+            Map.of(
+                EvaluationCriteria.COMPANY_FIT,
+                overallEvaluationResultDto.textOverall().companyFit(),
+                EvaluationCriteria.ADAPTABILITY,
+                overallEvaluationResultDto.textOverall().adaptability(),
+                EvaluationCriteria.INTERPERSONAL_SKILLS,
+                overallEvaluationResultDto.textOverall().interpersonalSkills(),
+                EvaluationCriteria.GROWTH_ATTITUDE,
+                overallEvaluationResultDto.textOverall().growthAttitude());
+
+      } else if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
+          == InterviewMethod.VOICE) {
+        criteriaMap =
+            Map.of(
+                EvaluationCriteria.COMPANY_FIT,
+                overallEvaluationResultDto.textOverall().companyFit(),
+                EvaluationCriteria.ADAPTABILITY,
+                overallEvaluationResultDto.textOverall().adaptability(),
+                EvaluationCriteria.INTERPERSONAL_SKILLS,
+                overallEvaluationResultDto.textOverall().interpersonalSkills(),
+                EvaluationCriteria.GROWTH_ATTITUDE,
+                overallEvaluationResultDto.textOverall().growthAttitude(),
+                EvaluationCriteria.FLUENCY,
+                overallEvaluationResultDto.voiceOverall().fluency(),
+                EvaluationCriteria.CLARITY,
+                overallEvaluationResultDto.voiceOverall().clarity(),
+                EvaluationCriteria.WORD_REPETITION,
+                overallEvaluationResultDto.voiceOverall().wordRepetition());
+      }
+    }
 
     if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
         == InterviewMethod.VOICE) {
-      criteriaMap =
-          Map.of(
-              EvaluationCriteria.JOB_FIT,
-              overallEvaluationResultDto.textOverall().jobFit(),
-              EvaluationCriteria.GROWTH_POTENTIAL,
-              overallEvaluationResultDto.textOverall().growthPotential(),
-              EvaluationCriteria.WORK_ATTITUDE,
-              overallEvaluationResultDto.textOverall().workAttitude(),
-              EvaluationCriteria.TECHNICAL_DEPTH,
-              overallEvaluationResultDto.textOverall().technicalDepth(),
-              EvaluationCriteria.FLUENCY,
-              overallEvaluationResultDto.voiceOverall().fluency(),
-              EvaluationCriteria.CLARITY,
-              overallEvaluationResultDto.voiceOverall().clarity(),
-              EvaluationCriteria.WORD_REPETITION,
-              overallEvaluationResultDto.voiceOverall().wordRepetition());
+      criteriaMap.put(
+          EvaluationCriteria.FLUENCY, overallEvaluationResultDto.voiceOverall().fluency());
     }
 
     List<EvaluationCriteriaDomain> criteriaDomains =

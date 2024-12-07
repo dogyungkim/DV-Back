@@ -47,7 +47,7 @@ public class AnswerServiceImpl implements AnswerService {
     log.info("Successfully saved Answer and Evaluations for Question ID: {}", dto.questionId());
   }
 
-  private void saveAnswer(AnswerEvaluationRequestDto dto) {
+  private void  saveAnswer(AnswerEvaluationRequestDto dto) {
     AnswerDomain previousAnswer = getAnswerDomainFromQuestionId(dto.questionId());
     saveAnswerEvaluation(dto, previousAnswer);
   }
@@ -106,7 +106,9 @@ public class AnswerServiceImpl implements AnswerService {
     InterviewDomain interviewDomain =
         answerEvaluationDomain.getQuestionDomain().getInterviewDomain();
     long count = answerEvaluationRepository.countByInterviewId(interviewDomain.getInterviewId());
+    log.info("answer evaluation saved {}/{}", count, interviewDomain.getQuestionCount());
     if (count == interviewDomain.getQuestionCount()) {
+      log.info("answer evaluation finished. start request overall evaluation");
       evaluationService.getOverallEvaluation(
           new OverallEvaluationRequestDto(interviewDomain.getInterviewId()),
           interviewDomain.getUserDomain().getUserId());

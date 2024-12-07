@@ -116,7 +116,7 @@ public class AnswerEvaluationConverter {
             answerEvaluationDomain.getAnswerFeedbackSuggestion()));
   }
 
-  private AnswerEvaluationTextScoreDto toPersonalTextScoreDto(
+  private AnswerEvaluationTextScoreDto toTechnicalTextScoreDto(
       List<AnswerEvaluationScoreDomain> answerEvaluationScoreDomains) {
     AnswerEvaluationCriteriaDto appropriateResponse = null,
         logicalFlow = null,
@@ -160,7 +160,7 @@ public class AnswerEvaluationConverter {
         growthMindset);
   }
 
-  private AnswerEvaluationTextScoreDto toTechnicalTextScoreDto(
+  private AnswerEvaluationTextScoreDto toPersonalTextScoreDto(
       List<AnswerEvaluationScoreDomain> answerEvaluationScoreDomains) {
     AnswerEvaluationCriteriaDto appropriateResponse = new AnswerEvaluationCriteriaDto(0, ""),
         logicalFlow = new AnswerEvaluationCriteriaDto(0, ""),
