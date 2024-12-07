@@ -45,4 +45,9 @@ public class AnswerEvaluationRepositoryImpl implements AnswerEvaluationRepositor
     return answerEvaluationConverter.fromEntityToDomain(
         answerEvaluationJpaRepository.findByQuestionQuestionId(questionId));
   }
+
+  @Override
+  public long countByInterviewId(Long interviewId) {
+    return answerEvaluationJpaRepository.countByQuestionInterviewInterviewId(interviewId);
+  }
 }

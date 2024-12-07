@@ -13,8 +13,8 @@ public record EvaluationExternalRequestDto(
     @JsonProperty("interview_type") @NotNull String interviewType,
     @JsonProperty("interview_method") @NotNull String interviewMethod,
     @JsonProperty("job_role") @NotNull String jobName,
-    @JsonProperty("questions") @NotNull EvaluationExternalQuestionsRequestDto questions,
-    @JsonProperty("answers") @NotNull EvaluationExternalAnswersRequestDto answers,
+    @JsonProperty("questions") @NotNull List<EvaluationExternalQuestionRequestDto> questions,
+    @JsonProperty("answers") @NotNull List<EvaluationExternalAnswerRequestDto> answers,
     @JsonProperty("file_paths") List<String> filePaths) {
 
   public EvaluationExternalRequestDto(
@@ -23,8 +23,8 @@ public record EvaluationExternalRequestDto(
       InterviewType interviewType,
       InterviewMethod interviewMethod,
       String jobName,
-      EvaluationExternalQuestionsRequestDto questions,
-      EvaluationExternalAnswersRequestDto answers,
+      List<EvaluationExternalQuestionRequestDto> questions,
+      List<EvaluationExternalAnswerRequestDto> answers,
       List<String> filePaths) {
     this(
         userId,

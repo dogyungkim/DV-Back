@@ -78,11 +78,19 @@ public class CommonConstants {
   }
 
   public enum AnswerEvaluationScore {
+    // technical text scores
     APPROPRIATE_RESPONSE,
     LOGICAL_FLOW,
     KEY_TERMS,
     CONSISTENCY,
     GRAMMATICAL_ERRORS,
+    // personal text scores
+    TEAMWORK,
+    COMMUNICATION,
+    PROBLEM_SOLVING,
+    ACCOUNTABILITY,
+    GROWTH_MINDSET,
+    // voice scores
     WPM,
     STUTTER,
     PRONUNCIATION

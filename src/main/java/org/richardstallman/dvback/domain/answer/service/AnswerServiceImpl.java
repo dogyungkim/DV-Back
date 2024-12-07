@@ -2,13 +2,15 @@ package org.richardstallman.dvback.domain.answer.service;
 
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluationScore;
 import org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluationType;
-import org.richardstallman.dvback.domain.answer.converter.AnswerConverter;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
 import org.richardstallman.dvback.domain.answer.domain.request.AnswerEvaluationRequestDto;
 import org.richardstallman.dvback.domain.answer.domain.request.evaluation.AnswerEvaluationCriteriaDto;
@@ -18,12 +20,13 @@ import org.richardstallman.dvback.domain.evaluation.converter.AnswerEvaluationCo
 import org.richardstallman.dvback.domain.evaluation.domain.answer.AnswerEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.AnswerEvaluationScoreDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationRequestDto;
 import org.richardstallman.dvback.domain.evaluation.repository.answer.AnswerEvaluationRepository;
 import org.richardstallman.dvback.domain.evaluation.repository.answer.score.AnswerEvaluationScoreRepository;
 import org.richardstallman.dvback.domain.evaluation.repository.overall.OverallEvaluationRepository;
+import org.richardstallman.dvback.domain.evaluation.service.EvaluationService;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -34,41 +37,41 @@ public class AnswerServiceImpl implements AnswerService {
   private final OverallEvaluationRepository overallEvaluationRepository;
   private final AnswerEvaluationRepository answerEvaluationRepository;
   private final AnswerEvaluationScoreRepository answerEvaluationScoreRepository;
-  private final AnswerConverter answerConverter;
   private final AnswerEvaluationConverter answerEvaluationConverter;
+  private final EvaluationService evaluationService;
 
   @Override
   public void saveAnswerEvaluations(AnswerEvaluationRequestDto dto) {
     log.info("Start saving Answer and Evaluations for Question ID: {}", dto.questionId());
-
-    AnswerDomain answerDomain = saveAnswer(dto);
-    AnswerEvaluationDomain answerEvaluationDomain = saveAnswerEvaluation(dto, answerDomain);
-    saveAnswerEvaluationScores(answerEvaluationDomain, dto.answer().scores());
-
+    saveAnswer(dto);
     log.info("Successfully saved Answer and Evaluations for Question ID: {}", dto.questionId());
   }
 
-  private AnswerDomain saveAnswer(AnswerEvaluationRequestDto dto) {
+  private void saveAnswer(AnswerEvaluationRequestDto dto) {
     AnswerDomain previousAnswer = getAnswerDomainFromQuestionId(dto.questionId());
-    return answerRepository.save(
-        answerConverter.fromSttEvaluationRequestDtoToDomain(dto, previousAnswer));
+    saveAnswerEvaluation(dto, previousAnswer);
   }
 
-  private AnswerEvaluationDomain saveAnswerEvaluation(
-      AnswerEvaluationRequestDto dto, AnswerDomain answerDomain) {
-    OverallEvaluationDomain overallEvaluationDomain =
-        getOverallEvaluationDomainFromInterview(
-            answerDomain.getQuestionDomain().getInterviewDomain());
-    return answerEvaluationRepository.save(
-        answerEvaluationConverter.sttEvaluationFeedbackDomainToDomain(
-            dto.answer().feedback(), answerDomain, overallEvaluationDomain));
+  private void saveAnswerEvaluation(AnswerEvaluationRequestDto dto, AnswerDomain answerDomain) {
+    getOverallEvaluationDomainFromInterview(
+        answerDomain.getQuestionDomain().getInterviewDomain(), dto, answerDomain);
   }
 
   private void saveAnswerEvaluationScores(
       AnswerEvaluationDomain answerEvaluationDomain, @NotNull AnswerEvaluationScoreDto scores) {
     List<AnswerEvaluationScoreDomain> scoreDomains = new ArrayList<>();
-    Map<AnswerEvaluationScore, AnswerEvaluationCriteriaDto> textScores =
-        scores.textScores().toMap();
+    Map<AnswerEvaluationScore, AnswerEvaluationCriteriaDto> textScores = new HashMap<>();
+    if (answerEvaluationDomain.getOverallEvaluationDomain().getInterviewDomain().getInterviewType()
+        == InterviewType.PERSONAL) {
+
+      textScores = scores.textScores().toPersonalMap();
+    } else if (answerEvaluationDomain
+            .getOverallEvaluationDomain()
+            .getInterviewDomain()
+            .getInterviewType()
+        == InterviewType.TECHNICAL) {
+      textScores = scores.textScores().toTechnicalMap();
+    }
 
     for (Map.Entry<AnswerEvaluationScore, AnswerEvaluationCriteriaDto> entry :
         textScores.entrySet()) {
@@ -76,20 +79,38 @@ public class AnswerServiceImpl implements AnswerService {
           buildAnswerEvaluationScore(
               entry.getKey(), entry.getValue(), answerEvaluationDomain, AnswerEvaluationType.TEXT));
     }
+    if (answerEvaluationDomain
+            .getOverallEvaluationDomain()
+            .getInterviewDomain()
+            .getInterviewMethod()
+        == InterviewMethod.VOICE) {
+      Map<AnswerEvaluationScore, AnswerEvaluationCriteriaDto> voiceScores =
+          scores.voiceScores().toMap();
 
-    Map<AnswerEvaluationScore, AnswerEvaluationCriteriaDto> voiceScores =
-        scores.voiceScores().toMap();
-
-    for (Map.Entry<AnswerEvaluationScore, AnswerEvaluationCriteriaDto> entry :
-        voiceScores.entrySet()) {
-      scoreDomains.add(
-          buildAnswerEvaluationScore(
-              entry.getKey(),
-              entry.getValue(),
-              answerEvaluationDomain,
-              AnswerEvaluationType.VOICE));
+      for (Map.Entry<AnswerEvaluationScore, AnswerEvaluationCriteriaDto> entry :
+          voiceScores.entrySet()) {
+        scoreDomains.add(
+            buildAnswerEvaluationScore(
+                entry.getKey(),
+                entry.getValue(),
+                answerEvaluationDomain,
+                AnswerEvaluationType.VOICE));
+      }
     }
     answerEvaluationScoreRepository.saveAll(scoreDomains);
+
+    checkFinal(answerEvaluationDomain);
+  }
+
+  private void checkFinal(AnswerEvaluationDomain answerEvaluationDomain) {
+    InterviewDomain interviewDomain =
+        answerEvaluationDomain.getQuestionDomain().getInterviewDomain();
+    long count = answerEvaluationRepository.countByInterviewId(interviewDomain.getInterviewId());
+    if (count == interviewDomain.getQuestionCount()) {
+      evaluationService.getOverallEvaluation(
+          new OverallEvaluationRequestDto(interviewDomain.getInterviewId()),
+          interviewDomain.getUserDomain().getUserId());
+    }
   }
 
   private AnswerEvaluationScoreDomain buildAnswerEvaluationScore(
@@ -111,16 +132,27 @@ public class AnswerServiceImpl implements AnswerService {
     return answerRepository.findByQuestionId(questionId);
   }
 
-  @Transactional
-  protected OverallEvaluationDomain getOverallEvaluationDomainFromInterview(
-      InterviewDomain interviewDomain) {
+  private void getOverallEvaluationDomainFromInterview(
+      InterviewDomain interviewDomain, AnswerEvaluationRequestDto dto, AnswerDomain answerDomain) {
     OverallEvaluationDomain overallEvaluationDomain =
         overallEvaluationRepository.findByInterviewId(interviewDomain.getInterviewId());
+    log.info(overallEvaluationDomain == null ? null : overallEvaluationDomain.toString());
     if (overallEvaluationDomain == null) {
       overallEvaluationDomain =
           overallEvaluationRepository.save(
               OverallEvaluationDomain.builder().interviewDomain(interviewDomain).build());
     }
-    return overallEvaluationDomain;
+    saveAnswerEvaluations(dto, answerDomain, overallEvaluationDomain);
+  }
+
+  private void saveAnswerEvaluations(
+      AnswerEvaluationRequestDto dto,
+      AnswerDomain answerDomain,
+      OverallEvaluationDomain overallEvaluationDomain) {
+    AnswerEvaluationDomain answerEvaluationDomain =
+        answerEvaluationRepository.save(
+            answerEvaluationConverter.sttEvaluationFeedbackDomainToDomain(
+                dto.answer().feedback(), answerDomain, overallEvaluationDomain));
+    saveAnswerEvaluationScores(answerEvaluationDomain, dto.answer().scores());
   }
 }

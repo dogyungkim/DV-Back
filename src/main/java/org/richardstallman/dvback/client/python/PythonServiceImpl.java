@@ -58,7 +58,7 @@ public class PythonServiceImpl implements PythonService {
   }
 
   @Override
-  public void getOverallEvaluations(EvaluationExternalRequestDto requestDto) {
+  public void getOverallEvaluations(EvaluationExternalRequestDto requestDto, Long interviewId) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -66,13 +66,14 @@ public class PythonServiceImpl implements PythonService {
 
     URI uri =
         UriComponentsBuilder.fromUriString(pythonServerUrl)
-            .path(pythonServerEvaluationPath)
+            .path(String.format("/%d%s", interviewId, pythonServerEvaluationPath))
             .build()
             .toUri();
 
     ResponseEntity<EvaluationExternalResponseDto> response =
         restTemplate.exchange(
             uri, HttpMethod.POST, requestEntity, EvaluationExternalResponseDto.class);
+    log.info("Requested Overall Evaluation to python server : ({})", response.getBody());
 
     if (response.getStatusCode().is2xxSuccessful()) {
       response.getBody();

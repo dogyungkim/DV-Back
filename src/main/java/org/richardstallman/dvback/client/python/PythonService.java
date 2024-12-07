@@ -8,7 +8,7 @@ public interface PythonService {
 
   void requestQuestionList(QuestionExternalRequestDto requestDto, Long interviewId);
 
-  void getOverallEvaluations(EvaluationExternalRequestDto requestDto);
+  void getOverallEvaluations(EvaluationExternalRequestDto requestDto, Long interviewId);
 
   void sendAnswer(
       QuestionExternalSttRequestDto questionExternalSttRequestDto, Long interviewId, Long answerId);

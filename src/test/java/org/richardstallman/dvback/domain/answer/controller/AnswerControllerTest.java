@@ -64,7 +64,12 @@ public class AnswerControllerTest {
                     new AnswerEvaluationCriteriaDto(1, "1"),
                     new AnswerEvaluationCriteriaDto(1, "1"),
                     new AnswerEvaluationCriteriaDto(1, "1"),
-                    new AnswerEvaluationCriteriaDto(1, "1")),
+                    new AnswerEvaluationCriteriaDto(1, "1"),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null),
                 new AnswerEvaluationVoiceScoreDto(
                     new AnswerEvaluationCriteriaDto(1, "1"),
                     new AnswerEvaluationCriteriaDto(1, "1"),
@@ -73,7 +78,6 @@ public class AnswerControllerTest {
     AnswerEvaluationRequestDto answerEvaluationRequestDto =
         new AnswerEvaluationRequestDto(
             userId, interviewId, questionId, interviewMethod, answerEvaluationDto);
-
     ResultActions resultActions =
         mockMvc.perform(
             post("/answer/evaluations")
@@ -115,6 +119,11 @@ public class AnswerControllerTest {
                         fieldWithPath("answer.scores.text_scores.consistency.rationale"),
                         fieldWithPath("answer.scores.text_scores.grammatical_errors.score"),
                         fieldWithPath("answer.scores.text_scores.grammatical_errors.rationale"),
+                        fieldWithPath("answer.scores.text_scores.teamwork"),
+                        fieldWithPath("answer.scores.text_scores.communication"),
+                        fieldWithPath("answer.scores.text_scores.problem_solving"),
+                        fieldWithPath("answer.scores.text_scores.accountability"),
+                        fieldWithPath("answer.scores.text_scores.growth_mindset"),
                         fieldWithPath("answer.scores.voice_scores.wpm.score"),
                         fieldWithPath("answer.scores.voice_scores.wpm.rationale"),
                         fieldWithPath("answer.scores.voice_scores.stutter.score"),

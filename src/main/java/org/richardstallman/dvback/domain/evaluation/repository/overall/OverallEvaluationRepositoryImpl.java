@@ -27,6 +27,11 @@ public class OverallEvaluationRepositoryImpl implements OverallEvaluationReposit
 
   @Override
   public OverallEvaluationDomain findByInterviewId(Long interviewId) {
+    OverallEvaluationEntity overallEvaluationEntity =
+        overallEvaluationJpaRepository.findByInterviewInterviewId(interviewId);
+    if (overallEvaluationEntity == null) {
+      return null;
+    }
     return overallEvaluationConverter.fromEntityToDomain(
         overallEvaluationJpaRepository.findByInterviewInterviewId(interviewId));
   }

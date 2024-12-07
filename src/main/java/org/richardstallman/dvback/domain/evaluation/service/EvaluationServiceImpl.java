@@ -22,9 +22,7 @@ import org.richardstallman.dvback.domain.evaluation.domain.EvaluationCriteriaDom
 import org.richardstallman.dvback.domain.evaluation.domain.answer.AnswerEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.response.AnswerEvaluationResponseDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalAnswerRequestDto;
-import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalAnswersRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionRequestDto;
-import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionsRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationRequestDto;
@@ -175,6 +173,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
   private void callPythonEvaluationService(
       Long userId, List<QuestionDomain> questions, List<String> filePaths) {
+    InterviewDomain interviewDomain = questions.get(0).getInterviewDomain();
     List<EvaluationExternalQuestionRequestDto> questionTexts =
         questions.stream()
             .map(questionConverter::fromDomainToEvaluationExternalRequestDto)
@@ -206,7 +205,6 @@ public class EvaluationServiceImpl implements EvaluationService {
                         e.getQuestionDomain().getQuestionId(), answerMap.get(e)))
             .toList();
 
-    InterviewDomain interviewDomain = questions.get(0).getInterviewDomain();
     EvaluationExternalRequestDto requestDto =
         new EvaluationExternalRequestDto(
             userId,
@@ -214,11 +212,11 @@ public class EvaluationServiceImpl implements EvaluationService {
             interviewDomain.getInterviewType(),
             interviewDomain.getInterviewMethod(),
             interviewDomain.getJob().getJobName(),
-            new EvaluationExternalQuestionsRequestDto(questionTexts),
-            new EvaluationExternalAnswersRequestDto(answerRequestDtos),
+            questionTexts,
+            answerRequestDtos,
             filePaths);
-
-    pythonService.getOverallEvaluations(requestDto);
+    log.info("!!!request: ({})", requestDto);
+    pythonService.getOverallEvaluations(requestDto, interviewDomain.getInterviewId());
   }
 
   private OverallEvaluationResponseDto buildResponseDto(
