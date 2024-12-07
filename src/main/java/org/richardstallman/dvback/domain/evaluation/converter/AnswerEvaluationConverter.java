@@ -3,17 +3,19 @@ package org.richardstallman.dvback.domain.evaluation.converter;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
-import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
 import org.richardstallman.dvback.domain.answer.domain.request.evaluation.AnswerEvaluationCriteriaDto;
-import org.richardstallman.dvback.domain.answer.domain.request.evaluation.AnswerEvaluationDto;
 import org.richardstallman.dvback.domain.answer.domain.request.evaluation.AnswerEvaluationFeedbackDto;
-import org.richardstallman.dvback.domain.answer.domain.request.evaluation.AnswerEvaluationScoreDto;
-import org.richardstallman.dvback.domain.answer.domain.request.evaluation.AnswerEvaluationTextScoreDto;
 import org.richardstallman.dvback.domain.answer.domain.request.evaluation.AnswerEvaluationVoiceScoreDto;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.AnswerEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.AnswerEvaluationScoreDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.response.AnswerEvaluationResponseDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.personal.EvaluationExternalPersonalAnswerDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.personal.EvaluationExternalPersonalAnswerScoreDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.personal.EvaluationExternalPersonalAnswerTextScoreDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.technical.EvaluationExternalTechnicalAnswerDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.technical.EvaluationExternalTechnicalAnswerScoreDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.technical.EvaluationExternalTechnicalAnswerTextScoreDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.response.AnswerEvaluationScoreResponseDto;
 import org.richardstallman.dvback.domain.evaluation.entity.answer.AnswerEvaluationEntity;
@@ -93,19 +95,17 @@ public class AnswerEvaluationConverter {
     return new AnswerEvaluationVoiceScoreDto(wpm, stutter, pronunciation);
   }
 
-  public AnswerEvaluationDto fromDomainToDto(
+  public EvaluationExternalPersonalAnswerDto fromDomainToExternalPersonalDto(
       AnswerDomain answerDomain,
       AnswerEvaluationDomain answerEvaluationDomain,
       List<AnswerEvaluationScoreDomain> answerEvaluationScoreDomains) {
-    return new AnswerEvaluationDto(
+
+    return new EvaluationExternalPersonalAnswerDto(
         answerDomain.getAnswerText(),
         answerDomain.getS3AudioUrl(),
         answerDomain.getS3VideoUrl(),
-        new AnswerEvaluationScoreDto(
-            answerDomain.getQuestionDomain().getInterviewDomain().getInterviewType()
-                    == InterviewType.TECHNICAL
-                ? toTechnicalTextScoreDto(answerEvaluationScoreDomains)
-                : toPersonalTextScoreDto(answerEvaluationScoreDomains),
+        new EvaluationExternalPersonalAnswerScoreDto(
+            toExternalPersonalTextScoreDto(answerEvaluationScoreDomains),
             answerDomain.getQuestionDomain().getInterviewDomain().getInterviewMethod()
                     == InterviewMethod.CHAT
                 ? null
@@ -116,18 +116,34 @@ public class AnswerEvaluationConverter {
             answerEvaluationDomain.getAnswerFeedbackSuggestion()));
   }
 
-  private AnswerEvaluationTextScoreDto toTechnicalTextScoreDto(
+  public EvaluationExternalTechnicalAnswerDto fromDomainToExternalTechnicalDto(
+      AnswerDomain answerDomain,
+      AnswerEvaluationDomain answerEvaluationDomain,
+      List<AnswerEvaluationScoreDomain> answerEvaluationScoreDomains) {
+
+    return new EvaluationExternalTechnicalAnswerDto(
+        answerDomain.getAnswerText(),
+        answerDomain.getS3AudioUrl(),
+        answerDomain.getS3VideoUrl(),
+        new EvaluationExternalTechnicalAnswerScoreDto(
+            toExternalTechnicalTextScoreDto(answerEvaluationScoreDomains),
+            answerDomain.getQuestionDomain().getInterviewDomain().getInterviewMethod()
+                    == InterviewMethod.CHAT
+                ? null
+                : toAnswerEvaluationVoiceScoreDto(answerEvaluationScoreDomains)),
+        new AnswerEvaluationFeedbackDto(
+            answerEvaluationDomain.getAnswerFeedbackStrength(),
+            answerEvaluationDomain.getAnswerFeedbackImprovement(),
+            answerEvaluationDomain.getAnswerFeedbackSuggestion()));
+  }
+
+  private EvaluationExternalTechnicalAnswerTextScoreDto toExternalTechnicalTextScoreDto(
       List<AnswerEvaluationScoreDomain> answerEvaluationScoreDomains) {
     AnswerEvaluationCriteriaDto appropriateResponse = null,
         logicalFlow = null,
         keyTerms = null,
         consistency = null,
-        grammaticalErrors = new AnswerEvaluationCriteriaDto(0, ""),
-        teamwork = new AnswerEvaluationCriteriaDto(0, ""),
-        communication = new AnswerEvaluationCriteriaDto(0, ""),
-        problemSolving = new AnswerEvaluationCriteriaDto(0, ""),
-        accountability = new AnswerEvaluationCriteriaDto(0, ""),
-        growthMindset = new AnswerEvaluationCriteriaDto(0, "");
+        grammaticalErrors = null;
     for (AnswerEvaluationScoreDomain answerEvaluationScoreDomain : answerEvaluationScoreDomains) {
       switch (answerEvaluationScoreDomain.getAnswerEvaluationScoreName()) {
         case APPROPRIATE_RESPONSE -> appropriateResponse =
@@ -147,27 +163,13 @@ public class AnswerEvaluationConverter {
                 answerEvaluationScoreDomain.getScore(), answerEvaluationScoreDomain.getRationale());
       }
     }
-    return new AnswerEvaluationTextScoreDto(
-        appropriateResponse,
-        logicalFlow,
-        keyTerms,
-        consistency,
-        grammaticalErrors,
-        teamwork,
-        communication,
-        problemSolving,
-        accountability,
-        growthMindset);
+    return new EvaluationExternalTechnicalAnswerTextScoreDto(
+        appropriateResponse, logicalFlow, keyTerms, consistency, grammaticalErrors);
   }
 
-  private AnswerEvaluationTextScoreDto toPersonalTextScoreDto(
+  private EvaluationExternalPersonalAnswerTextScoreDto toExternalPersonalTextScoreDto(
       List<AnswerEvaluationScoreDomain> answerEvaluationScoreDomains) {
-    AnswerEvaluationCriteriaDto appropriateResponse = new AnswerEvaluationCriteriaDto(0, ""),
-        logicalFlow = new AnswerEvaluationCriteriaDto(0, ""),
-        keyTerms = new AnswerEvaluationCriteriaDto(0, ""),
-        consistency = new AnswerEvaluationCriteriaDto(0, ""),
-        grammaticalErrors = new AnswerEvaluationCriteriaDto(0, ""),
-        teamwork = null,
+    AnswerEvaluationCriteriaDto teamwork = null,
         communication = null,
         problemSolving = null,
         accountability = null,
@@ -191,17 +193,8 @@ public class AnswerEvaluationConverter {
                 answerEvaluationScoreDomain.getScore(), answerEvaluationScoreDomain.getRationale());
       }
     }
-    return new AnswerEvaluationTextScoreDto(
-        appropriateResponse,
-        logicalFlow,
-        keyTerms,
-        consistency,
-        grammaticalErrors,
-        teamwork,
-        communication,
-        problemSolving,
-        accountability,
-        growthMindset);
+    return new EvaluationExternalPersonalAnswerTextScoreDto(
+        teamwork, communication, problemSolving, accountability, growthMindset);
   }
 
   public AnswerEvaluationDomain sttEvaluationFeedbackDomainToDomain(

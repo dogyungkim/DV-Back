@@ -14,7 +14,6 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMetho
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
-import org.richardstallman.dvback.domain.answer.domain.request.evaluation.AnswerEvaluationDto;
 import org.richardstallman.dvback.domain.answer.repository.AnswerRepository;
 import org.richardstallman.dvback.domain.evaluation.converter.AnswerEvaluationConverter;
 import org.richardstallman.dvback.domain.evaluation.converter.AnswerEvaluationScoreConverter;
@@ -23,9 +22,13 @@ import org.richardstallman.dvback.domain.evaluation.converter.OverallEvaluationC
 import org.richardstallman.dvback.domain.evaluation.domain.EvaluationCriteriaDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.AnswerEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.answer.response.AnswerEvaluationResponseDto;
-import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalAnswerRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionRequestDto;
-import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.personal.EvaluationExternalPersonalAnswerDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.personal.EvaluationExternalPersonalAnswerRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.personal.EvaluationExternalPersonalRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.technical.EvaluationExternalTechnicalAnswerDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.technical.EvaluationExternalTechnicalAnswerRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.technical.EvaluationExternalTechnicalRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.request.OverallEvaluationResultCriteriaDto;
@@ -233,39 +236,79 @@ public class EvaluationServiceImpl implements EvaluationService {
             .map(question -> answerRepository.findByQuestionId(question.getQuestionId()))
             .toList();
 
-    Map<AnswerDomain, AnswerEvaluationDto> answerMap =
-        answerDomains.stream()
-            .collect(
-                Collectors.toMap(
-                    answer -> answer,
-                    answer ->
-                        answerEvaluationConverter.fromDomainToDto(
-                            answer,
-                            answerEvaluationRepository.findByQuestionId(
-                                answer.getQuestionDomain().getQuestionId()),
-                            answerEvaluationScoreRepository.findByQuestionId(
-                                answer.getQuestionDomain().getQuestionId()))));
+    if (interviewDomain.getInterviewType() == InterviewType.PERSONAL) {
+      Map<AnswerDomain, EvaluationExternalPersonalAnswerDto> answerPersonalMap =
+          answerDomains.stream()
+              .collect(
+                  Collectors.toMap(
+                      answer -> answer,
+                      answer ->
+                          answerEvaluationConverter.fromDomainToExternalPersonalDto(
+                              answer,
+                              answerEvaluationRepository.findByQuestionId(
+                                  answer.getQuestionDomain().getQuestionId()),
+                              answerEvaluationScoreRepository.findByQuestionId(
+                                  answer.getQuestionDomain().getQuestionId()))));
 
-    List<EvaluationExternalAnswerRequestDto> answerRequestDtos =
-        answerDomains.stream()
-            .map(
-                e ->
-                    new EvaluationExternalAnswerRequestDto(
-                        e.getQuestionDomain().getQuestionId(), answerMap.get(e)))
-            .toList();
+      List<EvaluationExternalPersonalAnswerRequestDto> answerPersonalRequestDtos =
+          answerDomains.stream()
+              .map(
+                  e ->
+                      new EvaluationExternalPersonalAnswerRequestDto(
+                          e.getQuestionDomain().getQuestionId(), answerPersonalMap.get(e)))
+              .toList();
 
-    EvaluationExternalRequestDto requestDto =
-        new EvaluationExternalRequestDto(
-            userId,
-            interviewDomain.getInterviewMode(),
-            interviewDomain.getInterviewType(),
-            interviewDomain.getInterviewMethod(),
-            interviewDomain.getJob().getJobName(),
-            questionTexts,
-            answerRequestDtos,
-            filePaths);
-    log.info("!!!request: ({})", requestDto);
-    pythonService.getOverallEvaluations(requestDto, interviewDomain.getInterviewId());
+      EvaluationExternalPersonalRequestDto personalRequestDto =
+          new EvaluationExternalPersonalRequestDto(
+              userId,
+              interviewDomain.getInterviewMode(),
+              interviewDomain.getInterviewType(),
+              interviewDomain.getInterviewMethod(),
+              interviewDomain.getJob().getJobName(),
+              questionTexts,
+              answerPersonalRequestDtos,
+              filePaths);
+      log.info(
+          "start request personal overall evaluations to python with ({})", personalRequestDto);
+      pythonService.getPersonalOverallEvaluations(
+          personalRequestDto, interviewDomain.getInterviewId());
+    } else if (interviewDomain.getInterviewType() == InterviewType.TECHNICAL) {
+      Map<AnswerDomain, EvaluationExternalTechnicalAnswerDto> answerTechnicalMap =
+          answerDomains.stream()
+              .collect(
+                  Collectors.toMap(
+                      answer -> answer,
+                      answer ->
+                          answerEvaluationConverter.fromDomainToExternalTechnicalDto(
+                              answer,
+                              answerEvaluationRepository.findByQuestionId(
+                                  answer.getQuestionDomain().getQuestionId()),
+                              answerEvaluationScoreRepository.findByQuestionId(
+                                  answer.getQuestionDomain().getQuestionId()))));
+
+      List<EvaluationExternalTechnicalAnswerRequestDto> answerTechnicalRequestDtos =
+          answerDomains.stream()
+              .map(
+                  e ->
+                      new EvaluationExternalTechnicalAnswerRequestDto(
+                          e.getQuestionDomain().getQuestionId(), answerTechnicalMap.get(e)))
+              .toList();
+
+      EvaluationExternalTechnicalRequestDto technicalRequestDto =
+          new EvaluationExternalTechnicalRequestDto(
+              userId,
+              interviewDomain.getInterviewMode(),
+              interviewDomain.getInterviewType(),
+              interviewDomain.getInterviewMethod(),
+              interviewDomain.getJob().getJobName(),
+              questionTexts,
+              answerTechnicalRequestDtos,
+              filePaths);
+      log.info(
+          "start request technical overall evaluations to python with ({})", technicalRequestDto);
+      pythonService.getTechnicalOverallEvaluations(
+          technicalRequestDto, interviewDomain.getInterviewId());
+    }
   }
 
   private OverallEvaluationResponseDto buildResponseDto(

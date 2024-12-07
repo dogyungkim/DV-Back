@@ -47,7 +47,7 @@ public class AnswerServiceImpl implements AnswerService {
     log.info("Successfully saved Answer and Evaluations for Question ID: {}", dto.questionId());
   }
 
-  private void  saveAnswer(AnswerEvaluationRequestDto dto) {
+  private void saveAnswer(AnswerEvaluationRequestDto dto) {
     AnswerDomain previousAnswer = getAnswerDomainFromQuestionId(dto.questionId());
     saveAnswerEvaluation(dto, previousAnswer);
   }
