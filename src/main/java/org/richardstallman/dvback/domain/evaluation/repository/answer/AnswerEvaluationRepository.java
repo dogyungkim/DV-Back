@@ -12,4 +12,6 @@ public interface AnswerEvaluationRepository {
   List<AnswerEvaluationDomain> findByInterviewId(Long interviewId);
 
   AnswerEvaluationDomain findByQuestionId(Long questionId);
+
+  long countByInterviewId(Long interviewId);
 }

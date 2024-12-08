@@ -282,7 +282,11 @@ public class EvaluationControllerTest {
                     new OverallEvaluationResultCriteriaDto(1, "11"),
                     new OverallEvaluationResultCriteriaDto(1, "11"),
                     new OverallEvaluationResultCriteriaDto(1, "11"),
-                    new OverallEvaluationResultCriteriaDto(1, "11")),
+                    new OverallEvaluationResultCriteriaDto(1, "11"),
+                    null,
+                    null,
+                    null,
+                    null),
                 new OverallEvaluationResultVoiceDto(
                     new OverallEvaluationResultCriteriaDto(1, "11"),
                     new OverallEvaluationResultCriteriaDto(1, "11"),
@@ -331,6 +335,14 @@ public class EvaluationControllerTest {
                             .description("텍스트 기술 점수"),
                         fieldWithPath("overall_evaluation.text_overall.technical_depth.rationale")
                             .description("텍스트 기술 평가 내용"),
+                        fieldWithPath("overall_evaluation.text_overall.company_fit")
+                            .description("텍스트 기업"),
+                        fieldWithPath("overall_evaluation.text_overall.adaptability")
+                            .description("텍스트 적응력"),
+                        fieldWithPath("overall_evaluation.text_overall.interpersonal_skills")
+                            .description("텍스트 대인관계"),
+                        fieldWithPath("overall_evaluation.text_overall.growth_attitude")
+                            .description("텍스트 성장"),
                         fieldWithPath("overall_evaluation.voice_overall.fluency.score")
                             .description("음성 유창함 점수"),
                         fieldWithPath("overall_evaluation.voice_overall.fluency.rationale")

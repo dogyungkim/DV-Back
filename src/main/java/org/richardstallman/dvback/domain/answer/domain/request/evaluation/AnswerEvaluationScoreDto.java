@@ -5,4 +5,4 @@ import jakarta.validation.constraints.NotNull;
 
 public record AnswerEvaluationScoreDto(
     @NotNull @JsonProperty("text_scores") AnswerEvaluationTextScoreDto textScores,
-    @NotNull @JsonProperty("voice_scores") AnswerEvaluationVoiceScoreDto voiceScores) {}
+    @JsonProperty("voice_scores") AnswerEvaluationVoiceScoreDto voiceScores) {}

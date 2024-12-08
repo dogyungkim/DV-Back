@@ -4,7 +4,8 @@ import java.net.URI;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.personal.EvaluationExternalPersonalRequestDto;
+import org.richardstallman.dvback.domain.evaluation.domain.external.request.technical.EvaluationExternalTechnicalRequestDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.response.EvaluationExternalResponseDto;
 import org.richardstallman.dvback.domain.question.domain.external.request.QuestionExternalRequestDto;
 import org.richardstallman.dvback.domain.question.domain.external.request.QuestionExternalSttRequestDto;
@@ -58,21 +59,51 @@ public class PythonServiceImpl implements PythonService {
   }
 
   @Override
-  public void getOverallEvaluations(EvaluationExternalRequestDto requestDto) {
+  public void getTechnicalOverallEvaluations(
+      EvaluationExternalTechnicalRequestDto requestDto, Long interviewId) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
-    HttpEntity<EvaluationExternalRequestDto> requestEntity = new HttpEntity<>(requestDto, headers);
+    HttpEntity<EvaluationExternalTechnicalRequestDto> requestEntity =
+        new HttpEntity<>(requestDto, headers);
 
     URI uri =
         UriComponentsBuilder.fromUriString(pythonServerUrl)
-            .path(pythonServerEvaluationPath)
+            .path(String.format("/%d%s", interviewId, pythonServerEvaluationPath))
             .build()
             .toUri();
 
     ResponseEntity<EvaluationExternalResponseDto> response =
         restTemplate.exchange(
             uri, HttpMethod.POST, requestEntity, EvaluationExternalResponseDto.class);
+    log.info("Requested Overall Evaluation to python server : ({})", response.getBody());
+
+    if (response.getStatusCode().is2xxSuccessful()) {
+      response.getBody();
+    } else {
+      throw new RuntimeException("Failed to connect to Python server");
+    }
+  }
+
+  @Override
+  public void getPersonalOverallEvaluations(
+      EvaluationExternalPersonalRequestDto requestDto, Long interviewId) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+
+    HttpEntity<EvaluationExternalPersonalRequestDto> requestEntity =
+        new HttpEntity<>(requestDto, headers);
+
+    URI uri =
+        UriComponentsBuilder.fromUriString(pythonServerUrl)
+            .path(String.format("/%d%s", interviewId, pythonServerEvaluationPath))
+            .build()
+            .toUri();
+
+    ResponseEntity<EvaluationExternalResponseDto> response =
+        restTemplate.exchange(
+            uri, HttpMethod.POST, requestEntity, EvaluationExternalResponseDto.class);
+    log.info("Requested Overall Evaluation to python server : ({})", response.getBody());
 
     if (response.getStatusCode().is2xxSuccessful()) {
       response.getBody();

@@ -12,4 +12,6 @@ public interface AnswerEvaluationJpaRepository extends JpaRepository<AnswerEvalu
       Long questionInterviewInterviewId);
 
   AnswerEvaluationEntity findByQuestionQuestionId(Long questionId);
+
+  long countByQuestionInterviewInterviewId(Long questionInterviewId);
 }

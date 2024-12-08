@@ -65,11 +65,16 @@ public class CommonConstants {
   @AllArgsConstructor
   @JsonFormat(shape = JsonFormat.Shape.STRING)
   public enum EvaluationCriteria {
-    ANSWER("answer"),
+    // technical text
     JOB_FIT("job_fit"),
     GROWTH_POTENTIAL("growth_potential"),
     WORK_ATTITUDE("work_attitude"),
     TECHNICAL_DEPTH("technical_depth"),
+    // personal text
+    COMPANY_FIT("company_fit"),
+    ADAPTABILITY("adaptability"),
+    INTERPERSONAL_SKILLS("interpersonal_skills"),
+    GROWTH_ATTITUDE("growth_attitude"),
     FLUENCY("fluency"),
     CLARITY("clarity"),
     WORD_REPETITION("word_repetition");
@@ -78,11 +83,19 @@ public class CommonConstants {
   }
 
   public enum AnswerEvaluationScore {
+    // technical text scores
     APPROPRIATE_RESPONSE,
     LOGICAL_FLOW,
     KEY_TERMS,
     CONSISTENCY,
     GRAMMATICAL_ERRORS,
+    // personal text scores
+    TEAMWORK,
+    COMMUNICATION,
+    PROBLEM_SOLVING,
+    ACCOUNTABILITY,
+    GROWTH_MINDSET,
+    // voice scores
     WPM,
     STUTTER,
     PRONUNCIATION
