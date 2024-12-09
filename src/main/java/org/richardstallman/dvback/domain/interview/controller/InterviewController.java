@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,5 +56,14 @@ public class InterviewController {
     final InterviewListResponseDto interviewListResponseDto =
         interviewService.getInterviewsByUserId(userId);
     return ResponseEntity.ok(DvApiResponse.of(interviewListResponseDto));
+  }
+
+  @GetMapping("/{interviewId}/owner")
+  public ResponseEntity<DvApiResponse<Boolean>> checkInterviewOwner(
+      @AuthenticationPrincipal final Long userId,
+      @PathVariable final Long interviewId
+  ) {
+    boolean isOwner = interviewService.checkInterviewOwner(userId, interviewId);
+    return ResponseEntity.ok(DvApiResponse.of(isOwner));
   }
 }

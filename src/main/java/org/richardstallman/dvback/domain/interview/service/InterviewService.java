@@ -19,4 +19,6 @@ public interface InterviewService {
   InterviewEvaluationListResponseDto getInterviewsByUserIdForEvaluation(Long userId);
 
   InterviewResponseDto getInterviewResponseDtoByDomain(InterviewDomain interviewDomain);
+
+  Boolean checkInterviewOwner(Long userId, Long interviewId);
 }
