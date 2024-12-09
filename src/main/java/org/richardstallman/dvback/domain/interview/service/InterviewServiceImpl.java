@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
@@ -13,6 +14,8 @@ import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMetho
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransactionType;
+import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
+import org.richardstallman.dvback.domain.evaluation.repository.overall.OverallEvaluationRepository;
 import org.richardstallman.dvback.domain.file.converter.CoverLetterConverter;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 import org.richardstallman.dvback.domain.file.domain.request.CoverLetterRequestDto;
@@ -52,6 +55,7 @@ public class InterviewServiceImpl implements InterviewService {
   private final CoverLetterService coverLetterService;
   private final UserService userService;
   private final TicketService ticketService;
+  private final OverallEvaluationRepository overallEvaluationRepository;
 
   public static final String ERROR_INTERVIEW_ID_NOT_NULL =
       "Interview ID should be null for new interviews";
@@ -205,6 +209,17 @@ public class InterviewServiceImpl implements InterviewService {
   @Override
   public InterviewResponseDto getInterviewResponseDtoByDomain(InterviewDomain interviewDomain) {
     return interviewConverter.fromDomainToResponseDto(interviewDomain, getFiles(interviewDomain));
+  }
+
+  @Override
+  public boolean checkInterviewOwner(Long userId, Long interviewId) {
+    InterviewDomain interviewDomain = getInterviewById(interviewId);
+    if (!Objects.equals(interviewDomain.getUserDomain().getUserId(), userId)) {
+      return false;
+    }
+    OverallEvaluationDomain overallEvaluationDomain =
+        overallEvaluationRepository.findByInterviewId(interviewId);
+    return overallEvaluationDomain == null;
   }
 
   private InterviewDomain initializeInterviewDomain(

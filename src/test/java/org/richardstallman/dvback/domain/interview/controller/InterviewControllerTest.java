@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.domain.interview.controller;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -773,6 +774,52 @@ public class InterviewControllerTest {
                         fieldWithPath("message").description("응답 메시지"),
                         fieldWithPath("data.interviews[0].interviewTitle").description("면접 제목"),
                         fieldWithPath("data.interviews[0].interviewId").description("면접 식별자"))
+                    .build())));
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("인터뷰 소유 여부 확인 - 사용자가 소유자인 경우 true 반환")
+  void checkInterviewOwner() throws Exception {
+    // given
+    Long userId = 1L;
+    Long interviewId = 100L;
+    boolean isOwner = true;
+
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    when(interviewService.checkInterviewOwner(userId, interviewId)).thenReturn(isOwner);
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/interview/{interviewId}/owner", interviewId)
+                .cookie(authCookie)
+                .contentType(MediaType.APPLICATION_JSON));
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("code").value(200))
+        .andExpect(jsonPath("message").value("SUCCESS"))
+        .andExpect(jsonPath("data").value(true));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "인터뷰 소유 여부 확인 - 사용자가 소유자인 경우 true 반환",
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Interview API")
+                    .summary("인터뷰 소유 여부 확인")
+                    .description("주어진 인터뷰 ID에 대해 사용자가 소유자인지 확인합니다.")
+                    .pathParameters(parameterWithName("interviewId").description("확인할 인터뷰의 식별자"))
+                    .responseFields(
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("응답 메시지"),
+                        fieldWithPath("data").description("소유 여부 (true: 소유자, false: 소유자가 아님)"))
                     .build())));
   }
 }
