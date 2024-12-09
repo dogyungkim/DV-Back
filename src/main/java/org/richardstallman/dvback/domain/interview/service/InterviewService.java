@@ -20,5 +20,5 @@ public interface InterviewService {
 
   InterviewResponseDto getInterviewResponseDtoByDomain(InterviewDomain interviewDomain);
 
-  Boolean checkInterviewOwner(Long userId, Long interviewId);
+  boolean checkInterviewOwner(Long userId, Long interviewId);
 }
