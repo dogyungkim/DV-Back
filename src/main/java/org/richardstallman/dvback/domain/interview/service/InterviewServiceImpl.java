@@ -214,10 +214,11 @@ public class InterviewServiceImpl implements InterviewService {
   @Override
   public Boolean checkInterviewOwner(Long userId, Long interviewId) {
     InterviewDomain interviewDomain = getInterviewById(interviewId);
-    if(!Objects.equals(interviewDomain.getUserDomain().getUserId(), userId)) {
+    if (!Objects.equals(interviewDomain.getUserDomain().getUserId(), userId)) {
       return false;
     }
-    OverallEvaluationDomain overallEvaluationDomain = overallEvaluationRepository.findByInterviewId(interviewId);
+    OverallEvaluationDomain overallEvaluationDomain =
+        overallEvaluationRepository.findByInterviewId(interviewId);
     return overallEvaluationDomain == null;
   }
 

@@ -60,9 +60,7 @@ public class InterviewController {
 
   @GetMapping("/{interviewId}/owner")
   public ResponseEntity<DvApiResponse<Boolean>> checkInterviewOwner(
-      @AuthenticationPrincipal final Long userId,
-      @PathVariable final Long interviewId
-  ) {
+      @AuthenticationPrincipal final Long userId, @PathVariable final Long interviewId) {
     boolean isOwner = interviewService.checkInterviewOwner(userId, interviewId);
     return ResponseEntity.ok(DvApiResponse.of(isOwner));
   }
