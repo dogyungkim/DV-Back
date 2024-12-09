@@ -8,6 +8,9 @@ import org.richardstallman.dvback.domain.interview.domain.response.InterviewResp
 
 public record PostCreateResponseDto(
     @NotNull long postId,
+    @NotNull long authorId,
+    @NotNull String authorNickname,
+    @NotNull String authorProfileUrl,
     @NotNull String jobName,
     @NotNull String jobNameKorean,
     @NotNull String content,

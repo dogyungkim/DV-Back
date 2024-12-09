@@ -5,6 +5,7 @@ import static org.richardstallman.dvback.common.constant.CommonConstants.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.richardstallman.dvback.client.s3.service.S3Service;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.OverallEvaluationDomain;
 import org.richardstallman.dvback.domain.evaluation.domain.overall.response.OverallEvaluationResponseDto;
 import org.richardstallman.dvback.domain.evaluation.service.EvaluationService;
@@ -40,6 +41,7 @@ public class PostServiceImpl implements PostService {
   private final InterviewService interviewService;
   private final EvaluationService evaluationService;
   private final SubscriptionRepository subscriptionRepository;
+  private final S3Service s3Service;
 
   @Override
   public PostCreateResponseDto createPost(PostCreateRequestDto postCreateRequestDto, Long userId) {
@@ -68,21 +70,38 @@ public class PostServiceImpl implements PostService {
     OverallEvaluationResponseDto overallEvaluationResponseDto =
         getOverallEvaluationResponseDtoByDomain(overallEvaluationDomain);
 
+    String s3ProfileImageUrl = getProfileImagePreSignedUrl(userDomain);
+
     return postConverter.fromDomainToCreateResponseDto(
-        postDomain, interviewResponseDto, overallEvaluationResponseDto);
+        postDomain, interviewResponseDto, overallEvaluationResponseDto, s3ProfileImageUrl);
   }
 
   @Override
   public List<PostCreateResponseDto> getPostsByUserId(Long userId) {
     List<PostDomain> postDomains = postRepository.findByAuthorId(userId);
+
     return postDomains.stream()
         .map(
             (e) ->
                 postConverter.fromDomainToCreateResponseDto(
                     e,
                     getInterviewResponseDtoByDomain(e.getInterviewDomain()),
-                    getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain())))
+                    getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain()),
+                    getProfileImagePreSignedUrl(e.getAuthorDomain())))
         .toList();
+  }
+
+  private String getProfileImagePreSignedUrl(UserDomain userDomain) {
+    if (userDomain != null && userDomain.getS3ProfileImageObjectKey() != null) {
+      return s3Service
+          .getPreSignedUrlForImage(userDomain.getS3ProfileImageObjectKey(), userDomain.getUserId())
+          .preSignedUrl();
+    }
+    throw new ApiException(
+        HttpStatus.BAD_REQUEST,
+        String.format(
+            "User (%d) or User (%d)'s profile image not found.",
+            userDomain.getUserId(), userDomain.getUserId()));
   }
 
   @Override
@@ -134,7 +153,8 @@ public class PostServiceImpl implements PostService {
             postConverter.fromDomainToCreateResponseDto(
                 e,
                 getInterviewResponseDtoByDomain(e.getInterviewDomain()),
-                getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain())));
+                getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain()),
+                getProfileImagePreSignedUrl(e.getAuthorDomain())));
   }
 
   @Override
@@ -146,6 +166,7 @@ public class PostServiceImpl implements PostService {
             postConverter.fromDomainToCreateResponseDto(
                 e,
                 getInterviewResponseDtoByDomain(e.getInterviewDomain()),
-                getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain())));
+                getOverallEvaluationResponseDtoByDomain(e.getOverallEvaluationDomain()),
+                getProfileImagePreSignedUrl(e.getAuthorDomain())));
   }
 }
