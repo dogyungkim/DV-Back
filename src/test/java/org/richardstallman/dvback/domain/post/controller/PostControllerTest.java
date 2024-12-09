@@ -92,6 +92,9 @@ public class PostControllerTest {
     PostCreateResponseDto responseDto =
         new PostCreateResponseDto(
             100L,
+            12L,
+            "nickname",
+            "authorProfileUrl",
             "BACK_END",
             "백엔드",
             "This is a test post content.",
@@ -157,6 +160,15 @@ public class PostControllerTest {
                         fieldWithPath("data.postId")
                             .type(JsonFieldType.NUMBER)
                             .description("게시글 식별자"),
+                        fieldWithPath("data.authorId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("작성자 식별자"),
+                        fieldWithPath("data.authorNickname")
+                            .type(JsonFieldType.STRING)
+                            .description("작성자 닉네임"),
+                        fieldWithPath("data.authorProfileUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("작성자 프로필 이미지 URL"),
                         fieldWithPath("data.jobName")
                             .type(JsonFieldType.STRING)
                             .description("직무 이름"),
@@ -226,6 +238,9 @@ public class PostControllerTest {
     PostCreateResponseDto responseDto =
         new PostCreateResponseDto(
             100L,
+            12L,
+            "nickname",
+            "authorProfileUrl",
             "BACK_END",
             "백엔드",
             "This is a test post content.",
@@ -292,6 +307,15 @@ public class PostControllerTest {
                         fieldWithPath("data.postId")
                             .type(JsonFieldType.NUMBER)
                             .description("게시글 식별자"),
+                        fieldWithPath("data.authorId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("작성자 식별자"),
+                        fieldWithPath("data.authorNickname")
+                            .type(JsonFieldType.STRING)
+                            .description("작성자 닉네임"),
+                        fieldWithPath("data.authorProfileUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("작성자 프로필 이미지 URL"),
                         fieldWithPath("data.jobName")
                             .type(JsonFieldType.STRING)
                             .description("직무 이름"),
@@ -429,6 +453,9 @@ public class PostControllerTest {
     PostCreateResponseDto responseDto =
         new PostCreateResponseDto(
             100L,
+            12L,
+            "nickname",
+            "authorProfileUrl",
             "BACK_END",
             "백엔드",
             "This is a test post content.",
@@ -503,6 +530,15 @@ public class PostControllerTest {
                         fieldWithPath("data.postId")
                             .type(JsonFieldType.NUMBER)
                             .description("게시글 식별자"),
+                        fieldWithPath("data.authorId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("작성자 식별자"),
+                        fieldWithPath("data.authorNickname")
+                            .type(JsonFieldType.STRING)
+                            .description("작성자 닉네임"),
+                        fieldWithPath("data.authorProfileUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("작성자 프로필 이미지 URL"),
                         fieldWithPath("data.jobName")
                             .type(JsonFieldType.STRING)
                             .description("직무 이름"),
@@ -691,6 +727,9 @@ public class PostControllerTest {
     PostCreateResponseDto responseDto1 =
         new PostCreateResponseDto(
             100L,
+            12L,
+            "nickname",
+            "authorProfileUrl",
             "BACK_END",
             "백엔드",
             "This is a test post content.",
@@ -703,6 +742,9 @@ public class PostControllerTest {
     PostCreateResponseDto responseDto2 =
         new PostCreateResponseDto(
             108L,
+            12L,
+            "nickname",
+            "authorProfileUrl",
             "BACK_END",
             "백엔드",
             "This is a test post content.",
@@ -715,6 +757,9 @@ public class PostControllerTest {
     PostCreateResponseDto responseDto3 =
         new PostCreateResponseDto(
             132L,
+            12L,
+            "nickname",
+            "authorProfileUrl",
             "BACK_END",
             "백엔드",
             "This is a test post content.",
@@ -762,6 +807,15 @@ public class PostControllerTest {
                         fieldWithPath("data.posts[].postId")
                             .type(JsonFieldType.NUMBER)
                             .description("게시글 식별자"),
+                        fieldWithPath("data.posts[].authorId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("작성자 식별자"),
+                        fieldWithPath("data.posts[].authorNickname")
+                            .type(JsonFieldType.STRING)
+                            .description("작성자 닉네임"),
+                        fieldWithPath("data.posts[].authorProfileUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("작성자 프로필 이미지 URL"),
                         fieldWithPath("data.posts[].jobName")
                             .type(JsonFieldType.STRING)
                             .description("직무 이름"),
@@ -926,6 +980,9 @@ public class PostControllerTest {
         List.of(
             new PostCreateResponseDto(
                 100L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "This is test post content 1.",
@@ -936,6 +993,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 101L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "This is test post content 2.",
@@ -946,6 +1006,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 102L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "This is test post content 3.",
@@ -956,6 +1019,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 103L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "This is test post content 4.",
@@ -966,6 +1032,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 104L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "This is test post content 5.",
@@ -976,6 +1045,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 105L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "This is test post content 6.",
@@ -986,6 +1058,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 106L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "This is test post content 7.",
@@ -996,6 +1071,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 107L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "This is test post content 8.",
@@ -1006,6 +1084,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 108L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "This is test post content 9.",
@@ -1016,6 +1097,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 109L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "This is test post content 10.",
@@ -1067,6 +1151,15 @@ public class PostControllerTest {
                         fieldWithPath("data.posts[].postId")
                             .type(JsonFieldType.NUMBER)
                             .description("게시글 식별자"),
+                        fieldWithPath("data.posts[].authorId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("작성자 식별자"),
+                        fieldWithPath("data.posts[].authorNickname")
+                            .type(JsonFieldType.STRING)
+                            .description("작성자 닉네임"),
+                        fieldWithPath("data.posts[].authorProfileUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("작성자 프로필 이미지 URL"),
                         fieldWithPath("data.posts[].jobName")
                             .type(JsonFieldType.STRING)
                             .description("직무 이름"),
@@ -1114,6 +1207,9 @@ public class PostControllerTest {
         List.of(
             new PostCreateResponseDto(
                 100L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "This is a test post about Spring Boot.",
@@ -1124,6 +1220,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 101L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "Testing JPA and database connections.",
@@ -1134,6 +1233,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 102L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "Unit test examples with JUnit and Mockito.",
@@ -1144,6 +1246,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 103L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "Integration testing best practices.",
@@ -1154,6 +1259,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 104L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "Test-driven development workflow.",
@@ -1164,6 +1272,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 105L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "Testing RESTful APIs with Spring Boot Test.",
@@ -1174,6 +1285,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 106L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "Performance testing using JMeter.",
@@ -1184,6 +1298,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 107L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "End-to-end testing strategies.",
@@ -1194,6 +1311,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 108L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "Test coverage analysis with JaCoCo.",
@@ -1204,6 +1324,9 @@ public class PostControllerTest {
                 LocalDateTime.now()),
             new PostCreateResponseDto(
                 109L,
+                12L,
+                "nickname",
+                "authorProfileUrl",
                 "BACK_END",
                 "백엔드",
                 "Automated testing pipeline setup.",
@@ -1258,6 +1381,15 @@ public class PostControllerTest {
                         fieldWithPath("data.posts[].postId")
                             .type(JsonFieldType.NUMBER)
                             .description("게시글 식별자"),
+                        fieldWithPath("data.posts[].authorId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("작성자 식별자"),
+                        fieldWithPath("data.posts[].authorNickname")
+                            .type(JsonFieldType.STRING)
+                            .description("작성자 닉네임"),
+                        fieldWithPath("data.posts[].authorProfileUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("작성자 프로필 이미지 URL"),
                         fieldWithPath("data.posts[].jobName")
                             .type(JsonFieldType.STRING)
                             .description("직무 이름"),
