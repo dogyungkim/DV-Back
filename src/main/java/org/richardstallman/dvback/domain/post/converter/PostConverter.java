@@ -87,9 +87,13 @@ public class PostConverter {
   public PostCreateResponseDto fromDomainToCreateResponseDto(
       PostDomain postDomain,
       InterviewResponseDto interviewResponseDto,
-      OverallEvaluationResponseDto overallEvaluationResponseDto) {
+      OverallEvaluationResponseDto overallEvaluationResponseDto,
+      String s3ProfileUrl) {
     return new PostCreateResponseDto(
         postDomain.getPostId(),
+        postDomain.getAuthorDomain().getUserId(),
+        postDomain.getAuthorDomain().getNickname(),
+        s3ProfileUrl,
         postDomain.getJobDomain().getJobName(),
         postDomain.getJobDomain().getJobNameKorean(),
         postDomain.getContent(),
