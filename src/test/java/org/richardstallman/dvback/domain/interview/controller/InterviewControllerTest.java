@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -33,7 +34,9 @@ import org.richardstallman.dvback.common.constant.CommonConstants.TicketTransact
 import org.richardstallman.dvback.domain.file.domain.request.CoverLetterRequestDto;
 import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
 import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
+import org.richardstallman.dvback.domain.interview.domain.request.InterviewAddFileRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewAddFileResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationListResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
@@ -361,6 +364,127 @@ public class InterviewControllerTest {
                         fieldWithPath("data")
                             .type(JsonFieldType.STRING)
                             .description("에러 메시지: {누락된 필드}: {누락된 필드} is required"))
+                    .build())));
+  }
+
+  @Test
+  @WithMockUser
+  @DisplayName("면접 방식이 VOICE일 때 면접 파일 s3 업로드 후 따로 저장 위한 면접 수정 - 성공")
+  void update_interview_when_interview_method_is_voice_and_create_file() throws Exception {
+    // given
+    Long interviewId = 2L;
+    String interviewTitle = "2024-12-15_TECHNICAL_CHAT_REAL_면접";
+    InterviewStatus interviewStatus = InterviewStatus.FILE_UPLOADED;
+    InterviewType interviewType = InterviewType.TECHNICAL;
+    InterviewMethod interviewMethod = InterviewMethod.CHAT;
+    InterviewMode interviewMode = InterviewMode.REAL;
+    int questionCount = 5;
+    JobDomain jobDomain =
+        JobDomain.builder()
+            .jobId(1L)
+            .jobName("BACK_END")
+            .jobNameKorean("백엔드")
+            .jobDescription("백엔드 직무입니다.")
+            .build();
+    FileResponseDto file = new FileResponseDto(1L, FileType.COVER_LETTER, "fileName", "s3FileUrl");
+
+    InterviewAddFileResponseDto interviewAddFileResponseDto =
+        new InterviewAddFileResponseDto(
+            interviewId,
+            interviewTitle,
+            interviewStatus,
+            interviewType,
+            interviewMethod,
+            interviewMode,
+            questionCount,
+            jobDomain,
+            file);
+
+    when(interviewService.addInterviewFile(any())).thenReturn(interviewAddFileResponseDto);
+
+    InterviewAddFileRequestDto interviewAddFileRequestDto =
+        new InterviewAddFileRequestDto(
+            interviewId, new CoverLetterRequestDto(FileType.COVER_LETTER, file.getS3FileUrl()));
+
+    String content = objectMapper.writeValueAsString(interviewAddFileRequestDto);
+
+    // when
+    ResultActions resultActions =
+        mockMvc.perform(put("/interview").contentType(MediaType.APPLICATION_JSON).content(content));
+
+    // then
+    resultActions.andExpect(status().isOk());
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "면접 방식이 VOICE일 때 면접 파일 s3 업로드 후 따로 저장 위한 면접 수정 - 성공",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("Interview API")
+                    .summary("면접 파일 정보 추가 위한 면접 수정 API")
+                    .requestFields(
+                        fieldWithPath("interviewId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("coverLetter.type")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 파일 유형: COVER_LETTER"),
+                        fieldWithPath("coverLetter.filePath")
+                            .type(JsonFieldType.STRING)
+                            .description("s3 업로드 object key"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.interviewId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 식별자"),
+                        fieldWithPath("data.interviewTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 제목"),
+                        fieldWithPath("data.interviewStatus")
+                            .type(JsonFieldType.STRING)
+                            .description(
+                                "면접 상태: INITIAL(최초 정보 입력 상태), FILE_UPLOADED(자소서 및 파일 업로드 완료 상태), WAITING_FOR_QUESTION(질문 생성 요청 후 대기 상태), (READY면접 시작 가능 상태), IN_PROGRESS(면접 진행 중 상태), WAITING_FOR_FEEDBACK(피드백 생성 요청 후 대기 상태), COMPLETED(피드백 완료 상태)"),
+                        fieldWithPath("data.interviewType")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 유형: TECHNICAL(기술 면접), PERSONAL(인성 면접)"),
+                        fieldWithPath("data.interviewMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 방식: CHAT(채팅 면접), VOICE(음성 면접), VIDEO(영상 면접)"),
+                        fieldWithPath("data.interviewMode")
+                            .type(JsonFieldType.STRING)
+                            .description("면접 모드: REAL(실전 면접 모드), GENERAL(일반/모의 면접 모드)"),
+                        fieldWithPath("data.questionCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("면접 질문 개수"),
+                        fieldWithPath("data.job.jobId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("직무 식별자"),
+                        fieldWithPath("data.job.jobName")
+                            .type(JsonFieldType.STRING)
+                            .description(
+                                "직무 이름: BACK_END(백엔드), FRONT_END(프론트엔드), INFRA(인프라), AI(인공지능)"),
+                        fieldWithPath("data.job.jobNameKorean")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 이름: 백엔드, 프론트엔드, 인프라, 인공지능"),
+                        fieldWithPath("data.job.jobDescription")
+                            .type(JsonFieldType.STRING)
+                            .description("직무 설명"),
+                        fieldWithPath("data.file.fileId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("파일 식별자"),
+                        fieldWithPath("data.file.type")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 유형: COVER_LETTER, RESUME, PORTFOLIO"),
+                        fieldWithPath("data.file.fileName")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 이름"),
+                        fieldWithPath("data.file.s3FileUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 경로"))
                     .build())));
   }
 
