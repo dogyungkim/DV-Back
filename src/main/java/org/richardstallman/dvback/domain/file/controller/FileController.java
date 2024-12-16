@@ -71,6 +71,21 @@ public class FileController {
     return ResponseEntity.ok(DvApiResponse.of(preSignedUrlResponseDto));
   }
 
+  @GetMapping("/cover-letter/user/{coverLetterId}/download-url")
+  public ResponseEntity<DvApiResponse<PreSignedUrlResponseDto>>
+      getCoverLetterDownloadUrlOnFileSelect(
+          @AuthenticationPrincipal Long userId, @PathVariable Long coverLetterId) {
+    log.info(
+        "Generating preSigned URL for file download on File Select: coverLetterId={}",
+        coverLetterId);
+
+    PreSignedUrlResponseDto preSignedUrlResponseDto =
+        s3Service.getDownloadURL(
+            coverLetterService.findCoverLetter(coverLetterId).getS3FileUrl(), userId);
+
+    return ResponseEntity.ok(DvApiResponse.of(preSignedUrlResponseDto));
+  }
+
   @GetMapping("/profile-image/{fileName}/upload-url")
   public ResponseEntity<DvApiResponse<PreSignedUrlResponseDto>> getProfileImageUploadUrl(
       @AuthenticationPrincipal Long userId, @PathVariable String fileName) {
@@ -102,7 +117,7 @@ public class FileController {
         questionId);
     PreSignedUrlResponseDto preSignedUrl =
         s3Service.createPreSignedURLForAudio(
-            FileType.COVER_LETTER, userId, interviewId, questionId, null);
+            FileType.AUDIO_ANSWER.getFolderName(), userId, interviewId, questionId, null);
 
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_JSON)

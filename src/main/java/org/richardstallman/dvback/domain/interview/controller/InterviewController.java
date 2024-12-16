@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.common.DvApiResponse;
+import org.richardstallman.dvback.domain.interview.domain.request.InterviewAddFileRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewAddFileResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationListResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewListResponseDto;
@@ -16,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +43,18 @@ public class InterviewController {
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(DvApiResponse.of(interviewCreateResponseDto));
+  }
+
+  @PutMapping
+  public ResponseEntity<DvApiResponse<InterviewAddFileResponseDto>> addInterviewFile(
+      @AuthenticationPrincipal Long userId,
+      @Valid @RequestBody final InterviewAddFileRequestDto interviewAddFileRequestDto) {
+    log.info(
+        "Authenticated user ID When Add Interview File: {} {}", userId, interviewAddFileRequestDto);
+
+    final InterviewAddFileResponseDto interviewAddFileResponseDto =
+        interviewService.addInterviewFile(interviewAddFileRequestDto);
+    return ResponseEntity.ok(DvApiResponse.of(interviewAddFileResponseDto));
   }
 
   @GetMapping("/evaluation")

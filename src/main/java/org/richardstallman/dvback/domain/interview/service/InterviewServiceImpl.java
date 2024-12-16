@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewAssetType;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
@@ -25,7 +24,9 @@ import org.richardstallman.dvback.domain.file.service.CoverLetterService;
 import org.richardstallman.dvback.domain.file.service.FileService;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
+import org.richardstallman.dvback.domain.interview.domain.request.InterviewAddFileRequestDto;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewAddFileResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationListResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewListResponseDto;
@@ -80,13 +81,31 @@ public class InterviewServiceImpl implements InterviewService {
     validateInterviewIdAssigned(createdInterviewDomain);
 
     List<FileResponseDto> fileResponseDtos = new ArrayList<>();
-    if (interviewCreateRequestDto.interviewMode() == InterviewMode.REAL) {
-      fileResponseDtos.add(
-          coverLetterConverter.fromDomainToResponseDto(createdInterviewDomain.getCoverLetter()));
-    }
 
     return interviewConverter.fromDomainToCreateResponseDto(
         createdInterviewDomain, fileResponseDtos, ticketResponseDto);
+  }
+
+  @Override
+  public InterviewAddFileResponseDto addInterviewFile(
+      InterviewAddFileRequestDto interviewAddFileRequestDto) {
+    InterviewDomain target = getInterviewById(interviewAddFileRequestDto.interviewId());
+
+    String fileName =
+        fileService.getFileName(getCoverLetterUrl(interviewAddFileRequestDto.coverLetter()));
+    if (fileName == null) {
+      String[] sp = getCoverLetterUrl(interviewAddFileRequestDto.coverLetter()).split("/");
+      fileName = sp[sp.length - 1];
+    }
+    UserResponseDto userResponseDto = userService.getUserInfo(target.getUserDomain().getUserId());
+    CoverLetterDomain coverLetterDomain =
+        createCoverLetter(interviewAddFileRequestDto, fileName, userResponseDto);
+    InterviewDomain addedInterviewFile =
+        interviewConverter.addInterviewFile(target, coverLetterDomain);
+    InterviewDomain updatedInterview = interviewRepository.reSave(addedInterviewFile);
+    FileResponseDto fileResponseDto =
+        coverLetterConverter.fromDomainToResponseDto(coverLetterDomain);
+    return interviewConverter.fromDomainToAddFileResponseDto(updatedInterview, fileResponseDto);
   }
 
   private TicketResponseDto confirmTicket(
@@ -224,25 +243,10 @@ public class InterviewServiceImpl implements InterviewService {
 
   private InterviewDomain initializeInterviewDomain(
       InterviewCreateRequestDto interviewCreateRequestDto, JobDomain jobDomain, Long userId) {
-    if (interviewCreateRequestDto.interviewMode() == InterviewMode.REAL) {
-      String fileName =
-          fileService.getFileName(getCoverLetterUrl(interviewCreateRequestDto.files()));
-      if (fileName == null) {
-        String[] sp = getCoverLetterUrl(interviewCreateRequestDto.files()).split("/");
-        fileName = sp[sp.length - 1];
-      }
-      UserResponseDto userResponseDto = userService.getUserInfo(userId);
-      CoverLetterDomain coverLetterDomain =
-          createCoverLetter(interviewCreateRequestDto, fileName, userResponseDto);
-      return validateInterviewTitle(
-          interviewConverter.fromDtoToDomainWithStatusInitialWithModeReal(
-              interviewCreateRequestDto, jobDomain, coverLetterDomain, userResponseDto));
-    } else {
-      UserResponseDto userResponseDto = userService.getUserInfo(userId);
-      return validateInterviewTitle(
-          interviewConverter.fromDtoToDomainWithStatusInitial(
-              interviewCreateRequestDto, jobDomain, userResponseDto));
-    }
+    UserResponseDto userResponseDto = userService.getUserInfo(userId);
+    return validateInterviewTitle(
+        interviewConverter.fromDtoToDomainWithStatusInitial(
+            interviewCreateRequestDto, jobDomain, userResponseDto));
   }
 
   private String generateTitle(
@@ -285,24 +289,17 @@ public class InterviewServiceImpl implements InterviewService {
     return interviewDomain;
   }
 
-  private String getCoverLetterUrl(List<FileRequestDto> files) {
+  private String getCoverLetterUrl(FileRequestDto file) {
     CoverLetterRequestDto coverLetterRequestDto =
-        coverLetterConverter.fromFileRequestDtoToRequestDto(
-            files.stream()
-                .filter(item -> item.getType() == (FileType.COVER_LETTER))
-                .findFirst()
-                .orElseThrow(
-                    () ->
-                        new ApiException(
-                            HttpStatus.NOT_FOUND, "There is no cover letter in files.")));
+        coverLetterConverter.fromFileRequestDtoToRequestDto(file);
     return coverLetterRequestDto.getFilePath();
   }
 
   private CoverLetterDomain createCoverLetter(
-      InterviewCreateRequestDto requestDto, String fileName, UserResponseDto userResponseDto) {
+      InterviewAddFileRequestDto requestDto, String fileName, UserResponseDto userResponseDto) {
     return coverLetterService.createCoverLetter(
         coverLetterConverter.fromUrlToDomain(
-            getCoverLetterUrl(requestDto.files()), userResponseDto, fileName));
+            getCoverLetterUrl(requestDto.coverLetter()), userResponseDto, fileName));
   }
 
   private void validateInterviewIdNull(InterviewDomain interviewDomain) {

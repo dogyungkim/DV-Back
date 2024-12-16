@@ -52,7 +52,7 @@ public class S3ServiceImpl implements S3Service {
         s3Presigner.presignGetObject(
             builder -> builder.signatureDuration(urlDuration).getObjectRequest(getObjectRequest));
 
-    return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString());
+    return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString(), filePathKey);
   }
 
   @Override
@@ -71,7 +71,7 @@ public class S3ServiceImpl implements S3Service {
         s3Presigner.presignPutObject(
             builder -> builder.signatureDuration(urlDuration).putObjectRequest(putObjectRequest));
 
-    return new PreSignedUrlResponseDto(presignedPutObjectRequest.url().toString());
+    return new PreSignedUrlResponseDto(presignedPutObjectRequest.url().toString(), filePathKey);
   }
 
   @Override
@@ -85,12 +85,25 @@ public class S3ServiceImpl implements S3Service {
         s3Presigner.presignGetObject(
             builder -> builder.signatureDuration(urlDuration).getObjectRequest(getObjectRequest));
 
-    return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString());
+    return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString(), filePath);
+  }
+
+  @Override
+  public PreSignedUrlResponseDto getDownloadURL(String filePath, Long userId) {
+
+    GetObjectRequest getObjectRequest =
+        GetObjectRequest.builder().bucket(bucketName).key(filePath).build();
+
+    PresignedGetObjectRequest presignedGetObjectRequest =
+        s3Presigner.presignGetObject(
+            builder -> builder.signatureDuration(urlDuration).getObjectRequest(getObjectRequest));
+
+    return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString(), filePath);
   }
 
   @Override
   public PreSignedUrlResponseDto createPreSignedURLForAudio(
-      FileType fileType,
+      String fileType,
       Long userId,
       @Nullable Long interviewId,
       @Nullable Long questionId,
@@ -104,7 +117,7 @@ public class S3ServiceImpl implements S3Service {
         s3Presigner.presignPutObject(
             builder -> builder.signatureDuration(urlDuration).putObjectRequest(putObjectRequest));
 
-    return new PreSignedUrlResponseDto(presignedPutObjectRequest.url().toString());
+    return new PreSignedUrlResponseDto(presignedPutObjectRequest.url().toString(), filePathKey);
   }
 
   @Override
@@ -117,7 +130,7 @@ public class S3ServiceImpl implements S3Service {
         s3Presigner.presignGetObject(
             builder -> builder.signatureDuration(urlDuration).getObjectRequest(getObjectRequest));
 
-    return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString());
+    return new PreSignedUrlResponseDto(presignedGetObjectRequest.url().toString(), filePath);
   }
 
   private String makeS3FilePathForImage(FileType fileType, String fileName, Long userId) {
@@ -142,10 +155,10 @@ public class S3ServiceImpl implements S3Service {
   }
 
   private String makeS3FilePathForAudio(
-      FileType fileType, Long userId, @Nullable Long interviewId, @Nullable Long questionId) {
+      String fileType, Long userId, @Nullable Long interviewId, @Nullable Long questionId) {
     String timestamp = String.valueOf(System.currentTimeMillis());
     return String.format(
-        "users/%d/interviews/%d/questions/%d/%d-%d-%d-%s-%s",
+        "users/%d/interviews/%d/questions/%d/%d-%d-%d-%s-%s.mp3",
         userId, interviewId, questionId, userId, interviewId, questionId, timestamp, fileType);
   }
 }

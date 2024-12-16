@@ -68,7 +68,8 @@ public class FileControllerTest {
     Long interviewId = 2L;
     String fileName = "testFile.txt";
     String expectedUrl = "https://s3.aws.com/testFile.txt";
-    PreSignedUrlResponseDto preSignedUrlResponseDto = new PreSignedUrlResponseDto(expectedUrl);
+    PreSignedUrlResponseDto preSignedUrlResponseDto =
+        new PreSignedUrlResponseDto(expectedUrl, fileName);
 
     String accessToken = jwtUtil.generateAccessToken(1L);
     MockCookie authCookie = new MockCookie("access_token", accessToken);
@@ -108,7 +109,10 @@ public class FileControllerTest {
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
                         fieldWithPath("data.preSignedUrl")
                             .type(JsonFieldType.STRING)
-                            .description("aws s3 preSigned Url"))
+                            .description("aws s3 preSigned Url"),
+                        fieldWithPath("data.objectKey")
+                            .type(JsonFieldType.STRING)
+                            .description("aws s3 object key"))
                     .build())));
   }
 
@@ -121,8 +125,8 @@ public class FileControllerTest {
     Long interviewId = 2L;
     String expectedUrl = "https://s3.aws.com/cover-letter/1/cover-letter-test.txt";
     String path = "/files/cover-letter/2/1/cover-letter-test.txt";
-    PreSignedUrlResponseDto preSignedUrlResponseDto = new PreSignedUrlResponseDto(expectedUrl);
-
+    PreSignedUrlResponseDto preSignedUrlResponseDto =
+        new PreSignedUrlResponseDto(expectedUrl, path);
     String accessToken = jwtUtil.generateAccessToken(userId);
     MockCookie authCookie = new MockCookie("access_token", accessToken);
 
@@ -161,7 +165,64 @@ public class FileControllerTest {
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
                         fieldWithPath("data.preSignedUrl")
                             .type(JsonFieldType.STRING)
-                            .description("aws s3 preSigned Url"))
+                            .description("aws s3 preSigned Url"),
+                        fieldWithPath("data.objectKey")
+                            .type(JsonFieldType.STRING)
+                            .description("aws s3 object key"))
+                    .build())));
+  }
+
+  @Test
+  @DisplayName("유저 자소서 다운로드 url 받기 - 성공")
+  @WithMockUser
+  void testGetUserCoverLetterDownloadUrl() throws Exception {
+    // given
+    Long userId = 1L;
+    Long coverLetterId = 100L;
+    String expectedUrl = "https://s3.aws.com/9e715748-52d8-49b2-96dd-a436e9b15903.docx";
+    String path = "9e715748-52d8-49b2-96dd-a436e9b15903.docx";
+    PreSignedUrlResponseDto preSignedUrlResponseDto =
+        new PreSignedUrlResponseDto(expectedUrl, path);
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+
+    when(coverLetterService.findCoverLetter(coverLetterId))
+        .thenReturn(
+            CoverLetterDomain.builder()
+                .s3FileUrl("9e715748-52d8-49b2-96dd-a436e9b15903.docx")
+                .build());
+    when(s3Service.getDownloadURL(eq(path), eq(userId))).thenReturn(preSignedUrlResponseDto);
+
+    // when & then
+    ResultActions resultActions =
+        mockMvc.perform(
+            get("/file/cover-letter/user/{coverLetterId}/download-url", coverLetterId)
+                .cookie(authCookie)
+                .accept(MediaType.APPLICATION_JSON));
+
+    // validate the response
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+    // rest docs
+    resultActions.andDo(
+        document(
+            "유저 자소서 다운로드 url 받기 - 성공",
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("File API")
+                    .summary("파일 API")
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.preSignedUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("aws s3 preSigned Url"),
+                        fieldWithPath("data.objectKey")
+                            .type(JsonFieldType.STRING)
+                            .description("aws s3 object key"))
                     .build())));
   }
 
@@ -173,7 +234,8 @@ public class FileControllerTest {
     Long userId = 1L;
     String fileName = "testFile.txt";
     String expectedUrl = "https://s3.aws.com/testFile.txt";
-    PreSignedUrlResponseDto preSignedUrlResponseDto = new PreSignedUrlResponseDto(expectedUrl);
+    PreSignedUrlResponseDto preSignedUrlResponseDto =
+        new PreSignedUrlResponseDto(expectedUrl, fileName);
 
     String accessToken = jwtUtil.generateAccessToken(userId);
     MockCookie authCookie = new MockCookie("access_token", accessToken);
@@ -211,7 +273,10 @@ public class FileControllerTest {
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
                         fieldWithPath("data.preSignedUrl")
                             .type(JsonFieldType.STRING)
-                            .description("aws s3 PreSigned Url"))
+                            .description("aws s3 PreSigned Url"),
+                        fieldWithPath("data.objectKey")
+                            .type(JsonFieldType.STRING)
+                            .description("aws s3 object key"))
                     .build())));
   }
 
@@ -229,7 +294,7 @@ public class FileControllerTest {
 
     // mock s3Service
     when(s3Service.getPreSignedUrlForImage(eq(fileName), eq(userId)))
-        .thenReturn(new PreSignedUrlResponseDto(expectedUrl));
+        .thenReturn(new PreSignedUrlResponseDto(expectedUrl, fileName));
 
     // when & then
     ResultActions resultActions =
@@ -259,7 +324,10 @@ public class FileControllerTest {
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
                         fieldWithPath("data.preSignedUrl")
                             .type(JsonFieldType.STRING)
-                            .description("aws s3 preSigned Url"))
+                            .description("aws s3 preSigned Url"),
+                        fieldWithPath("data.objectKey")
+                            .type(JsonFieldType.STRING)
+                            .description("aws s3 object key"))
                     .build())));
   }
 
@@ -351,11 +419,16 @@ public class FileControllerTest {
     String accessToken = jwtUtil.generateAccessToken(userId);
     MockCookie authCookie = new MockCookie("access_token", accessToken);
 
-    PreSignedUrlResponseDto preSignedUrlResponseDto = new PreSignedUrlResponseDto(expectedUrl);
+    PreSignedUrlResponseDto preSignedUrlResponseDto =
+        new PreSignedUrlResponseDto(expectedUrl, "audio/1/interview/2/question/3/audio-test.mp3");
 
     // Mock S3Service behavior
     when(s3Service.createPreSignedURLForAudio(
-            eq(FileType.COVER_LETTER), eq(userId), eq(interviewId), eq(questionId), isNull()))
+            eq(FileType.AUDIO_ANSWER.getFolderName()),
+            eq(userId),
+            eq(interviewId),
+            eq(questionId),
+            isNull()))
         .thenReturn(preSignedUrlResponseDto);
 
     // When
@@ -388,7 +461,10 @@ public class FileControllerTest {
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
                         fieldWithPath("data.preSignedUrl")
                             .type(JsonFieldType.STRING)
-                            .description("AWS S3 PreSigned URL"))
+                            .description("AWS S3 PreSigned URL"),
+                        fieldWithPath("data.objectKey")
+                            .type(JsonFieldType.STRING)
+                            .description("aws s3 object key"))
                     .build())));
   }
 
@@ -406,7 +482,8 @@ public class FileControllerTest {
     String accessToken = jwtUtil.generateAccessToken(userId);
     MockCookie authCookie = new MockCookie("access_token", accessToken);
 
-    PreSignedUrlResponseDto preSignedUrlResponseDto = new PreSignedUrlResponseDto(expectedUrl);
+    PreSignedUrlResponseDto preSignedUrlResponseDto =
+        new PreSignedUrlResponseDto(expectedUrl, s3FileUrl);
 
     // Mock CoverLetterService behavior
     when(coverLetterService.findCoverLetterByInterviewId(interviewId))
@@ -447,7 +524,10 @@ public class FileControllerTest {
                         fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
                         fieldWithPath("data.preSignedUrl")
                             .type(JsonFieldType.STRING)
-                            .description("AWS S3 PreSigned URL"))
+                            .description("AWS S3 PreSigned URL"),
+                        fieldWithPath("data.objectKey")
+                            .type(JsonFieldType.STRING)
+                            .description("aws s3 object key"))
                     .build())));
   }
 }

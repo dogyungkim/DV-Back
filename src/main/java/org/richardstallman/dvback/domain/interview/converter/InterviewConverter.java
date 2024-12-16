@@ -9,6 +9,7 @@ import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 import org.richardstallman.dvback.domain.file.domain.response.FileResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.domain.request.InterviewCreateRequestDto;
+import org.richardstallman.dvback.domain.interview.domain.response.InterviewAddFileResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewCreateResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewEvaluationResponseDto;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewQuestionResponseDto;
@@ -55,9 +56,7 @@ public class InterviewConverter {
         interviewDomain.getInterviewMode(),
         interviewDomain.getQuestionCount(),
         jobConverter.toEntity(interviewDomain.getJob()),
-        interviewDomain.getInterviewMode() == InterviewMode.REAL
-            ? coverLetterConverter.fromDomainToEntity(interviewDomain.getCoverLetter())
-            : null);
+        null);
   }
 
   public InterviewDomain fromEntityToDomain(InterviewEntity interviewEntity) {
@@ -72,9 +71,9 @@ public class InterviewConverter {
         .questionCount(interviewEntity.getQuestionCount())
         .job(jobConverter.toDomain(interviewEntity.getJob()))
         .coverLetter(
-            interviewEntity.getInterviewMode() == InterviewMode.REAL
-                ? coverLetterConverter.fromEntityToDomain(interviewEntity.getCoverLetter())
-                : null)
+            interviewEntity.getCoverLetter() == null
+                ? null
+                : coverLetterConverter.fromEntityToDomain(interviewEntity.getCoverLetter()))
         .build();
   }
 
@@ -113,6 +112,20 @@ public class InterviewConverter {
         .job(job)
         .coverLetter(coverLetterDomain)
         .build();
+  }
+
+  public InterviewAddFileResponseDto fromDomainToAddFileResponseDto(
+      InterviewDomain interviewDomain, FileResponseDto fileResponseDto) {
+    return new InterviewAddFileResponseDto(
+        interviewDomain.getInterviewId(),
+        interviewDomain.getInterviewTitle(),
+        interviewDomain.getInterviewStatus(),
+        interviewDomain.getInterviewType(),
+        interviewDomain.getInterviewMethod(),
+        interviewDomain.getInterviewMode(),
+        interviewDomain.getQuestionCount(),
+        interviewDomain.getJob(),
+        fileResponseDto);
   }
 
   public InterviewCreateResponseDto fromDomainToCreateResponseDto(
@@ -163,5 +176,35 @@ public class InterviewConverter {
       InterviewDomain interviewDomain) {
     return new InterviewEvaluationResponseDto(
         interviewDomain.getInterviewId(), interviewDomain.getInterviewTitle());
+  }
+
+  public InterviewDomain addInterviewFile(InterviewDomain target, CoverLetterDomain file) {
+    return InterviewDomain.builder()
+        .interviewId(target.getInterviewId())
+        .userDomain(target.getUserDomain())
+        .interviewTitle(target.getInterviewTitle())
+        .interviewStatus(target.getInterviewStatus())
+        .interviewType(target.getInterviewType())
+        .interviewMethod(target.getInterviewMethod())
+        .interviewMode(target.getInterviewMode())
+        .questionCount(target.getQuestionCount())
+        .job(target.getJob())
+        .coverLetter(file)
+        .build();
+  }
+
+  public InterviewDomain fromEntityToDomainWhenCreate(InterviewEntity interviewEntity) {
+    return InterviewDomain.builder()
+        .userDomain(userConverter.fromEntityToDomain(interviewEntity.getUser()))
+        .interviewTitle(interviewEntity.getInterviewTitle())
+        .interviewId(interviewEntity.getInterviewId())
+        .interviewStatus(interviewEntity.getInterviewStatus())
+        .interviewType(interviewEntity.getInterviewType())
+        .interviewMethod(interviewEntity.getInterviewMethod())
+        .interviewMode(interviewEntity.getInterviewMode())
+        .questionCount(interviewEntity.getQuestionCount())
+        .job(jobConverter.toDomain(interviewEntity.getJob()))
+        .coverLetter(null)
+        .build();
   }
 }

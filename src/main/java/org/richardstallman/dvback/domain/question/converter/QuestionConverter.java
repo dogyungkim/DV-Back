@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionDto;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionRequestDto;
-import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
+import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
 import org.richardstallman.dvback.domain.interview.converter.InterviewConverter;
 import org.richardstallman.dvback.domain.interview.domain.InterviewDomain;
 import org.richardstallman.dvback.domain.interview.domain.response.InterviewQuestionResponseDto;
@@ -50,7 +50,14 @@ public class QuestionConverter {
   }
 
   public QuestionExternalRequestDto reactRequestToPythonRequest(
-      Long userId, QuestionRequestListDto questionRequestListDto, String jobName) {
+      Long userId,
+      QuestionRequestListDto questionRequestListDto,
+      String jobName,
+      CoverLetterDomain coverLetterDomain) {
+    String[] filePaths = new String[1];
+    if (questionRequestListDto.interviewMode() == InterviewMode.REAL) {
+      filePaths[0] = coverLetterDomain.getS3FileUrl();
+    }
     return new QuestionExternalRequestDto(
         userId,
         questionRequestListDto.interviewMode(),
@@ -58,42 +65,42 @@ public class QuestionConverter {
         questionRequestListDto.interviewMethod(),
         questionRequestListDto.questionCount(),
         jobName,
-        questionRequestListDto.interviewMode() == InterviewMode.REAL
-            ? questionRequestListDto.files().stream()
-                .map(FileRequestDto::getFilePath)
-                .toArray(String[]::new)
-            : null);
+        questionRequestListDto.interviewMode() == InterviewMode.REAL ? filePaths : null);
   }
 
   public QuestionResponseDto generateResponseDto(
       InterviewQuestionResponseDto interviewQuestionResponseDto,
       QuestionDomain firstQuestion,
+      String firstQuestionDownloadUrl,
       QuestionDomain secondQuestion,
+      String nextQuestionDownloadUrl,
       Boolean hasNext) {
     return new QuestionResponseDto(
         interviewQuestionResponseDto,
         firstQuestion == null ? null : firstQuestion.getQuestionId(),
         firstQuestion == null ? null : firstQuestion.getQuestionText(),
-        firstQuestion == null ? null : firstQuestion.getS3AudioUrl(),
+        firstQuestion == null ? null : firstQuestionDownloadUrl,
         secondQuestion == null ? null : secondQuestion.getQuestionId(),
         secondQuestion == null ? null : secondQuestion.getQuestionText(),
-        secondQuestion == null ? null : secondQuestion.getS3AudioUrl(),
+        secondQuestion == null ? null : nextQuestionDownloadUrl,
         hasNext);
   }
 
   public QuestionResponseDto fromQuestionExternalDomainToQuestionResponseDto(
       QuestionDomain firstQuestionDomain,
+      String firstQuestionDownloadUrl,
       InterviewQuestionResponseDto interviewQuestionResponseDto,
       QuestionDomain secondQuestionDomain,
+      String secondQuestionDownloadUrl,
       Boolean hasNext) {
     return new QuestionResponseDto(
         interviewQuestionResponseDto,
         firstQuestionDomain == null ? null : firstQuestionDomain.getQuestionId(),
         firstQuestionDomain == null ? null : firstQuestionDomain.getQuestionText(),
-        firstQuestionDomain == null ? null : firstQuestionDomain.getS3AudioUrl(),
+        firstQuestionDomain == null ? null : firstQuestionDownloadUrl,
         secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionId(),
         secondQuestionDomain == null ? null : secondQuestionDomain.getQuestionText(),
-        secondQuestionDomain == null ? null : secondQuestionDomain.getS3AudioUrl(),
+        secondQuestionDomain == null ? null : secondQuestionDownloadUrl,
         hasNext);
   }
 

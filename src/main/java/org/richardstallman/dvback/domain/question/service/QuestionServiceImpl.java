@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.client.firebase.service.FirebaseMessagingService;
 import org.richardstallman.dvback.client.python.PythonService;
+import org.richardstallman.dvback.client.s3.service.S3Service;
+import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.domain.answer.converter.AnswerConverter;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
 import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousRequestDto;
@@ -47,14 +49,19 @@ public class QuestionServiceImpl implements QuestionService {
   private final AnswerRepository answerRepository;
   private final AnswerConverter answerConverter;
   private final FirebaseMessagingService firebaseMessagingService;
+  private final S3Service s3Service;
 
   @Override
   @Transactional(propagation = Propagation.REQUIRED)
   public void getQuestionList(QuestionRequestListDto questionRequestListDto, Long userId) {
     JobDomain jobDomain = jobService.findJobById(questionRequestListDto.jobId());
+    InterviewDomain interviewDomain = getInterviewDomain(questionRequestListDto.interviewId());
     QuestionExternalRequestDto questionExternalRequestDto =
         questionConverter.reactRequestToPythonRequest(
-            userId, questionRequestListDto, jobDomain.getJobName());
+            userId,
+            questionRequestListDto,
+            jobDomain.getJobName(),
+            interviewDomain.getCoverLetter());
 
     pythonService.requestQuestionList(
         questionExternalRequestDto, questionRequestListDto.interviewId());
@@ -76,11 +83,25 @@ public class QuestionServiceImpl implements QuestionService {
 
     QuestionDomain firstQuestion = questionDomains.get(0);
     QuestionDomain nextQuestion = hasNext ? questionDomains.get(1) : null;
+    String firstQuestionDownloadUrl = null;
+    String nextQuestionDownloadUrl = null;
+    if (interviewDomain.getInterviewMethod() == InterviewMethod.VOICE) {
+      firstQuestionDownloadUrl =
+          firstQuestion == null
+              ? null
+              : s3Service.getDownloadURL(firstQuestion.getS3AudioUrl(), userId).preSignedUrl();
+      nextQuestionDownloadUrl =
+          hasNext
+              ? s3Service.getDownloadURL(nextQuestion.getS3AudioUrl(), userId).preSignedUrl()
+              : null;
+    }
 
     return questionConverter.generateResponseDto(
         interviewConverter.fromDomainToQuestionResponseDto(interviewDomain),
         firstQuestion,
+        firstQuestionDownloadUrl,
         nextQuestion,
+        nextQuestionDownloadUrl,
         hasNext);
   }
 
@@ -124,10 +145,31 @@ public class QuestionServiceImpl implements QuestionService {
     checkAnswer(
         interviewDomain, answerDomain.getAnswerId(), questionNextRequestDto.answer(), question);
 
+    String firstQuestionDownloadUrl = null;
+    String nextQuestionDownloadUrl = null;
+    if (interviewDomain.getInterviewMethod() == InterviewMethod.VOICE) {
+      firstQuestionDownloadUrl =
+          currentQuestion == null
+              ? null
+              : s3Service
+                  .getDownloadURL(
+                      currentQuestion.getS3AudioUrl(), interviewDomain.getUserDomain().getUserId())
+                  .preSignedUrl();
+      nextQuestionDownloadUrl =
+          hasNext
+              ? s3Service
+                  .getDownloadURL(
+                      nextQuestion.getS3AudioUrl(), interviewDomain.getUserDomain().getUserId())
+                  .preSignedUrl()
+              : null;
+    }
+
     return questionConverter.fromQuestionExternalDomainToQuestionResponseDto(
         currentQuestion,
+        firstQuestionDownloadUrl,
         interviewConverter.fromDomainToQuestionResponseDto(previousQuestion.getInterviewDomain()),
         nextQuestion,
+        nextQuestionDownloadUrl,
         hasNext);
   }
 

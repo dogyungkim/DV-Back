@@ -19,8 +19,10 @@ public interface S3Service {
   PreSignedUrlResponseDto getDownloadURLForInterview(
       String filePath, Long userId, @Nullable Long interviewId);
 
+  PreSignedUrlResponseDto getDownloadURL(String filePath, Long userId);
+
   PreSignedUrlResponseDto createPreSignedURLForAudio(
-      FileType fileType,
+      String fileType,
       Long userId,
       @Nullable Long interviewId,
       @Nullable Long questionId,
