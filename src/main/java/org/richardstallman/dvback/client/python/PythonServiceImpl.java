@@ -1,6 +1,7 @@
 package org.richardstallman.dvback.client.python;
 
 import java.net.URI;
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,10 @@ public class PythonServiceImpl implements PythonService {
 
   @Override
   public void requestQuestionList(QuestionExternalRequestDto requestDto, Long interviewId) {
+    log.info("Request started Question List to python server : ({})", requestDto);
+    log.info(
+        "Request started Question List to python server : ({})",
+        Arrays.toString(requestDto.filePaths()));
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 

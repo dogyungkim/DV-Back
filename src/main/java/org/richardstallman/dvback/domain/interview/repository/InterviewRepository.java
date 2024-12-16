@@ -7,6 +7,8 @@ public interface InterviewRepository {
 
   InterviewDomain save(InterviewDomain interviewDomain);
 
+  InterviewDomain reSave(InterviewDomain interviewDomain);
+
   InterviewDomain findById(Long interviewId);
 
   List<InterviewDomain> findInterviewsByUserId(Long userId);
