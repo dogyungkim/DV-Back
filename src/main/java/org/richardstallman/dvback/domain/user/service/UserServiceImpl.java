@@ -112,6 +112,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserResponseDto updateUserInfo(Long userId, UserUpdateRequestDto userUpdateRequestDto) {
+    log.info("updateUserInfo: {}", userUpdateRequestDto);
     UserDomain user = findUserById(userId);
     validateName(userUpdateRequestDto.name());
     validateNickname(userUpdateRequestDto.nickname());
@@ -122,17 +123,20 @@ public class UserServiceImpl implements UserService {
     PreSignedUrlResponseDto preSignedUrl =
         s3Service.getPreSignedUrlForImage(user.getS3ProfileImageObjectKey(), userId);
 
-    return new UserResponseDto(
-        userDomain.getUserId(),
-        userDomain.getSocialId(),
-        userDomain.getEmail(),
-        userDomain.getUsername(),
-        userDomain.getName(),
-        userDomain.getNickname(),
-        preSignedUrl.preSignedUrl(),
-        userDomain.getLeave(),
-        userDomain.getGender(),
-        userDomain.getBirthdate());
+    UserResponseDto userResponseDto =
+        new UserResponseDto(
+            userDomain.getUserId(),
+            userDomain.getSocialId(),
+            userDomain.getEmail(),
+            userDomain.getUsername(),
+            userDomain.getName(),
+            userDomain.getNickname(),
+            preSignedUrl.preSignedUrl(),
+            userDomain.getLeave(),
+            userDomain.getGender(),
+            userDomain.getBirthdate());
+    log.info("updatedUserInfo: {}", userResponseDto);
+    return userResponseDto;
   }
 
   private UserDomain findUserById(Long userId) {

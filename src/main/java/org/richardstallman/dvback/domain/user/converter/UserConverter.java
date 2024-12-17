@@ -101,7 +101,9 @@ public class UserConverter {
         .name(userUpdateRequestDto.name())
         .nickname(userUpdateRequestDto.nickname())
         .s3ProfileImageObjectKey(
-            extractObjectKeyFromUrl(userUpdateRequestDto.s3ProfileImageObjectKey()))
+            userUpdateRequestDto.s3ProfileImageObjectKey() == null
+                ? userDomain.getS3ProfileImageObjectKey()
+                : extractObjectKeyFromUrl(userUpdateRequestDto.s3ProfileImageObjectKey()))
         .leave(userDomain.getLeave())
         .gender(userUpdateRequestDto.gender())
         .birthdate(userUpdateRequestDto.birthdate())
