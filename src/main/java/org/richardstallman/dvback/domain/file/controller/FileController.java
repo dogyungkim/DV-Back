@@ -1,18 +1,24 @@
 package org.richardstallman.dvback.domain.file.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.client.s3.service.S3Service;
 import org.richardstallman.dvback.common.DvApiResponse;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
+import org.richardstallman.dvback.domain.file.domain.request.CoverLetterRequestDto;
 import org.richardstallman.dvback.domain.file.domain.response.CoverLetterListResponseDto;
+import org.richardstallman.dvback.domain.file.domain.response.CoverLetterResponseDto;
 import org.richardstallman.dvback.domain.file.domain.response.PreSignedUrlResponseDto;
 import org.richardstallman.dvback.domain.file.service.CoverLetterService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +30,16 @@ public class FileController {
 
   private final S3Service s3Service;
   private final CoverLetterService coverLetterService;
+
+  @PostMapping("/cover-letter")
+  public ResponseEntity<DvApiResponse<CoverLetterResponseDto>> createCoverLetter(
+      @AuthenticationPrincipal Long userId,
+      @Valid @RequestBody final CoverLetterRequestDto coverLetterRequestDto) {
+    log.info("");
+    final CoverLetterResponseDto coverLetterResponseDto =
+        coverLetterService.createCoverLetter(coverLetterRequestDto, userId);
+    return ResponseEntity.status(HttpStatus.CREATED).body(DvApiResponse.of(coverLetterResponseDto));
+  }
 
   @GetMapping("/cover-letter/{interviewId}/{fileName}/upload-url")
   public ResponseEntity<DvApiResponse<PreSignedUrlResponseDto>>

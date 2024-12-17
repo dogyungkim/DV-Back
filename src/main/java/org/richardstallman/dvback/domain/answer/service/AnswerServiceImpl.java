@@ -138,7 +138,9 @@ public class AnswerServiceImpl implements AnswerService {
       InterviewDomain interviewDomain, AnswerEvaluationRequestDto dto, AnswerDomain answerDomain) {
     OverallEvaluationDomain overallEvaluationDomain =
         overallEvaluationRepository.findByInterviewId(interviewDomain.getInterviewId());
-    log.info(overallEvaluationDomain == null ? null : overallEvaluationDomain.toString());
+    log.info(
+        "overallEvaluationDomain: {}",
+        overallEvaluationDomain == null ? null : overallEvaluationDomain.toString());
     if (overallEvaluationDomain == null) {
       overallEvaluationDomain =
           overallEvaluationRepository.save(
