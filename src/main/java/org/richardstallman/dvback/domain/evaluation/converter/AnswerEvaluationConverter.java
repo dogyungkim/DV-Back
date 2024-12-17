@@ -89,7 +89,8 @@ public class AnswerEvaluationConverter {
             new AnswerEvaluationCriteriaDto(
                 answerEvaluationScoreDomain.getScore(), answerEvaluationScoreDomain.getRationale());
         case PRONUNCIATION -> pronunciation =
-            new AnswerEvaluationCriteriaDto(answerEvaluationScoreDomain.getScore(), null);
+            new AnswerEvaluationCriteriaDto(
+                answerEvaluationScoreDomain.getScore(), answerEvaluationScoreDomain.getRationale());
       }
     }
     return new AnswerEvaluationVoiceScoreDto(wpm, stutter, pronunciation);

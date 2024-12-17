@@ -128,77 +128,52 @@ public class EvaluationServiceImpl implements EvaluationService {
     Map<EvaluationCriteria, OverallEvaluationResultCriteriaDto> criteriaMap = new HashMap<>();
     if (overallEvaluationDomain.getInterviewDomain().getInterviewType()
         == InterviewType.TECHNICAL) {
-      if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
-          == InterviewMethod.CHAT) {
-        criteriaMap =
-            Map.of(
-                EvaluationCriteria.JOB_FIT,
-                overallEvaluationResultDto.textOverall().jobFit(),
-                EvaluationCriteria.GROWTH_POTENTIAL,
-                overallEvaluationResultDto.textOverall().growthPotential(),
-                EvaluationCriteria.WORK_ATTITUDE,
-                overallEvaluationResultDto.textOverall().workAttitude(),
-                EvaluationCriteria.TECHNICAL_DEPTH,
-                overallEvaluationResultDto.textOverall().technicalDepth());
-      } else if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
-          == InterviewMethod.VOICE) {
-        criteriaMap =
-            Map.of(
-                EvaluationCriteria.JOB_FIT,
-                overallEvaluationResultDto.textOverall().jobFit(),
-                EvaluationCriteria.GROWTH_POTENTIAL,
-                overallEvaluationResultDto.textOverall().growthPotential(),
-                EvaluationCriteria.WORK_ATTITUDE,
-                overallEvaluationResultDto.textOverall().workAttitude(),
-                EvaluationCriteria.TECHNICAL_DEPTH,
-                overallEvaluationResultDto.textOverall().technicalDepth(),
-                EvaluationCriteria.FLUENCY,
-                overallEvaluationResultDto.voiceOverall().fluency(),
-                EvaluationCriteria.CLARITY,
-                overallEvaluationResultDto.voiceOverall().clarity(),
-                EvaluationCriteria.WORD_REPETITION,
-                overallEvaluationResultDto.voiceOverall().wordRepetition());
-      }
-    } else if (overallEvaluationDomain.getInterviewDomain().getInterviewType()
-        == InterviewType.PERSONAL) {
-      if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
-          == InterviewMethod.CHAT) {
-        criteriaMap =
-            Map.of(
-                EvaluationCriteria.COMPANY_FIT,
-                overallEvaluationResultDto.textOverall().companyFit(),
-                EvaluationCriteria.ADAPTABILITY,
-                overallEvaluationResultDto.textOverall().adaptability(),
-                EvaluationCriteria.INTERPERSONAL_SKILLS,
-                overallEvaluationResultDto.textOverall().interpersonalSkills(),
-                EvaluationCriteria.GROWTH_ATTITUDE,
-                overallEvaluationResultDto.textOverall().growthAttitude());
+      criteriaMap.put(
+          EvaluationCriteria.JOB_FIT, overallEvaluationResultDto.textOverall().jobFit());
+      criteriaMap.put(
+          EvaluationCriteria.GROWTH_POTENTIAL,
+          overallEvaluationResultDto.textOverall().growthPotential());
+      criteriaMap.put(
+          EvaluationCriteria.WORK_ATTITUDE,
+          overallEvaluationResultDto.textOverall().workAttitude());
+      criteriaMap.put(
+          EvaluationCriteria.TECHNICAL_DEPTH,
+          overallEvaluationResultDto.textOverall().technicalDepth());
 
-      } else if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
+      if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
           == InterviewMethod.VOICE) {
-        criteriaMap =
-            Map.of(
-                EvaluationCriteria.COMPANY_FIT,
-                overallEvaluationResultDto.textOverall().companyFit(),
-                EvaluationCriteria.ADAPTABILITY,
-                overallEvaluationResultDto.textOverall().adaptability(),
-                EvaluationCriteria.INTERPERSONAL_SKILLS,
-                overallEvaluationResultDto.textOverall().interpersonalSkills(),
-                EvaluationCriteria.GROWTH_ATTITUDE,
-                overallEvaluationResultDto.textOverall().growthAttitude(),
-                EvaluationCriteria.FLUENCY,
-                overallEvaluationResultDto.voiceOverall().fluency(),
-                EvaluationCriteria.CLARITY,
-                overallEvaluationResultDto.voiceOverall().clarity(),
-                EvaluationCriteria.WORD_REPETITION,
-                overallEvaluationResultDto.voiceOverall().wordRepetition());
+        criteriaMap.put(
+            EvaluationCriteria.FLUENCY, overallEvaluationResultDto.voiceOverall().fluency());
+        criteriaMap.put(
+            EvaluationCriteria.CLARITY, overallEvaluationResultDto.voiceOverall().clarity());
+        criteriaMap.put(
+            EvaluationCriteria.WORD_REPETITION,
+            overallEvaluationResultDto.voiceOverall().wordRepetition());
       }
     }
 
-    if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
-        == InterviewMethod.VOICE) {
+    if (overallEvaluationDomain.getInterviewDomain().getInterviewType() == InterviewType.PERSONAL) {
       criteriaMap.put(
-          EvaluationCriteria.FLUENCY, overallEvaluationResultDto.voiceOverall().fluency());
+          EvaluationCriteria.COMPANY_FIT, overallEvaluationResultDto.textOverall().companyFit());
+      criteriaMap.put(
+          EvaluationCriteria.ADAPTABILITY, overallEvaluationResultDto.textOverall().adaptability());
+      criteriaMap.put(
+          EvaluationCriteria.INTERPERSONAL_SKILLS,
+          overallEvaluationResultDto.textOverall().interpersonalSkills());
+      criteriaMap.put(
+          EvaluationCriteria.GROWTH_ATTITUDE,
+          overallEvaluationResultDto.textOverall().growthAttitude());
+
+      if (overallEvaluationDomain.getInterviewDomain().getInterviewMethod()
+          == InterviewMethod.VOICE) {
+        criteriaMap.put(
+            EvaluationCriteria.FLUENCY, overallEvaluationResultDto.voiceOverall().fluency());
+        criteriaMap.put(
+            EvaluationCriteria.CLARITY, overallEvaluationResultDto.voiceOverall().clarity());
+        criteriaMap.put(
+            EvaluationCriteria.WORD_REPETITION,
+            overallEvaluationResultDto.voiceOverall().wordRepetition());
+      }
     }
 
     List<EvaluationCriteriaDomain> criteriaDomains =
