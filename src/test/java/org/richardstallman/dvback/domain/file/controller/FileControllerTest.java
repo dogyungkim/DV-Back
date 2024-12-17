@@ -2,10 +2,13 @@ package org.richardstallman.dvback.domain.file.controller;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -23,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.richardstallman.dvback.client.s3.service.S3Service;
 import org.richardstallman.dvback.common.constant.CommonConstants.FileType;
 import org.richardstallman.dvback.domain.file.domain.CoverLetterDomain;
+import org.richardstallman.dvback.domain.file.domain.request.CoverLetterRequestDto;
 import org.richardstallman.dvback.domain.file.domain.response.CoverLetterResponseDto;
 import org.richardstallman.dvback.domain.file.domain.response.PreSignedUrlResponseDto;
 import org.richardstallman.dvback.domain.file.service.CoverLetterService;
@@ -57,6 +61,70 @@ public class FileControllerTest {
   @WithMockUser
   public void testMyEndpoint() throws Exception {
     mockMvc.perform(get("/ping-pong")).andExpect(status().isOk()).andDo(document("ping-pong"));
+  }
+
+  @Test
+  @DisplayName("마이페이지에서 자소서 저장")
+  @WithMockUser
+  void create_cover_letter_on_my_page() throws Exception {
+    // given
+    Long userId = 1L;
+    FileType type = FileType.COVER_LETTER;
+    String filePath = "filePath";
+    Long fileId = 2L;
+    String fileName = "fileName";
+    String s3FileUrl = "s3FileUrl";
+
+    CoverLetterRequestDto coverLetterRequestDto = new CoverLetterRequestDto(type, filePath);
+
+    CoverLetterResponseDto coverLetterResponseDto =
+        new CoverLetterResponseDto(fileId, fileName, s3FileUrl);
+
+    when(coverLetterService.createCoverLetter(any(CoverLetterRequestDto.class), eq(userId)))
+        .thenReturn(coverLetterResponseDto);
+
+    String accessToken = jwtUtil.generateAccessToken(userId);
+    MockCookie authCookie = new MockCookie("access_token", accessToken);
+    String content = objectMapper.writeValueAsString(coverLetterRequestDto);
+
+    ResultActions resultActions =
+        mockMvc.perform(
+            post("/file/cover-letter")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content)
+                .cookie(authCookie));
+
+    // restdocs
+    resultActions.andDo(
+        document(
+            "마이페이지에서 자소서 저장",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint()),
+            resource(
+                ResourceSnippetParameters.builder()
+                    .tag("File API")
+                    .summary("마이페이지에서 자소서 저장")
+                    .requestFields(
+                        fieldWithPath("type")
+                            .type(JsonFieldType.STRING)
+                            .description("자소서 타입: COVER_LETTER"),
+                        fieldWithPath("filePath")
+                            .type(JsonFieldType.STRING)
+                            .description("s3 파일 경로"))
+                    .responseFields(
+                        fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                        fieldWithPath("data.fileId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("파일 식별자"),
+                        fieldWithPath("data.type").type(JsonFieldType.STRING).description("파일 타입"),
+                        fieldWithPath("data.fileName")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 이름"),
+                        fieldWithPath("data.s3FileUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("파일 경로"))
+                    .build())));
   }
 
   @Test

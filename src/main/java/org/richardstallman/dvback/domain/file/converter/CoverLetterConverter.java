@@ -7,6 +7,7 @@ import org.richardstallman.dvback.domain.file.domain.request.FileRequestDto;
 import org.richardstallman.dvback.domain.file.domain.response.CoverLetterResponseDto;
 import org.richardstallman.dvback.domain.file.entity.CoverLetterEntity;
 import org.richardstallman.dvback.domain.user.converter.UserConverter;
+import org.richardstallman.dvback.domain.user.domain.UserDomain;
 import org.richardstallman.dvback.domain.user.domain.response.UserResponseDto;
 import org.springframework.stereotype.Component;
 
@@ -51,5 +52,14 @@ public class CoverLetterConverter {
 
   public CoverLetterRequestDto fromFileRequestDtoToRequestDto(FileRequestDto fileRequestDto) {
     return new CoverLetterRequestDto(fileRequestDto.getType(), fileRequestDto.getFilePath());
+  }
+
+  public CoverLetterDomain fromRequestDtoToDomain(
+      CoverLetterRequestDto coverLetterRequestDto, UserDomain userDomain, String fileName) {
+    return CoverLetterDomain.builder()
+        .userDomain(userDomain)
+        .fileName(fileName)
+        .s3FileUrl(coverLetterRequestDto.getFilePath())
+        .build();
   }
 }
