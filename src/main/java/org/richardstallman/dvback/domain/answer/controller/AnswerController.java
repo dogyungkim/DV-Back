@@ -24,7 +24,7 @@ public class AnswerController {
   @PostMapping("/evaluations")
   public ResponseEntity<DvApiResponse<?>> saveAnswerEvaluation(
       @Valid @RequestBody AnswerEvaluationRequestDto answerEvaluationRequestDto) {
-    log.info("/evaluations python requested with : ({})", answerEvaluationRequestDto.questionId());
+    log.info("/evaluations python requested with : ({})", answerEvaluationRequestDto);
     answerService.saveAnswerEvaluations(answerEvaluationRequestDto);
     return ResponseEntity.ok(
         DvApiResponse.of(

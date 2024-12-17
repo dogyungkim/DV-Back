@@ -19,6 +19,12 @@ public class AnswerRepositoryImpl implements AnswerRepository {
   }
 
   @Override
+  public AnswerDomain update(AnswerDomain answerDomain) {
+    return answerConverter.fromEntityToDomain(
+        answerJpaRepository.save(answerConverter.fromDomainToEntity(answerDomain)));
+  }
+
+  @Override
   public AnswerDomain findByQuestionId(Long questionId) {
     return answerConverter.fromEntityToDomain(
         answerJpaRepository.findByQuestionQuestionId(questionId));

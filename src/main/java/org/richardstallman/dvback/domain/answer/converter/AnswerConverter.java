@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
+import org.richardstallman.dvback.domain.answer.domain.request.AnswerEvaluationRequestDto;
 import org.richardstallman.dvback.domain.answer.domain.request.AnswerPreviousRequestDto;
 import org.richardstallman.dvback.domain.answer.entity.AnswerEntity;
 import org.richardstallman.dvback.domain.evaluation.domain.external.request.EvaluationExternalQuestionRequestDto;
@@ -77,5 +78,16 @@ public class AnswerConverter {
         question,
         new QuestionExternalSttAnswerRequestDomain(
             answer.answerText(), answer.s3AudioUrl(), answer.s3VideoUrl()));
+  }
+
+  public AnswerDomain fromEvaluationRequestDtoToDomain(
+      AnswerDomain answerDomain, AnswerEvaluationRequestDto answerEvaluationRequestDto) {
+    return AnswerDomain.builder()
+        .answerId(answerDomain.getAnswerId())
+        .questionDomain(answerDomain.getQuestionDomain())
+        .answerText(answerEvaluationRequestDto.answer().answerText())
+        .s3AudioUrl(answerEvaluationRequestDto.answer().s3AudioUrl())
+        .s3VideoUrl(answerEvaluationRequestDto.answer().s3VideoUrl())
+        .build();
   }
 }

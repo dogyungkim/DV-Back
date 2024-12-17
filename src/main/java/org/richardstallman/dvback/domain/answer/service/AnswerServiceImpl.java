@@ -11,6 +11,7 @@ import org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluati
 import org.richardstallman.dvback.common.constant.CommonConstants.AnswerEvaluationType;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewType;
+import org.richardstallman.dvback.domain.answer.converter.AnswerConverter;
 import org.richardstallman.dvback.domain.answer.domain.AnswerDomain;
 import org.richardstallman.dvback.domain.answer.domain.request.AnswerEvaluationRequestDto;
 import org.richardstallman.dvback.domain.answer.domain.request.evaluation.AnswerEvaluationCriteriaDto;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 public class AnswerServiceImpl implements AnswerService {
 
   private final AnswerRepository answerRepository;
+  private final AnswerConverter answerConverter;
   private final OverallEvaluationRepository overallEvaluationRepository;
   private final AnswerEvaluationRepository answerEvaluationRepository;
   private final AnswerEvaluationScoreRepository answerEvaluationScoreRepository;
@@ -48,7 +50,7 @@ public class AnswerServiceImpl implements AnswerService {
   }
 
   private void saveAnswer(AnswerEvaluationRequestDto dto) {
-    AnswerDomain previousAnswer = getAnswerDomainFromQuestionId(dto.questionId());
+    AnswerDomain previousAnswer = getAnswerDomainFromQuestionId(dto);
     saveAnswerEvaluation(dto, previousAnswer);
   }
 
@@ -130,8 +132,12 @@ public class AnswerServiceImpl implements AnswerService {
         .build();
   }
 
-  private AnswerDomain getAnswerDomainFromQuestionId(Long questionId) {
-    return answerRepository.findByQuestionId(questionId);
+  private AnswerDomain getAnswerDomainFromQuestionId(
+      AnswerEvaluationRequestDto answerEvaluationRequestDto) {
+    AnswerDomain answerDomain =
+        answerRepository.findByQuestionId(answerEvaluationRequestDto.questionId());
+    return answerRepository.update(
+        answerConverter.fromEvaluationRequestDtoToDomain(answerDomain, answerEvaluationRequestDto));
   }
 
   private void getOverallEvaluationDomainFromInterview(
