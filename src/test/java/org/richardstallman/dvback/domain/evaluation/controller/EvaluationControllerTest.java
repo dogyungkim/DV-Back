@@ -136,6 +136,7 @@ public class EvaluationControllerTest {
             answerEvaluationId,
             questionText,
             answerText,
+            "https://bucket.com",
             answerFeedbackStrength,
             answerFeedbackImprovement,
             answerFeedbackSuggestion,
@@ -244,6 +245,8 @@ public class EvaluationControllerTest {
                         fieldWithPath("data.answerEvaluations[0].questionText")
                             .description("질문 텍스트"),
                         fieldWithPath("data.answerEvaluations[0].answerText").description("답변 텍스트"),
+                        fieldWithPath("data.answerEvaluations[0].answerS3PresignedUrl")
+                            .description("답변 텍스트 음성 url"),
                         fieldWithPath("data.answerEvaluations[0].answerFeedbackStrength")
                             .description("답변의 강점 피드백"),
                         fieldWithPath("data.answerEvaluations[0].answerFeedbackImprovement")

@@ -51,25 +51,42 @@ public class AnswerEvaluationConverter {
 
   public AnswerEvaluationDomain fromEntityToDomain(AnswerEvaluationEntity answerEvaluationEntity) {
     return AnswerEvaluationDomain.builder()
-        .answerEvaluationId(answerEvaluationEntity.getAnswerEvaluationId())
-        .questionDomain(questionConverter.fromEntityToDomain(answerEvaluationEntity.getQuestion()))
-        .answerFeedbackStrength(answerEvaluationEntity.getAnswerFeedbackStrength())
-        .answerFeedbackImprovement(answerEvaluationEntity.getAnswerFeedbackImprovement())
-        .answerFeedbackSuggestion(answerEvaluationEntity.getAnswerFeedbackSuggestion())
+        .answerEvaluationId(
+            answerEvaluationEntity == null ? null : answerEvaluationEntity.getAnswerEvaluationId())
+        .questionDomain(
+            answerEvaluationEntity == null
+                ? null
+                : questionConverter.fromEntityToDomain(answerEvaluationEntity.getQuestion()))
+        .answerFeedbackStrength(
+            answerEvaluationEntity == null
+                ? null
+                : answerEvaluationEntity.getAnswerFeedbackStrength())
+        .answerFeedbackImprovement(
+            answerEvaluationEntity == null
+                ? null
+                : answerEvaluationEntity.getAnswerFeedbackImprovement())
+        .answerFeedbackSuggestion(
+            answerEvaluationEntity == null
+                ? null
+                : answerEvaluationEntity.getAnswerFeedbackSuggestion())
         .overallEvaluationDomain(
-            overallEvaluationConverter.fromEntityToDomain(
-                answerEvaluationEntity.getOverallEvaluation()))
+            answerEvaluationEntity == null
+                ? null
+                : overallEvaluationConverter.fromEntityToDomain(
+                    answerEvaluationEntity.getOverallEvaluation()))
         .build();
   }
 
   public AnswerEvaluationResponseDto fromDomainToResponseDto(
       AnswerEvaluationDomain answerEvaluationDomain,
       String answerText,
+      String answerS3PresignedUrl,
       List<AnswerEvaluationScoreResponseDto> answerEvaluationScoreResponseDtos) {
     return new AnswerEvaluationResponseDto(
         answerEvaluationDomain.getAnswerEvaluationId(),
         answerEvaluationDomain.getQuestionDomain().getQuestionText(),
         answerText,
+        answerS3PresignedUrl,
         answerEvaluationDomain.getAnswerFeedbackStrength(),
         answerEvaluationDomain.getAnswerFeedbackImprovement(),
         answerEvaluationDomain.getAnswerFeedbackSuggestion(),

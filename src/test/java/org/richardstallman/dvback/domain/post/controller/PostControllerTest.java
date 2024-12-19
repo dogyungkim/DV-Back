@@ -415,6 +415,7 @@ public class PostControllerTest {
                 1L,
                 "What is your greatest strength?",
                 "I am highly adaptable.",
+                "https://www.bucket.com",
                 "Good emphasis on adaptability.",
                 "Could elaborate more.",
                 "Provide an example of adaptability.",
@@ -626,6 +627,9 @@ public class PostControllerTest {
                         fieldWithPath("data.evaluation.answerEvaluations[0].answerText")
                             .type(JsonFieldType.STRING)
                             .description("답변 텍스트"),
+                        fieldWithPath("data.evaluation.answerEvaluations[0].answerS3PresignedUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("답변 텍스트 음성 url"),
                         fieldWithPath("data.evaluation.answerEvaluations[0].answerFeedbackStrength")
                             .type(JsonFieldType.STRING)
                             .description("답변 강점 피드백"),
@@ -690,6 +694,7 @@ public class PostControllerTest {
                 1L,
                 "What is your greatest strength?",
                 "I am highly adaptable.",
+                "https://www.bucket.com",
                 "Good emphasis on adaptability.",
                 "Could elaborate more.",
                 "Provide an example of adaptability.",
@@ -932,6 +937,10 @@ public class PostControllerTest {
                         fieldWithPath("data.posts[].evaluation.answerEvaluations[0].answerText")
                             .type(JsonFieldType.STRING)
                             .description("답변 텍스트"),
+                        fieldWithPath(
+                                "data.posts[].evaluation.answerEvaluations[0].answerS3PresignedUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("답변 텍스트 음성 url"),
                         fieldWithPath(
                                 "data.posts[].evaluation.answerEvaluations[0].answerFeedbackStrength")
                             .type(JsonFieldType.STRING)

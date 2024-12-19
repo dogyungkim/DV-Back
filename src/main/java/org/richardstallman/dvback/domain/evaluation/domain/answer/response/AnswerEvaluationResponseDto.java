@@ -8,6 +8,7 @@ public record AnswerEvaluationResponseDto(
     @NotNull Long answerEvaluationId,
     @NotNull String questionText,
     @NotNull String answerText,
+    String answerS3PresignedUrl,
     @NotNull String answerFeedbackStrength,
     @NotNull String answerFeedbackImprovement,
     @NotNull String answerFeedbackSuggestion,

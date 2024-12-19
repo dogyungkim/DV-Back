@@ -44,11 +44,14 @@ public class AnswerConverter {
 
   public AnswerDomain fromEntityToDomain(AnswerEntity answerEntity) {
     return AnswerDomain.builder()
-        .answerId(answerEntity.getAnswerId())
-        .questionDomain(questionConverter.fromEntityToDomain(answerEntity.getQuestion()))
-        .answerText(answerEntity.getAnswerText())
-        .s3AudioUrl(answerEntity.getS3AudioUrl())
-        .s3VideoUrl(answerEntity.getS3VideoUrl())
+        .answerId(answerEntity == null ? null : answerEntity.getAnswerId())
+        .questionDomain(
+            answerEntity == null
+                ? null
+                : questionConverter.fromEntityToDomain(answerEntity.getQuestion()))
+        .answerText(answerEntity == null ? null : answerEntity.getAnswerText())
+        .s3AudioUrl(answerEntity == null ? null : answerEntity.getS3AudioUrl())
+        .s3VideoUrl(answerEntity == null ? null : answerEntity.getS3VideoUrl())
         .build();
   }
 

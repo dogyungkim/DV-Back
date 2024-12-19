@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.client.firebase.service.FirebaseMessagingService;
 import org.richardstallman.dvback.client.python.PythonService;
+import org.richardstallman.dvback.client.s3.service.S3Service;
 import org.richardstallman.dvback.common.constant.CommonConstants.EvaluationCriteria;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMethod;
 import org.richardstallman.dvback.common.constant.CommonConstants.InterviewMode;
@@ -72,6 +73,7 @@ public class EvaluationServiceImpl implements EvaluationService {
   private final QuestionConverter questionConverter;
   private final InterviewConverter interviewConverter;
   private final FirebaseMessagingService firebaseMessagingService;
+  private final S3Service s3Service;
 
   @Override
   public void getOverallEvaluation(
@@ -298,6 +300,8 @@ public class EvaluationServiceImpl implements EvaluationService {
             .map(evaluationCriteriaConverter::fromDomainToResponseDto)
             .toList();
 
+    boolean isVoice = interviewDomain.getInterviewMethod() == InterviewMethod.VOICE;
+
     List<AnswerEvaluationResponseDto> answerEvaluationResponseDtos =
         answerEvaluations.stream()
             .map(
@@ -307,6 +311,17 @@ public class EvaluationServiceImpl implements EvaluationService {
                         answerRepository
                             .findByQuestionId(e.getQuestionDomain().getQuestionId())
                             .getAnswerText(),
+                        isVoice
+                            ? s3Service
+                                .getDownloadURLForAudio(
+                                    answerRepository
+                                        .findByQuestionId(e.getQuestionDomain().getQuestionId())
+                                        .getS3AudioUrl(),
+                                    interviewDomain.getUserDomain().getUserId(),
+                                    interviewDomain.getInterviewId(),
+                                    e.getQuestionDomain().getQuestionId())
+                                .preSignedUrl()
+                            : null,
                         answerEvaluationScoreRepository
                             .findByAnswerEvaluationId(e.getAnswerEvaluationId())
                             .stream()

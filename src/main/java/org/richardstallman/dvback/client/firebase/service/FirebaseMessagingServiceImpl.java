@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.richardstallman.dvback.client.firebase.repository.FcmTokenRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -18,6 +19,7 @@ public class FirebaseMessagingServiceImpl implements FirebaseMessagingService {
   private final FcmTokenRepository fcmTokenRepository;
 
   @Override
+  @Transactional
   public void sendNotification(Long userId, String title, String body) {
     try {
       String userToken = fcmTokenRepository.findByUserId(userId).getToken();

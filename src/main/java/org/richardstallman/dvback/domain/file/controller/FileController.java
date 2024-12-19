@@ -134,7 +134,7 @@ public class FileController {
     PreSignedUrlResponseDto preSignedUrl =
         s3Service.createPreSignedURLForAudio(
             FileType.AUDIO_ANSWER.getFolderName(), userId, interviewId, questionId, null);
-
+    log.info("Generated preSigned URL: {}", preSignedUrl);
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_JSON)
         .body(DvApiResponse.of(preSignedUrl));

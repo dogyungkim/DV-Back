@@ -45,8 +45,10 @@ public class EvaluationController {
   @GetMapping("/{interviewId}")
   public ResponseEntity<DvApiResponse<OverallEvaluationResponseDto>>
       getOverallEvaluationByInterviewId(@Valid @PathVariable final Long interviewId) {
+    log.info("Received evaluation request for user: ({})", interviewId);
     final OverallEvaluationResponseDto overallEvaluationResponseDto =
         evaluationService.getOverallEvaluationByInterviewId(interviewId);
+    log.info("Returning overall evaluation response: {}", overallEvaluationResponseDto);
     return ResponseEntity.ok(DvApiResponse.of(overallEvaluationResponseDto));
   }
 
